@@ -21,6 +21,6 @@
     },
     "noUnusedLocals": true
   },
-  "include": ["front/src", "front/vite.config.ts"],
+  "include": ["front/src", "front/vite.config.ts", "back"],
   "exclude": ["node_modules", "dist"]
 }
