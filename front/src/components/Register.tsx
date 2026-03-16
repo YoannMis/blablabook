@@ -1,12 +1,11 @@
 import z from 'zod';
 // import { zodResolver } from '@hookform/resolvers/zod';
 // import { useForm } from 'react-hook-form';
-import { Box, Field, FieldErrorText, Input, Button, Heading } from '@chakra-ui/react';
+import { Box, Field, FieldErrorText, Input, Button, Heading, Text } from '@chakra-ui/react';
 import RegisterSchema from '../schema/register.schema.ts';
 import axios from 'axios';
 
-import { FormEvent, useState } from 'react';
-import { BiTargetLock } from 'react-icons/bi';
+import { useState } from 'react';
 
 //Typage Typescript
 type RegisterFormValues = z.infer<typeof RegisterSchema>;
@@ -20,8 +19,15 @@ const Register = () => {
     confirmPassword: '',
   });
 
+  const [errors, setErrors] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
   // fonction de soumission du formulaire
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.SubmitEvent) => {
     event.preventDefault();
     // console.log('Formulaire :', data);
     // try {
@@ -32,24 +38,41 @@ const Register = () => {
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserInfos({
+    const newUserInfos = {
       ...userInfos,
       [event.target.name]: event.target.value,
-    });
+    };
 
     // Utiliser ton schemaZod (avec parse) en lui donnait les données du state
-    // const result = ....
-    // if !result.success :
-    // Enregistrer les errors dans un state
-    // [name]: erreur
-  };
+    const result = RegisterSchema.safeParse(newUserInfos);
 
-  console.log('userIfnos :', userInfos);
+    setUserInfos(newUserInfos);
+
+    if (!result.success) {
+      const flattenedErrors = z.flattenError(result.error);
+      const newErrors = {
+        username: flattenedErrors.fieldErrors.username?.[0] || '',
+        email: flattenedErrors.fieldErrors.email?.[0] || '',
+        password: flattenedErrors.fieldErrors.password?.[0] || '',
+        confirmPassword: flattenedErrors.fieldErrors.confirmPassword?.[0] || '',
+      };
+
+      setErrors(newErrors);
+      console.log(errors);
+    } else {
+      setErrors({
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+      });
+    }
+  };
 
   return (
     <Box as="form" onSubmit={handleSubmit}>
       <Heading size="3xl">Register</Heading>
-      <Field.Root>
+      <Field.Root invalid={!!errors.username}>
         <Field.Label>Username</Field.Label>
         <Input
           name="username"
@@ -57,19 +80,16 @@ const Register = () => {
           value={userInfos.username}
           onChange={handleChange}
         />
-        {/* {errors.username && (
-        <Field.ErrorText> {errors.username.message} </Field.ErrorText>
-      )} */}
+        <Field.ErrorText>{errors.username}</Field.ErrorText>
       </Field.Root>
 
-      <Field.Root>
+      <Field.Root invalid={!!errors.email}>
         <Field.Label>Email</Field.Label>
         <Input name="email" placeholder="Email" value={userInfos.email} onChange={handleChange} />
-        {/* {errors.email && (
-        <Field.ErrorText> {errors.email.message} </Field.ErrorText>
-      )} */}
+        {<Field.ErrorText>{errors.email}</Field.ErrorText>}
       </Field.Root>
-      <Field.Root>
+
+      <Field.Root invalid={!!errors.password}>
         <Field.Label>Password</Field.Label>
         <Input
           name="password"
@@ -77,11 +97,10 @@ const Register = () => {
           value={userInfos.password}
           onChange={handleChange}
         />
-        {/* {errors.password && (
-        <Field.ErrorText> {errors.password.message} </Field.ErrorText>
-      )} */}
+        <Field.ErrorText> {errors.password} </Field.ErrorText>
       </Field.Root>
-      <Field.Root>
+
+      <Field.Root invalid={!!errors.confirmPassword}>
         <Field.Label>Confirm your Password</Field.Label>
         <Input
           name="confirmPassword"
@@ -89,9 +108,7 @@ const Register = () => {
           value={userInfos.confirmPassword}
           onChange={handleChange}
         />
-        {/* {errors.confirmPassword && (
-        <Field.ErrorText> {errors.confirmPassword.message} </Field.ErrorText>
-      )} */}
+        {<Field.ErrorText> {errors.confirmPassword} </Field.ErrorText>}
       </Field.Root>
       <Button type="submit">Submit</Button>
     </Box>
