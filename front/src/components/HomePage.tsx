@@ -1,12 +1,17 @@
 import { useState } from 'react';
-import { Box } from '@chakra-ui/react';
+import { useNavigate } from 'react-router';
+import { Stack } from '@chakra-ui/react';
+
 import { PageLayout } from '../components/layouts/PageLayout';
 import Header from '../components/Header';
 import MobileMenu from '../components/MobileMenu';
-import homeImage from '../assets/homePageImage.jpg';
 import SearchBar from './SearchBar';
+import CategoriesList from './CategoriesList';
+import { genresMock } from '../../mock/mockData';
+import homeImage from '../assets/homePageImage.jpg';
 
 const HomePage = () => {
+  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,17 +34,23 @@ const HomePage = () => {
     // }
   };
 
+  const handleSelectCategory = (categoryName: string) => {
+    navigate(`/categories/${categoryName.toLowerCase()}`);
+  };
+
   return (
     <>
       <PageLayout imageSrc={homeImage} header={<Header />} imagePosition="top" imageSize="25%">
-        <Box p={4}>
+        <Stack gap={4}>
           <SearchBar
             searchValue={searchValue}
             onChange={handleSearchChange}
             onSubmit={handleSubmit}
             onClear={handleClear}
           />
-        </Box>
+
+          <CategoriesList categories={genresMock} onSelectCategory={handleSelectCategory} />
+        </Stack>
       </PageLayout>
 
       <MobileMenu />

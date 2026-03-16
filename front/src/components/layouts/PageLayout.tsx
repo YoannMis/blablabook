@@ -33,7 +33,9 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
         </Box>
       </Box>
 
-      <Box flex="1">{children}</Box>
+      <Box flex="1" padding={{ base: 4, md: 8 }}>
+        {children}
+      </Box>
     </Flex>
   );
 };
