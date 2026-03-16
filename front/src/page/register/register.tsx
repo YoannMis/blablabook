@@ -1,5 +1,7 @@
 import z from "zod";
-
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { log } from "console";
 
 //Création du Schema Zod 
 const RegisterSchema = z.object({
@@ -22,18 +24,42 @@ const RegisterSchema = z.object({
 type  RegisterFormValues = z.infer<typeof RegisterSchema>;
 
 //Formulaire
-
 const Register =()=>{
+  
+  //focntion de soumission du formulaire
+  const onsubmit = (data : RegisterFormValues) =>{
+    console.log("Formulaire :",data);
+    
+  }
+  
   return (
-    <form action="onSubmit">
+    <form onsubmit={handleSubmit(onsubmit)}>
+
+      <div>
       <label htmlFor="username">Username</label>
       <input id="username" type="text" placeholder="Username"/>
+      {errors.username && <p style={{ color: "red" }}>{errors.username.message}</p>}
+      </div>
+
+      <div>
       <label htmlFor="email">Email</label>
       <input id="email" type="email" placeholder="your@email.com"/>
+      {errors.email && <p style={{ color: "red" }}>{errors.email.message}</p>}
+      </div>
+
+      <div>
       <label htmlFor="password">Password</label>
-      <input id="password" type="text" placeholder="Password"/>
+      <input id="password" type="password" placeholder="Password"/>
+      {errors.password && <p style={{ color: "red" }}>{errors.password.message}</p>}
+      </div>
+
+      <div>
       <label htmlFor="confirmPassword">Confirmed Password</label>
-      <input id="confirmPassword" type="text" placeholder="Confirmed Password"/>
+      <input id="confirmPassword" type="password" placeholder="Confirmed Password"/>
+      {errors.confirmPassword && <p style={{ color: "red" }}>{errors.confirmPassword.message}</p>}
+      </div>
+
+      <button type="submit">Register</button>
     </form>
 )}
 
