@@ -16,6 +16,8 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "noImplicitAny": true,
+    "verbatimModuleSyntax": true,
+    "noUncheckedSideEffectImports": true,
     "paths": {
       "@/*": ["front/src/*"]
     },
