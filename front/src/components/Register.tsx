@@ -1,11 +1,10 @@
 import z from 'zod';
-// import { zodResolver } from '@hookform/resolvers/zod';
-// import { useForm } from 'react-hook-form';
 import { Box, Field, FieldErrorText, Input, Button, Heading, Text } from '@chakra-ui/react';
 import RegisterSchema from '../schema/register.schema.ts';
 import axios from 'axios';
 
 import { useState } from 'react';
+import { resumeToPipeableStream } from 'react-dom/server';
 
 //Typage Typescript
 type RegisterFormValues = z.infer<typeof RegisterSchema>;
@@ -29,12 +28,15 @@ const Register = () => {
   // fonction de soumission du formulaire
   const handleSubmit = async (event: React.SubmitEvent) => {
     event.preventDefault();
-    // console.log('Formulaire :', data);
-    // try {
-    //   const response = await axios.post(url.api)
-    // } catch (error) {
-    //   console.error("Erreur :", error)
-    // }
+    console.log('Formulaire :', userInfos);
+    try {
+      const response = await axios.post('/api/register', userInfos);
+      console.log('Réponse du server:', response.data);
+    } catch (error) {
+      console.error('Erreur :', error);
+      if (error.response)
+        
+    }
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +60,6 @@ const Register = () => {
       };
 
       setErrors(newErrors);
-      console.log(errors);
     } else {
       setErrors({
         username: '',
