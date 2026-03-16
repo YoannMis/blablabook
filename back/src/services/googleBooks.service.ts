@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const BASE_URL = 'https://www.googleapis.com/books/v1/volumes';
-const API_KEY = process.env.GOOGLE_BOOKS_API_KEY;
 
 export interface GoogleBook {
   id: string;
@@ -22,7 +21,8 @@ export interface GoogleBook {
 
 function mapVolumeToBook(volume: Record<string, unknown>): GoogleBook {
   const info = (volume.volumeInfo ?? {}) as Record<string, unknown>;
-  const identifiers = (info.industryIdentifiers as Array<{ type: string; identifier: string }>) ?? [];
+  const identifiers =
+    (info.industryIdentifiers as Array<{ type: string; identifier: string }>) ?? [];
 
   return {
     id: volume.id as string,
@@ -44,7 +44,7 @@ function mapVolumeToBook(volume: Record<string, unknown>): GoogleBook {
 
 export async function searchBooks(query: string, maxResults = 20): Promise<GoogleBook[]> {
   const response = await axios.get(BASE_URL, {
-    params: { q: query, maxResults, key: API_KEY },
+    params: { q: query, maxResults, key: process.env.GOOGLE_BOOKS_API_KEY },
   });
 
   const items = (response.data.items ?? []) as Record<string, unknown>[];
@@ -53,7 +53,7 @@ export async function searchBooks(query: string, maxResults = 20): Promise<Googl
 
 export async function getBookById(googleId: string): Promise<GoogleBook> {
   const response = await axios.get(`${BASE_URL}/${googleId}`, {
-    params: { key: API_KEY },
+    params: { key: process.env.GOOGLE_BOOKS_API_KEY },
   });
 
   return mapVolumeToBook(response.data as Record<string, unknown>);
