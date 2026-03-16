@@ -1,7 +1,12 @@
-import { Text } from '@chakra-ui/react';
+import { BrowserRouter, Routes, Route } from 'react-router';
+import HomePage from './components/HomePage';
 
-const App = () => {
-  return <Text textStyle="3xl">Hello test Chakra</Text>;
+export const App = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+      </Routes>
+    </BrowserRouter>
+  );
 };
-
-export default App;
