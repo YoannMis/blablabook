@@ -50,6 +50,19 @@ services:
         condition: service_healthy
     command: npm run docker:dev
 
+  blablabook-front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    ports:
+      - ${FRONT_LOCAL_PORT}:5173
+    volumes:
+      - ./front:/app
+      - /app/node_modules
+    networks:
+      - blablabook-network
+
 networks:
   blablabook-network:
 
