@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "docker:dev": "npm run test"
+    "test": "echo \"Hello from Docker\"",
+    "docker:dev": "pnpm test"
   },
   "keywords": [],
   "author": "",

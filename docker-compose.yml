@@ -48,7 +48,7 @@ services:
     depends_on:
       blablabook-db:
         condition: service_healthy
-    command: npm run docker:dev
+    command: pnpm run docker:dev
 
   blablabook-front:
     build:

@@ -2,12 +2,14 @@ FROM node:24-alpine
 
 WORKDIR /app
 
-COPY package.json ./
+RUN npm install -g pnpm
 
-RUN npm install
+COPY package.json pnpm-lock.y* ./
+
+RUN pnpm install --frozen-lockfile
 
 COPY ./ ./
 
 EXPOSE 3000
 
-CMD ["npm", "run", "docker:dev"]
+CMD ["pnpm", "run", "docker:dev"]
