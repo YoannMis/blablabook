@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
+import axios from 'axios';
 import { getBookById, searchBooks } from '../services/googleBooks.service.js';
 
 const searchQuerySchema = z.object({
@@ -15,13 +16,26 @@ export async function search(req: Request, res: Response): Promise<void> {
     return;
   }
 
-  const { q, maxResults } = parsed.data;
-  const books = await searchBooks(q, maxResults);
-  res.json(books);
+  try {
+    const { q, maxResults } = parsed.data;
+    const books = await searchBooks(q, maxResults);
+    res.json(books);
+  } catch {
+    res.status(502).json({ error: "Impossible de contacter l'API Google Books" });
+  }
 }
 
-export async function getById(req: Request, res: Response): Promise<void> {
+export async function getById(req: Request<{ id: string }>, res: Response): Promise<void> {
   const { id } = req.params;
-  const book = await getBookById(id);
-  res.json(book);
+
+  try {
+    const book = await getBookById(id);
+    res.json(book);
+  } catch (err) {
+    if (axios.isAxiosError(err) && err.response?.status === 404) {
+      res.status(404).json({ error: 'Livre introuvable' });
+      return;
+    }
+    res.status(502).json({ error: "Impossible de contacter l'API Google Books" });
+  }
 }
