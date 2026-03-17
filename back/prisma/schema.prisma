@@ -10,8 +10,6 @@ datasource db {
 
 
 enum ReadingStatus {
-  to_read
-  reading
   read
   wishlist
 }
@@ -21,7 +19,7 @@ model User {
   username  String     @unique
   email     String     @unique
   password  String
-createdAt DateTime   @default(now()) @map("created_at")
+  createdAt DateTime   @default(now()) @map("created_at")
   updatedAt DateTime   @updatedAt @map("updated_at")
   books     UserBook[]
 
@@ -32,16 +30,11 @@ model Book {
   id            Int            @id @default(autoincrement())
   title         String
   averageRating Float?         @map("average_rating")
-  ratingCount   Int?           @default(0) @map("rating_count")
-  imageSmallThumbnail String?  @map("image_small_thumbnail")
-  imageThumbnail      String?  @map("image_thumbnail")
-  imageSmall          String?  @map("image_small")
-  imageMedium         String?  @map("image_medium")
-  imageLarge          String?  @map("image_large")
-  imageExtraLarge     String?  @map("image_extra_large")
+  ratingCount   Int            @default(0) @map("rating_count")
+  imageLinks    Json?          @map("image_links")
   language      String?
   description   String?
-  publishedDate DateTime?      @map("published_date") @db.Date
+  publishedDate DateTime?      @map("published_date") @db.Date // corresponding date format in ProstgreSQL: YYYY-MM-DD
   isbn10        String?        @unique @map("isbn_10")
   isbn13        String?        @unique @map("isbn_13")
   pageCount     Int?           @map("page_count")
@@ -68,7 +61,7 @@ model Author {
 
 model Publisher {
   id        Int      @id @default(autoincrement())
-  name      String
+  name      String?  @default("independent")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   books     Book[]
@@ -78,7 +71,7 @@ model Publisher {
 
 model Category {
   id        Int            @id @default(autoincrement())
-  name      String
+  name      String         @unique
   createdAt DateTime       @default(now()) @map("created_at")
   updatedAt DateTime       @updatedAt @map("updated_at")
   books     BookCategory[]
@@ -89,7 +82,7 @@ model Category {
 model UserBook {
   userId Int           @map("user_id")
   bookId Int           @map("book_id")
-  status ReadingStatus @default(to_read)
+  status ReadingStatus @default(wishlist)
   user   User          @relation(fields: [userId], references: [id])
   book   Book          @relation(fields: [bookId], references: [id])
 
