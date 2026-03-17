@@ -94,7 +94,7 @@ model UserBook {
   book   Book          @relation(fields: [bookId], references: [id])
 
   @@id([userId, bookId])
-  @@map("user_book")
+  @@map("user_has_book")
 }
 
 model BookAuthor {
@@ -104,7 +104,7 @@ model BookAuthor {
   author   Author @relation(fields: [authorId], references: [id])
 
   @@id([bookId, authorId])
-  @@map("book_author")
+  @@map("book_has_author")
 }
 
 model BookCategory {
@@ -114,5 +114,5 @@ model BookCategory {
   category   Category @relation(fields: [categoryId], references: [id])
 
   @@id([bookId, categoryId])
-  @@map("book_category")
+  @@map("book_has_category")
 }
