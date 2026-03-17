@@ -33,7 +33,12 @@ model Book {
   title         String
   averageRating Float?         @map("average_rating")
   ratingCount   Int?           @default(0) @map("rating_count")
-  imageLink     String?        @map("image_link")
+  imageSmallThumbnail String?  @map("image_small_thumbnail")
+  imageThumbnail      String?  @map("image_thumbnail")
+  imageSmall          String?  @map("image_small")
+  imageMedium         String?  @map("image_medium")
+  imageLarge          String?  @map("image_large")
+  imageExtraLarge     String?  @map("image_extra_large")
   language      String?
   description   String?
   publishedDate DateTime?      @map("published_date") @db.Date
