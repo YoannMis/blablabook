@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 import axios from 'axios';
-import { getBookById, searchBooks } from '../services/googleBooks.service.js';
+import { getBookById, searchBooks } from '../services/googleBooks.service';
 
 const searchQuerySchema = z.object({
   q: z.string().min(1, 'Le paramètre q est requis'),

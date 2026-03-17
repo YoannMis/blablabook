@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://www.googleapis.com/books/v1/volumes';
+const GOOGLE_BOOKS_API_BASE_URL = process.env.GOOGLE_BOOKS_API_BASE_URL as string;
 
 export interface GoogleBook {
   id: string;
@@ -46,7 +46,7 @@ function mapVolumeToBook(volume: Record<string, unknown>): GoogleBook {
 }
 
 export async function searchBooks(query: string, maxResults = 20): Promise<GoogleBook[]> {
-  const response = await axios.get(BASE_URL, {
+  const response = await axios.get(GOOGLE_BOOKS_API_BASE_URL, {
     params: { q: query, maxResults, key: process.env.GOOGLE_BOOKS_API_KEY },
   });
 
@@ -55,7 +55,7 @@ export async function searchBooks(query: string, maxResults = 20): Promise<Googl
 }
 
 export async function getBookById(googleId: string): Promise<GoogleBook> {
-  const response = await axios.get(`${BASE_URL}/${googleId}`, {
+  const response = await axios.get(`${GOOGLE_BOOKS_API_BASE_URL}/${googleId}`, {
     params: { key: process.env.GOOGLE_BOOKS_API_KEY },
   });
 
