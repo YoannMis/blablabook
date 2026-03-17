@@ -1,9 +1,10 @@
 import z, { string } from 'zod';
-import { Box, Field, Input, Button, Heading, FieldErrorIcon } from '@chakra-ui/react';
+import { Box, Field, Input, Button, Heading, FieldErrorIcon, Flex } from '@chakra-ui/react';
 import { PasswordInput } from '../components/ui/password-input.tsx';
 import RegisterSchema from '../schema/register.schema.ts';
 import axios, { AxiosError } from 'axios';
 import { useState } from 'react';
+import { RiArrowRightLine } from 'react-icons/ri';
 
 //Typage Typescript
 type RegisterFormValues = z.infer<typeof RegisterSchema>;
@@ -78,67 +79,71 @@ const Register = (values: RegisterFormValues) => {
   };
 
   return (
-    <Box as="form" onSubmit={handleSubmit}>
-      <Heading size="3xl">Register</Heading>
-      <Field.Root invalid={!!errors.username}>
-        <Field.Label>Username</Field.Label>
-        <Input
-          name="username"
-          placeholder="Username"
-          value={userInfos.username}
-          onChange={handleChange}
-        />
-        <Field.ErrorText>
-          <FieldErrorIcon />
-          {errors.username}
-        </Field.ErrorText>
-      </Field.Root>
+    <Flex justify="center">
+      <Box as="form" onSubmit={handleSubmit}>
+        <Heading size="3xl">Register</Heading>
+        <Field.Root invalid={!!errors.username}>
+          <Field.Label>Username</Field.Label>
+          <Input
+            name="username"
+            placeholder="Username"
+            value={userInfos.username}
+            onChange={handleChange}
+          />
+          <Field.ErrorText>
+            <FieldErrorIcon />
+            {errors.username}
+          </Field.ErrorText>
+        </Field.Root>
 
-      <Field.Root invalid={!!errors.email}>
-        <Field.Label>Email</Field.Label>
-        <Input name="email" placeholder="Email" value={userInfos.email} onChange={handleChange} />
-        {
+        <Field.Root invalid={!!errors.email}>
+          <Field.Label>Email</Field.Label>
+          <Input name="email" placeholder="Email" value={userInfos.email} onChange={handleChange} />
           <Field.ErrorText>
             <FieldErrorIcon />
             {errors.email}
           </Field.ErrorText>
-        }
-      </Field.Root>
+        </Field.Root>
 
-      <Field.Root invalid={!!errors.password}>
-        <Field.Label>Password</Field.Label>
-        <PasswordInput
-          name="password"
-          type="password"
-          placeholder="Password"
-          value={userInfos.password}
-          onChange={handleChange}
-        />
-        <Field.ErrorText>
-          <FieldErrorIcon /> {errors.password}
-        </Field.ErrorText>
-      </Field.Root>
+        <Field.Root invalid={!!errors.password}>
+          <Field.Label>Password</Field.Label>
+          <PasswordInput
+            name="password"
+            type="password"
+            placeholder="Password"
+            value={userInfos.password}
+            onChange={handleChange}
+          />
+          <Field.ErrorText>
+            <FieldErrorIcon /> {errors.password}
+          </Field.ErrorText>
+        </Field.Root>
 
-      <Field.Root invalid={!!errors.confirmPassword}>
-        <Field.Label>Confirm your Password</Field.Label>
-        <PasswordInput
-          name="confirmPassword"
-          type="password"
-          placeholder="Confirm your Password"
-          value={userInfos.confirmPassword}
-          onChange={handleChange}
-        />
-        {
+        <Field.Root invalid={!!errors.confirmPassword}>
+          <Field.Label>Confirm your Password</Field.Label>
+          <PasswordInput
+            name="confirmPassword"
+            type="password"
+            placeholder="Confirm your Password"
+            value={userInfos.confirmPassword}
+            onChange={handleChange}
+          />
           <Field.ErrorText>
             <FieldErrorIcon />
             {errors.confirmPassword}
           </Field.ErrorText>
-        }
-      </Field.Root>
-      <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? 'Envoi en cours ...' : 'Submit'}
-      </Button>
-    </Box>
+        </Field.Root>
+        <Button
+          loading={isSubmitting}
+          onClick={() => setIsSubmitting(!isSubmitting)}
+          loadingText="Submitting ..."
+          type="submit"
+        >
+          Submit
+          <RiArrowRightLine />
+        </Button>
+      </Box>
+    </Flex>
   );
 };
 
