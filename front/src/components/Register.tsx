@@ -1,16 +1,15 @@
-import z from 'zod';
-import { Box, Field, FieldErrorText, Input, Button, Heading, Text } from '@chakra-ui/react';
+import z, { string } from 'zod';
+import { Box, Field, Input, Button, Heading } from '@chakra-ui/react';
 import RegisterSchema from '../schema/register.schema.ts';
-import axios from 'axios';
-
+import axios, { AxiosError } from 'axios';
 import { useState } from 'react';
-import { resumeToPipeableStream } from 'react-dom/server';
+
 
 //Typage Typescript
 type RegisterFormValues = z.infer<typeof RegisterSchema>;
 
 //Formulaire
-const Register = () => {
+const Register = (values: RegisterFormValues) => {
   const [userInfos, setUserInfos] = useState({
     username: '',
     email: '',
@@ -25,17 +24,27 @@ const Register = () => {
     confirmPassword: '',
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // fonction de soumission du formulaire
   const handleSubmit = async (event: React.SubmitEvent) => {
     event.preventDefault();
-    console.log('Formulaire :', userInfos);
+    setIsSubmitting(true);
+
     try {
       const response = await axios.post('/api/register', userInfos);
-      console.log('Réponse du server:', response.data);
     } catch (error) {
-      console.error('Erreur :', error);
-      if (error.response)
-        
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError<{message?:string, errors?: Record<string, string[]}>
+      }
+      if (AxiosError.response){
+
+      }else if (AxiosError.request){
+
+      }
+
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -94,6 +103,7 @@ const Register = () => {
         <Field.Label>Password</Field.Label>
         <Input
           name="password"
+          type="password"
           placeholder="Password"
           value={userInfos.password}
           onChange={handleChange}
@@ -105,13 +115,16 @@ const Register = () => {
         <Field.Label>Confirm your Password</Field.Label>
         <Input
           name="confirmPassword"
+          type="password"
           placeholder="Confirm your Password"
           value={userInfos.confirmPassword}
           onChange={handleChange}
         />
         {<Field.ErrorText> {errors.confirmPassword} </Field.ErrorText>}
       </Field.Root>
-      <Button type="submit">Submit</Button>
+      <Button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? 'Envoi en cours ...' : 'Submit'}
+      </Button>
     </Box>
   );
 };
