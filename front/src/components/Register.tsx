@@ -1,5 +1,6 @@
 import z, { string } from 'zod';
-import { Box, Field, Input, Button, Heading } from '@chakra-ui/react';
+import { Box, Field, Input, Button, Heading, FieldErrorIcon } from '@chakra-ui/react';
+import { PasswordInput } from '../components/ui/password-input.tsx';
 import RegisterSchema from '../schema/register.schema.ts';
 import axios, { AxiosError } from 'axios';
 import { useState } from 'react';
@@ -87,37 +88,55 @@ const Register = (values: RegisterFormValues) => {
           value={userInfos.username}
           onChange={handleChange}
         />
-        <Field.ErrorText>{errors.username}</Field.ErrorText>
+        <Field.ErrorText>
+          {' '}
+          <FieldErrorIcon />
+          {errors.username}
+        </Field.ErrorText>
       </Field.Root>
 
       <Field.Root invalid={!!errors.email}>
         <Field.Label>Email</Field.Label>
         <Input name="email" placeholder="Email" value={userInfos.email} onChange={handleChange} />
-        {<Field.ErrorText>{errors.email}</Field.ErrorText>}
+        {
+          <Field.ErrorText>
+            {' '}
+            <FieldErrorIcon />
+            {errors.email}
+          </Field.ErrorText>
+        }
       </Field.Root>
 
       <Field.Root invalid={!!errors.password}>
         <Field.Label>Password</Field.Label>
-        <Input
+        <PasswordInput
           name="password"
           type="password"
           placeholder="Password"
           value={userInfos.password}
           onChange={handleChange}
         />
-        <Field.ErrorText> {errors.password} </Field.ErrorText>
+        <Field.ErrorText>
+          <FieldErrorIcon /> {errors.password}
+        </Field.ErrorText>
       </Field.Root>
 
       <Field.Root invalid={!!errors.confirmPassword}>
         <Field.Label>Confirm your Password</Field.Label>
-        <Input
+        <PasswordInput
           name="confirmPassword"
           type="password"
           placeholder="Confirm your Password"
           value={userInfos.confirmPassword}
           onChange={handleChange}
         />
-        {<Field.ErrorText> {errors.confirmPassword} </Field.ErrorText>}
+        {
+          <Field.ErrorText>
+            {' '}
+            <FieldErrorIcon />
+            {errors.confirmPassword}{' '}
+          </Field.ErrorText>
+        }
       </Field.Root>
       <Button type="submit" disabled={isSubmitting}>
         {isSubmitting ? 'Envoi en cours ...' : 'Submit'}
