@@ -1,11 +1,7 @@
+import type { Category } from '@/types/category';
 import { Button, Text, Box, HStack } from '@chakra-ui/react';
 
-interface Category {
-  id: number;
-  name: string;
-}
-
-interface CategoriesListProps {
+export interface CategoriesListProps {
   categories: Category[];
   onSelectCategory: (categoryName: string) => void;
 }

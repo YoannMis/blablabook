@@ -7,8 +7,9 @@ import Header from '../components/Header';
 import MobileMenu from '../components/MobileMenu';
 import SearchBar from './SearchBar';
 import CategoriesList from './CategoriesList';
-import { genresMock } from '../../mock/mockData';
+import { genresMock, booksMock } from '../mocks/mockData';
 import homeImage from '../assets/homePageImage.jpg';
+import BookCardList from './BookCardList';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ const HomePage = () => {
   return (
     <>
       <PageLayout imageSrc={homeImage} header={<Header />} imagePosition="top" imageSize="25%">
-        <Stack gap={4}>
+        <Stack gap={6} pb={{ base: 20, md: 2 }}>
           <SearchBar
             searchValue={searchValue}
             onChange={handleSearchChange}
@@ -50,10 +51,13 @@ const HomePage = () => {
           />
 
           <CategoriesList categories={genresMock} onSelectCategory={handleSelectCategory} />
-        </Stack>
-      </PageLayout>
 
-      <MobileMenu />
+          <BookCardList title="List Title" books={booksMock} />
+          <BookCardList title="Second List Title" books={booksMock} />
+        </Stack>
+
+        <MobileMenu />
+      </PageLayout>
     </>
   );
 };
