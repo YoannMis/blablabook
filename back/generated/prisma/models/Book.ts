@@ -28,7 +28,7 @@ export type AggregateBook = {
 
 export type BookAvgAggregateOutputType = {
   id: number | null
-  averageRating: runtime.Decimal | null
+  averageRating: number | null
   ratingCount: number | null
   pageCount: number | null
   publisherId: number | null
@@ -36,7 +36,7 @@ export type BookAvgAggregateOutputType = {
 
 export type BookSumAggregateOutputType = {
   id: number | null
-  averageRating: runtime.Decimal | null
+  averageRating: number | null
   ratingCount: number | null
   pageCount: number | null
   publisherId: number | null
@@ -45,7 +45,7 @@ export type BookSumAggregateOutputType = {
 export type BookMinAggregateOutputType = {
   id: number | null
   title: string | null
-  averageRating: runtime.Decimal | null
+  averageRating: number | null
   ratingCount: number | null
   imageLink: string | null
   language: string | null
@@ -62,7 +62,7 @@ export type BookMinAggregateOutputType = {
 export type BookMaxAggregateOutputType = {
   id: number | null
   title: string | null
-  averageRating: runtime.Decimal | null
+  averageRating: number | null
   ratingCount: number | null
   imageLink: string | null
   language: string | null
@@ -252,7 +252,7 @@ export type BookGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type BookGroupByOutputType = {
   id: number
   title: string
-  averageRating: runtime.Decimal | null
+  averageRating: number | null
   ratingCount: number | null
   imageLink: string | null
   language: string | null
@@ -292,7 +292,7 @@ export type BookWhereInput = {
   NOT?: Prisma.BookWhereInput | Prisma.BookWhereInput[]
   id?: Prisma.IntFilter<"Book"> | number
   title?: Prisma.StringFilter<"Book"> | string
-  averageRating?: Prisma.DecimalNullableFilter<"Book"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: Prisma.FloatNullableFilter<"Book"> | number | null
   ratingCount?: Prisma.IntNullableFilter<"Book"> | number | null
   imageLink?: Prisma.StringNullableFilter<"Book"> | string | null
   language?: Prisma.StringNullableFilter<"Book"> | string | null
@@ -339,7 +339,7 @@ export type BookWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.BookWhereInput[]
   NOT?: Prisma.BookWhereInput | Prisma.BookWhereInput[]
   title?: Prisma.StringFilter<"Book"> | string
-  averageRating?: Prisma.DecimalNullableFilter<"Book"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: Prisma.FloatNullableFilter<"Book"> | number | null
   ratingCount?: Prisma.IntNullableFilter<"Book"> | number | null
   imageLink?: Prisma.StringNullableFilter<"Book"> | string | null
   language?: Prisma.StringNullableFilter<"Book"> | string | null
@@ -383,7 +383,7 @@ export type BookScalarWhereWithAggregatesInput = {
   NOT?: Prisma.BookScalarWhereWithAggregatesInput | Prisma.BookScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Book"> | number
   title?: Prisma.StringWithAggregatesFilter<"Book"> | string
-  averageRating?: Prisma.DecimalNullableWithAggregatesFilter<"Book"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: Prisma.FloatNullableWithAggregatesFilter<"Book"> | number | null
   ratingCount?: Prisma.IntNullableWithAggregatesFilter<"Book"> | number | null
   imageLink?: Prisma.StringNullableWithAggregatesFilter<"Book"> | string | null
   language?: Prisma.StringNullableWithAggregatesFilter<"Book"> | string | null
@@ -399,7 +399,7 @@ export type BookScalarWhereWithAggregatesInput = {
 
 export type BookCreateInput = {
   title: string
-  averageRating?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: number | null
   ratingCount?: number | null
   imageLink?: string | null
   language?: string | null
@@ -419,7 +419,7 @@ export type BookCreateInput = {
 export type BookUncheckedCreateInput = {
   id?: number
   title: string
-  averageRating?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: number | null
   ratingCount?: number | null
   imageLink?: string | null
   language?: string | null
@@ -438,7 +438,7 @@ export type BookUncheckedCreateInput = {
 
 export type BookUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   ratingCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   imageLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -458,7 +458,7 @@ export type BookUpdateInput = {
 export type BookUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   ratingCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   imageLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -478,7 +478,7 @@ export type BookUncheckedUpdateInput = {
 export type BookCreateManyInput = {
   id?: number
   title: string
-  averageRating?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: number | null
   ratingCount?: number | null
   imageLink?: string | null
   language?: string | null
@@ -494,7 +494,7 @@ export type BookCreateManyInput = {
 
 export type BookUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   ratingCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   imageLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -510,7 +510,7 @@ export type BookUpdateManyMutationInput = {
 export type BookUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   ratingCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   imageLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -606,12 +606,12 @@ export type BookScalarRelationFilter = {
   isNot?: Prisma.BookWhereInput
 }
 
-export type NullableDecimalFieldUpdateOperationsInput = {
-  set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
+export type NullableFloatFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type NullableIntFieldUpdateOperationsInput = {
@@ -716,7 +716,7 @@ export type BookUpdateOneRequiredWithoutCategoriesNestedInput = {
 
 export type BookCreateWithoutPublisherInput = {
   title: string
-  averageRating?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: number | null
   ratingCount?: number | null
   imageLink?: string | null
   language?: string | null
@@ -735,7 +735,7 @@ export type BookCreateWithoutPublisherInput = {
 export type BookUncheckedCreateWithoutPublisherInput = {
   id?: number
   title: string
-  averageRating?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: number | null
   ratingCount?: number | null
   imageLink?: string | null
   language?: string | null
@@ -783,7 +783,7 @@ export type BookScalarWhereInput = {
   NOT?: Prisma.BookScalarWhereInput | Prisma.BookScalarWhereInput[]
   id?: Prisma.IntFilter<"Book"> | number
   title?: Prisma.StringFilter<"Book"> | string
-  averageRating?: Prisma.DecimalNullableFilter<"Book"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: Prisma.FloatNullableFilter<"Book"> | number | null
   ratingCount?: Prisma.IntNullableFilter<"Book"> | number | null
   imageLink?: Prisma.StringNullableFilter<"Book"> | string | null
   language?: Prisma.StringNullableFilter<"Book"> | string | null
@@ -799,7 +799,7 @@ export type BookScalarWhereInput = {
 
 export type BookCreateWithoutUsersInput = {
   title: string
-  averageRating?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: number | null
   ratingCount?: number | null
   imageLink?: string | null
   language?: string | null
@@ -818,7 +818,7 @@ export type BookCreateWithoutUsersInput = {
 export type BookUncheckedCreateWithoutUsersInput = {
   id?: number
   title: string
-  averageRating?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: number | null
   ratingCount?: number | null
   imageLink?: string | null
   language?: string | null
@@ -852,7 +852,7 @@ export type BookUpdateToOneWithWhereWithoutUsersInput = {
 
 export type BookUpdateWithoutUsersInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   ratingCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   imageLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -871,7 +871,7 @@ export type BookUpdateWithoutUsersInput = {
 export type BookUncheckedUpdateWithoutUsersInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   ratingCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   imageLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -889,7 +889,7 @@ export type BookUncheckedUpdateWithoutUsersInput = {
 
 export type BookCreateWithoutAuthorsInput = {
   title: string
-  averageRating?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: number | null
   ratingCount?: number | null
   imageLink?: string | null
   language?: string | null
@@ -908,7 +908,7 @@ export type BookCreateWithoutAuthorsInput = {
 export type BookUncheckedCreateWithoutAuthorsInput = {
   id?: number
   title: string
-  averageRating?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: number | null
   ratingCount?: number | null
   imageLink?: string | null
   language?: string | null
@@ -942,7 +942,7 @@ export type BookUpdateToOneWithWhereWithoutAuthorsInput = {
 
 export type BookUpdateWithoutAuthorsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   ratingCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   imageLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -961,7 +961,7 @@ export type BookUpdateWithoutAuthorsInput = {
 export type BookUncheckedUpdateWithoutAuthorsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   ratingCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   imageLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -979,7 +979,7 @@ export type BookUncheckedUpdateWithoutAuthorsInput = {
 
 export type BookCreateWithoutCategoriesInput = {
   title: string
-  averageRating?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: number | null
   ratingCount?: number | null
   imageLink?: string | null
   language?: string | null
@@ -998,7 +998,7 @@ export type BookCreateWithoutCategoriesInput = {
 export type BookUncheckedCreateWithoutCategoriesInput = {
   id?: number
   title: string
-  averageRating?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: number | null
   ratingCount?: number | null
   imageLink?: string | null
   language?: string | null
@@ -1032,7 +1032,7 @@ export type BookUpdateToOneWithWhereWithoutCategoriesInput = {
 
 export type BookUpdateWithoutCategoriesInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   ratingCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   imageLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1051,7 +1051,7 @@ export type BookUpdateWithoutCategoriesInput = {
 export type BookUncheckedUpdateWithoutCategoriesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   ratingCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   imageLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1070,7 +1070,7 @@ export type BookUncheckedUpdateWithoutCategoriesInput = {
 export type BookCreateManyPublisherInput = {
   id?: number
   title: string
-  averageRating?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: number | null
   ratingCount?: number | null
   imageLink?: string | null
   language?: string | null
@@ -1085,7 +1085,7 @@ export type BookCreateManyPublisherInput = {
 
 export type BookUpdateWithoutPublisherInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   ratingCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   imageLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1104,7 +1104,7 @@ export type BookUpdateWithoutPublisherInput = {
 export type BookUncheckedUpdateWithoutPublisherInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   ratingCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   imageLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1123,7 +1123,7 @@ export type BookUncheckedUpdateWithoutPublisherInput = {
 export type BookUncheckedUpdateManyWithoutPublisherInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   ratingCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   imageLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1286,7 +1286,7 @@ export type $BookPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     title: string
-    averageRating: runtime.Decimal | null
+    averageRating: number | null
     ratingCount: number | null
     imageLink: string | null
     language: string | null
@@ -1727,7 +1727,7 @@ export interface Prisma__BookClient<T, Null = never, ExtArgs extends runtime.Typ
 export interface BookFieldRefs {
   readonly id: Prisma.FieldRef<"Book", 'Int'>
   readonly title: Prisma.FieldRef<"Book", 'String'>
-  readonly averageRating: Prisma.FieldRef<"Book", 'Decimal'>
+  readonly averageRating: Prisma.FieldRef<"Book", 'Float'>
   readonly ratingCount: Prisma.FieldRef<"Book", 'Int'>
   readonly imageLink: Prisma.FieldRef<"Book", 'String'>
   readonly language: Prisma.FieldRef<"Book", 'String'>

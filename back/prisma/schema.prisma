@@ -31,7 +31,7 @@ createdAt DateTime   @default(now()) @map("created_at")
 model Book {
   id            Int            @id @default(autoincrement())
   title         String
-  averageRating Decimal?       @map("average_rating") @db.Decimal(3, 2)
+  averageRating Float?         @map("average_rating")
   ratingCount   Int?           @default(0) @map("rating_count")
   imageLink     String?        @map("image_link")
   language      String?
