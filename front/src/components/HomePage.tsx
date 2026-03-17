@@ -7,9 +7,11 @@ import Header from '../components/Header';
 import MobileMenu from '../components/MobileMenu';
 import SearchBar from './SearchBar';
 import CategoriesList from './CategoriesList';
-import { genresMock, booksMock } from '../mocks/mockData';
-import homeImage from '../assets/homePageImage.jpg';
 import BookCardList from './BookCardList';
+
+import homeImage from '../assets/homePageImage.jpg';
+import { genresMock, booksMock } from '../mocks/mockData';
+import { slugify } from '@/utils/stringUtils';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -36,7 +38,8 @@ const HomePage = () => {
   };
 
   const handleSelectCategory = (categoryName: string) => {
-    navigate(`/categories/${categoryName.toLowerCase()}`);
+    const slug = slugify(categoryName);
+    navigate(`/categories/${slug}`);
   };
 
   return (
