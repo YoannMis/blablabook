@@ -89,7 +89,6 @@ const Register = (values: RegisterFormValues) => {
           onChange={handleChange}
         />
         <Field.ErrorText>
-          {' '}
           <FieldErrorIcon />
           {errors.username}
         </Field.ErrorText>
@@ -100,7 +99,6 @@ const Register = (values: RegisterFormValues) => {
         <Input name="email" placeholder="Email" value={userInfos.email} onChange={handleChange} />
         {
           <Field.ErrorText>
-            {' '}
             <FieldErrorIcon />
             {errors.email}
           </Field.ErrorText>
@@ -132,9 +130,8 @@ const Register = (values: RegisterFormValues) => {
         />
         {
           <Field.ErrorText>
-            {' '}
             <FieldErrorIcon />
-            {errors.confirmPassword}{' '}
+            {errors.confirmPassword}
           </Field.ErrorText>
         }
       </Field.Root>
