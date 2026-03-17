@@ -8,7 +8,7 @@ const searchQuerySchema = z.object({
   maxResults: z.coerce.number().min(1).max(40).optional(),
 });
 
-export async function search(req: Request, res: Response): Promise<void> {
+export const search = async (req: Request, res: Response): Promise<void> => {
   const parsed = searchQuerySchema.safeParse(req.query);
 
   if (!parsed.success) {
@@ -23,9 +23,9 @@ export async function search(req: Request, res: Response): Promise<void> {
   } catch {
     res.status(502).json({ error: "Impossible de contacter l'API Google Books" });
   }
-}
+};
 
-export async function getById(req: Request<{ id: string }>, res: Response): Promise<void> {
+export const getById = async (req: Request<{ id: string }>, res: Response): Promise<void> => {
   const { id } = req.params;
 
   try {
@@ -38,4 +38,4 @@ export async function getById(req: Request<{ id: string }>, res: Response): Prom
     }
     res.status(502).json({ error: "Impossible de contacter l'API Google Books" });
   }
-}
+};
