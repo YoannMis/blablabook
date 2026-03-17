@@ -14,7 +14,7 @@ export interface GoogleBook {
   pageCount?: number;
   categories?: string[];
   averageRating?: number;
-  ratingsCount?: number;
+  ratingCount?: number;
   imageLink?: string;
   language?: string;
 }
@@ -24,9 +24,12 @@ function mapVolumeToBook(volume: Record<string, unknown>): GoogleBook {
   const identifiers =
     (info.industryIdentifiers as Array<{ type: string; identifier: string }>) ?? [];
 
+  if (!volume.id || typeof volume.id !== 'string') throw new Error('Missing book id');
+  if (!info.title || typeof info.title !== 'string') throw new Error('Missing book title');
+
   return {
-    id: volume.id as string,
-    title: info.title as string,
+    id: volume.id,
+    title: info.title,
     authors: info.authors as string[] | undefined,
     publisher: info.publisher as string | undefined,
     publishedDate: info.publishedDate as string | undefined,
@@ -36,7 +39,7 @@ function mapVolumeToBook(volume: Record<string, unknown>): GoogleBook {
     pageCount: info.pageCount as number | undefined,
     categories: info.categories as string[] | undefined,
     averageRating: info.averageRating as number | undefined,
-    ratingsCount: info.ratingsCount as number | undefined,
+    ratingCount: info.ratingCount as number | undefined,
     imageLink: (info.imageLinks as Record<string, string> | undefined)?.thumbnail,
     language: info.language as string | undefined,
   };
