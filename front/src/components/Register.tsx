@@ -4,7 +4,6 @@ import RegisterSchema from '../schema/register.schema.ts';
 import axios, { AxiosError } from 'axios';
 import { useState } from 'react';
 
-
 //Typage Typescript
 type RegisterFormValues = z.infer<typeof RegisterSchema>;
 
@@ -27,6 +26,7 @@ const Register = (values: RegisterFormValues) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // fonction de soumission du formulaire
+  // en attente du back pour les responses de axios
   const handleSubmit = async (event: React.SubmitEvent) => {
     event.preventDefault();
     setIsSubmitting(true);
@@ -34,15 +34,12 @@ const Register = (values: RegisterFormValues) => {
     try {
       const response = await axios.post('/api/register', userInfos);
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const axiosError = error as AxiosError<{message?:string, errors?: Record<string, string[]}>
-      }
-      if (AxiosError.response){
-
-      }else if (AxiosError.request){
-
-      }
-
+      // if (axios.isAxiosError(error)) {
+      //   const axiosError = error as AxiosError<{message?:string, errors?: Record<string, string[]}>
+      // }
+      // if (AxiosError.response){
+      // }else if (AxiosError.request){
+      // }
     } finally {
       setIsSubmitting(false);
     }
