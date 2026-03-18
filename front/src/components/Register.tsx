@@ -1,10 +1,11 @@
 import z, { string } from 'zod';
 import { Box, Field, Input, Button, Heading, FieldErrorIcon, Flex, VStack } from '@chakra-ui/react';
-import { PasswordInput } from '../components/ui/password-input.tsx';
-import RegisterSchema from '../schema/register.schema.ts';
+import { PasswordInput } from './ui/password-input';
+import RegisterSchema from '@/schema/register.schema.js';
 import axios, { AxiosError } from 'axios';
 import { useState } from 'react';
 import { RiArrowRightLine } from 'react-icons/ri';
+import type { RegisterErrorResponse, RegisterResponse } from '@/schema/api.schema.js';
 
 //Typage Typescript
 type RegisterFormValues = z.infer<typeof RegisterSchema>;
@@ -37,14 +38,32 @@ const Register = () => {
     event.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await axios.post('/api/register', userInfos);
+      const response = await axios.post<RegisterResponse>('/api/auth/register', userInfos);
+      // Traitement de la résponse
+      if (response.data.success && response.data.data) {
+        console.log('User created', response.data.data);
+      } else {
+        console.error('User creation failed', response.data.message);
+      }
     } catch (error) {
-      // if (axios.isAxiosError(error)) {
-      //   const axiosError = error as AxiosError<{message?:string, errors?: Record<string, string[]}>
-      // }
-      // if (AxiosError.response){
-      // }else if (AxiosError.request){
-      // }
+      // Traitement des erreurs
+      if (axios.isAxiosError<RegisterErrorResponse>(error)) {
+        const axiosError = error as AxiosError<RegisterErrorResponse>;
+        // Traitement des erreurs de l'axios
+        // Traitement des erreurs du serveur
+        if (axiosError.response) {
+          const errorData = axiosError.response.data;
+          console.error('Error server:', errorData.message);
+          // Traitement des erreurs de la requête
+        } else if (axiosError.request) {
+          console.error('Error request:', axiosError.message);
+          // Traitement des autres erreurs
+        } else {
+          console.error('Error:', axiosError.message);
+        }
+      } else {
+        console.error('Error:', error);
+      }
     } finally {
       setIsSubmitting(false);
     }
