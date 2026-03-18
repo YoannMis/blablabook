@@ -1,7 +1,14 @@
-import { Text } from '@chakra-ui/react';
+import { BrowserRouter, Routes, Route } from 'react-router';
+import Register from './components/Register';
 
 const App = () => {
-  return <Text textStyle="3xl">Hello test Chakra</Text>;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/register" element={<Register />} />
+      </Routes>
+    </BrowserRouter>
+  );
 };
 
 export default App;
