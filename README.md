@@ -22,7 +22,7 @@ To launch the development environment using Docker, follow these steps:
 
 1. Copy the `.env.docker.dev.example` file and rename it to `.env.docker.dev`.
 2. Update the `.env.docker.dev` file with the appropriate environment variables.
-3. Copy the `/back/.env.example` file and rename it to `/back/.env`.
+3. Copy the `/back/.env.example` file and rename it to `.env`.
 4. Update the `/back/.env` file with the appropriate environment variables.
 5. Start the Docker containers with the following command:
 
