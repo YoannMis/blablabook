@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx --watch --env-file=.env index.ts",
-    "docker:dev": "pnpm db:generate && pnpm db:push && pnpm dev",
+    "dev": "tsx --watch --env-file=.env ./src/index.ts",
+    "docker:dev": "pnpm prisma:generate && pnpm dev",
     "prisma:generate": "prisma generate",
-    "prisma:push": "prisma db push"
+    "prisma:push": "prisma db push",
     "start": "tsx index.ts",
     "seed": "tsx prisma/seed.ts",
     "test": "vitest"
