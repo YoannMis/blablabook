@@ -6,6 +6,7 @@ import axios, { AxiosError } from 'axios';
 import { useState } from 'react';
 import { RiArrowRightLine } from 'react-icons/ri';
 import type { RegisterErrorResponse, RegisterResponse } from '@/schema/api.schema.js';
+import { Toaster, toaster } from './ui/toaster';
 
 //Typage Typescript
 type RegisterFormValues = z.infer<typeof RegisterSchema>;
@@ -33,7 +34,6 @@ const Register = () => {
     Object.values(userInfos).some((value) => !value);
 
   // fonction de soumission du formulaire
-  // en attente du back pour les responses de axios
   const handleSubmit = async (event: React.SubmitEvent) => {
     event.preventDefault();
     setIsSubmitting(true);
@@ -42,27 +42,42 @@ const Register = () => {
       // Traitement de la résponse
       if (response.data.success && response.data.data) {
         console.log('User created', response.data.data);
+        toaster.create({
+          title: 'Inscription Success',
+          description: `You have successfully registered ${response.data.data.username}`,
+          type: 'success',
+          duration: 3000,
+          closable: true,
+        });
+        // Redirection vers la page de connexion
+        setTimeout(() => {
+          window.location.href = '/api/auth/login';
+        }, 3000);
       } else {
         console.error('User creation failed', response.data.message);
       }
     } catch (error) {
       // Traitement des erreurs
       if (axios.isAxiosError<RegisterErrorResponse>(error)) {
-        const axiosError = error as AxiosError<RegisterErrorResponse>;
-        // Traitement des erreurs de l'axios
-        // Traitement des erreurs du serveur
-        if (axiosError.response) {
-          const errorData = axiosError.response.data;
-          console.error('Error server:', errorData.message);
-          // Traitement des erreurs de la requête
-        } else if (axiosError.request) {
-          console.error('Error request:', axiosError.message);
-          // Traitement des autres erreurs
+        const registerError =
+          error.response?.data.message || 'An error occurred during registration';
+        if (registerError) {
+          toaster.create({
+            title: 'Register Error',
+            description: registerError,
+            type: 'error',
+            duration: 3000,
+            closable: true,
+          });
         } else {
-          console.error('Error:', axiosError.message);
+          toaster.create({
+            title: 'Server Error',
+            description: 'The server is not reachable',
+            type: 'error',
+            duration: 3000,
+            closable: true,
+          });
         }
-      } else {
-        console.error('Error:', error);
       }
     } finally {
       setIsSubmitting(false);
@@ -173,6 +188,7 @@ const Register = () => {
           </Button>
         </VStack>
       </Box>
+      <Toaster />
     </Flex>
   );
 };
