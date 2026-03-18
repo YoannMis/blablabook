@@ -15,3 +15,23 @@ cd front
 pnpm install
 pnpm dev
 ```
+
+## Running the Project with Docker
+
+To launch the development environment using Docker, follow these steps:
+
+1. Copy the `.env.docker.dev.example` file and rename it to `.env.docker.dev`.
+2. Update the `.env.docker.dev` file with the appropriate environment variables.
+3. Start the Docker containers with the following command:
+
+   ```bash
+   docker compose up --env-file .env.docker.dev
+   ```
+
+This will start the following services:
+
+- PostgreSQL database
+- Adminer for database management
+- Express backend server
+- Generate Prisma client and push the state from Prisma schema to the database
+- Vite frontend server
