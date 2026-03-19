@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router';
 import { Stack } from '@chakra-ui/react';
 
 import { PageLayout } from '../components/layouts/PageLayout';
-import Header from '../components/Header';
 import MobileMenu from '../components/MobileMenu';
 import SearchBar from './SearchBar';
 import CategoriesList from './CategoriesList';
@@ -11,7 +10,7 @@ import BookCardList from './BookCardList';
 
 import homeImage from '../assets/homePageImage.jpg';
 import { genresMock, booksMock } from '../mocks/mockData';
-import { slugify } from '@/utils/stringUtils';
+import { slugify } from '../utils/stringUtils';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -44,7 +43,7 @@ const HomePage = () => {
 
   return (
     <>
-      <PageLayout imageSrc={homeImage} header={<Header />} imagePosition="top" imageSize="25%">
+      <PageLayout imageSrc={homeImage} imagePosition="top" imageSize="25%">
         <Stack gap={6} pb={{ base: 20, md: 2 }}>
           <SearchBar
             searchValue={searchValue}
