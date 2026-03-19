@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useParams } from 'react-router';
 import {
   Box,
@@ -17,10 +18,11 @@ import {
 import { PageLayout } from './layouts/PageLayout';
 import MobileMenu from './MobileMenu';
 import homeImage from '../assets/homePageImage.jpg';
-import bookCover from '../assets/bookCover.webp';
 import AppBreadcrumb from './AppBreadcrumb';
 import { IoChevronDown, IoChevronUp } from 'react-icons/io5';
-import axios from 'axios';
+import { renderDescription } from '../utils/htmlParser';
+import { getBookImageByScreen } from '../utils/bookUtils';
+import { useTruncatedTitle } from '../utils/stringUtils';
 
 const BookDetails = () => {
   const { id } = useParams();
@@ -33,30 +35,8 @@ const BookDetails = () => {
 
     const fetchBook = async () => {
       try {
-        // const res = await axios.get(`/api/books/${id}`);
-        // setBook(res.data);
-        setBook({
-          id: id,
-          volumeInfo: {
-            title: 'The Google Story (2018 Updated Edition)',
-            authors: ['David A. Vise', 'Mark Malseed'],
-            averageRating: 4,
-            imageLinks: {
-              thumbnail:
-                'http://books.google.com/books/content?id=zyTCAlFPjgYC&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE72zxGtzadexRusC1vDP_ft8fy3IruGpWEdr-kGyoL3-2qCESRoG_J7RQw8Rgz8FuscLg94AAVFk6Zqks5g8SDmIzNs_OuUt6yep-oK0mChHOMphSf33p4K7wqxB14PvKzLkv3Vk&source=gbs_api',
-            },
-            categories: ['Business & Economics', 'Entrepreneurship'],
-            description:
-              'Inside the hottest business, media, and technology success of our time...',
-            language: 'en',
-            pageCount: 384,
-            publisher: 'Random House Publishing Group',
-            industryIdentifiers: [
-              { type: 'ISBN_10', identifier: '0440335701' },
-              { type: 'ISBN_13', identifier: '9780440335702' },
-            ],
-          },
-        });
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/books/${id}`);
+        setBook(res.data);
       } catch (error) {
         console.error('Error fetching book:', error);
       }
@@ -77,7 +57,7 @@ const BookDetails = () => {
       >
         <Box>
           <Image
-            src={bookCover}
+            src={getBookImageByScreen(book?.imageLinks)}
             alt="Book cover"
             borderRadius="md"
             boxShadow="xl"
@@ -91,21 +71,21 @@ const BookDetails = () => {
               items={[
                 { label: 'Accueil', to: '/' },
                 { label: 'Catégorie', to: '/books' },
-                { label: book?.volumeInfo.title },
+                { label: useTruncatedTitle(book?.title) },
               ]}
             />
             <Text fontSize="3xl" fontWeight="bold">
-              {book?.volumeInfo.title}
+              {book?.title}
             </Text>
             <HStack>
               <Text fontSize="xl" color="gray.500">
-                {book?.volumeInfo.authors?.join(', ')}
+                {book?.authors?.join(', ')}
               </Text>
             </HStack>
 
             <VStack align="start" gap={4} mt={2}>
               <HStack>
-                {book?.volumeInfo.categories?.map((category) => (
+                {book?.categories?.map((category) => (
                   <Tag.Root key={category} variant="solid" rounded="full" px={3} py={1}>
                     <Tag.Label>{category}</Tag.Label>
                   </Tag.Root>
@@ -114,7 +94,7 @@ const BookDetails = () => {
             </VStack>
             <Stack mt={4}>
               <Text fontWeight="bold">Description</Text>
-              <Text>{book?.volumeInfo.description}</Text>
+              <Text>{renderDescription(book?.description)}</Text>
 
               <Collapsible.Root
                 open={isDetailsOpen}
@@ -134,27 +114,27 @@ const BookDetails = () => {
                   >
                     <GridItem>
                       <Text fontWeight="bold">Langue:</Text>
-                      <Text>{book?.volumeInfo.language ?? '–'}</Text>
+                      <Text>{book?.language ?? '–'}</Text>
                     </GridItem>
                     <GridItem>
                       <Text fontWeight="bold">Nombre de pages:</Text>
-                      <Text>{book?.volumeInfo.pageCount ?? '–'}</Text>
+                      <Text>{book?.pageCount ?? '–'}</Text>
                     </GridItem>
                     <GridItem>
                       <Text fontWeight="bold">Éditeur:</Text>
-                      <Text>{book?.volumeInfo.publisher ?? '–'}</Text>
+                      <Text>{book?.publisher ?? '–'}</Text>
                     </GridItem>
                     <GridItem>
                       <Text fontWeight="bold">ISBN-13:</Text>
                       <Text>
-                        {book?.volumeInfo.industryIdentifiers?.find((id) => id.type === 'ISBN_13')
+                        {book?.industryIdentifiers?.find((id) => id.type === 'ISBN_13')
                           ?.identifier ?? '–'}
                       </Text>
                     </GridItem>
                     <GridItem>
                       <Text fontWeight="bold">ISBN-10:</Text>
                       <Text>
-                        {book?.volumeInfo.industryIdentifiers?.find((id) => id.type === 'ISBN_10')
+                        {book?.industryIdentifiers?.find((id) => id.type === 'ISBN_10')
                           ?.identifier ?? '–'}
                       </Text>
                     </GridItem>

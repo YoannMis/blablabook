@@ -56,9 +56,10 @@ const BookCard = ({ book }: BookCardProps) => {
         {averageRating !== undefined && (
           <Box
             position="absolute"
-            bottom={2}
+            top={2}
             left={2}
             bg="whiteAlpha.900"
+            color="blackAlpha.800"
             backdropFilter="blur(6px)"
             px={2}
             py={1}
@@ -79,9 +80,8 @@ const BookCard = ({ book }: BookCardProps) => {
           variant="ghost"
           bg="whiteAlpha.800"
           backdropFilter="blur(6px)"
-          _hover={{ bg: 'whiteAlpha.900' }}
         >
-          <TiPlus />
+          <TiPlus color="black" />
         </IconButton>
       </Box>
 

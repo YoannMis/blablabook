@@ -5,7 +5,12 @@ interface Book {
   authors: string[];
   averageRating?: number;
   imageLinks?: {
+    smallThumbnail?: string;
     thumbnail?: string;
+    small?: string;
+    medium?: string;
+    large?: string;
+    extraLarge?: string;
   };
   categories?: string[];
   language?: string;
@@ -14,5 +19,5 @@ interface Book {
   industryIdentifiers?: {
     type: 'ISBN_10' | 'ISBN_13';
     identifier: string;
-  };
+  }[];
 }

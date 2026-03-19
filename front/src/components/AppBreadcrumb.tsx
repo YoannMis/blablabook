@@ -1,6 +1,6 @@
 // components/AppBreadcrumb.tsx
-import { Link as RouterLink } from 'react-router';
 import { Breadcrumb } from '@chakra-ui/react';
+import { Link as RouterLink } from 'react-router';
 
 export interface BreadcrumbItem {
   label?: string;
@@ -10,15 +10,16 @@ export interface BreadcrumbItem {
 const AppBreadcrumb = ({ items }: { items: BreadcrumbItem[] }) => (
   <Breadcrumb.Root>
     <Breadcrumb.List>
-      {items.map(({ label, to }, index) => {
+      {items.map((item, index) => {
         const isLast = index === items.length - 1;
+
         return (
           <Breadcrumb.Item key={index}>
             {isLast ? (
-              <Breadcrumb.CurrentLink>{label}</Breadcrumb.CurrentLink>
+              <Breadcrumb.CurrentLink>{item.label}</Breadcrumb.CurrentLink>
             ) : (
-              <Breadcrumb.Link as={RouterLink} {...(to ? { to } : {})} mr={1}>
-                {label}
+              <Breadcrumb.Link asChild>
+                <RouterLink to={item.to ?? ''}>{item.label}</RouterLink>
               </Breadcrumb.Link>
             )}
             {!isLast && <Breadcrumb.Separator />}
