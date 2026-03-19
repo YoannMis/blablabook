@@ -1,11 +1,11 @@
 import z, { string } from 'zod';
 import { Box, Field, Input, Button, Heading, FieldErrorIcon, Flex, VStack } from '@chakra-ui/react';
 import { PasswordInput } from './ui/password-input';
-import RegisterSchema from '@/schema/register.schema.js';
+import RegisterSchema from '../schema/register.schema.js';
 import axios, { AxiosError } from 'axios';
 import { useState } from 'react';
 import { RiArrowRightLine } from 'react-icons/ri';
-import type { RegisterErrorResponse, RegisterResponse } from '@/schema/api.schema.js';
+import type { RegisterErrorResponse, RegisterResponse } from '@/types/api.type';
 import { Toaster, toaster } from './ui/toaster';
 
 //Typage Typescript
@@ -34,11 +34,18 @@ const Register = () => {
     Object.values(userInfos).some((value) => !value);
 
   // fonction de soumission du formulaire
-  const handleSubmit = async (event: React.SubmitEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsSubmitting(true);
+
     try {
-      const response = await axios.post<RegisterResponse>('/api/auth/register', userInfos);
+      const response = await axios.post<RegisterResponse>(
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
+        userInfos,
+        {
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
       // Traitement de la résponse
       if (response.data.success && response.data.data) {
         console.log('User created', response.data.data);
@@ -51,12 +58,13 @@ const Register = () => {
         });
         // Redirection vers la page de connexion
         setTimeout(() => {
-          window.location.href = '/api/auth/login';
+          window.location.href = '/login';
         }, 3000);
       } else {
         console.error('User creation failed', response.data.message);
       }
     } catch (error) {
+      console.log('error', error);
       // Traitement des erreurs
       if (axios.isAxiosError<RegisterErrorResponse>(error)) {
         const registerError =
@@ -179,7 +187,6 @@ const Register = () => {
           <Button
             disabled={isFormInvalid}
             loading={isSubmitting}
-            onClick={() => setIsSubmitting(!isSubmitting)}
             loadingText="Submitting ..."
             type="submit"
           >
