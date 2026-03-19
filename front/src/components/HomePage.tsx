@@ -10,7 +10,7 @@ import CategoriesList from './CategoriesList';
 import BookCardList from './BookCardList';
 
 import homeImage from '../assets/homePageImage.jpg';
-import { genresMock, booksMock } from '../mocks/mockData';
+import { genresMock } from '../mocks/mockData';
 import { slugify } from '../utils/stringUtils';
 import { getThemeLabel } from '../utils/themeUtils';
 
@@ -23,9 +23,8 @@ const HomePage = () => {
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
-        // const res = await axios.get('/api/books/topFeaturedThemes');
-        // console.log("res.data : ", res.data)
-        // setFeaturedBooks(res.data);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/books/topFeaturedThemes`);
+        setFeaturedBooks(res.data);
       } catch (error) {
         console.error(error);
       }
@@ -72,11 +71,9 @@ const HomePage = () => {
 
           <CategoriesList categories={genresMock} onSelectCategory={handleSelectCategory} />
 
-          {/* {Object.entries(featuredBooks).map(([themeKey, books]) => (
+          {Object.entries(featuredBooks).map(([themeKey, books]) => (
             <BookCardList key={themeKey} title={getThemeLabel(themeKey)} books={books} />
-          ))} */}
-          <BookCardList title="List Title" books={booksMock} />
-          <BookCardList title="Second List Title" books={booksMock} />
+          ))}
         </Stack>
 
         <MobileMenu />
