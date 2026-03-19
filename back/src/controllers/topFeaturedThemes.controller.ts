@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { type GoogleBook, searchBooks } from '../services/googleBooks.service';
+import { topFeaturedThemes } from '../utils/topFeaturedThemes.utils';
 
 /**
  * Controller for handling top featured themes requests.
@@ -29,12 +30,6 @@ const controller = {
       }
 
       const { limit, page } = parsed.data;
-
-      // Define the top featured themes and their search queries
-      const topFeaturedThemes: Record<string, string> = {
-        dragon: 'dragon',
-        gardening: 'jardinage',
-      };
 
       const data: Record<string, GoogleBook[]> = {};
 
