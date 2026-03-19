@@ -1,11 +1,10 @@
 import type z from 'zod';
 import AuthSchema from '../schema/auth.schema';
 import type { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import argon2 from 'argon2';
+import { PrismaClient } from '../../generated/prisma';
 
 const prisma = new PrismaClient();
-
 //Typage Typescript
 type AuthFormValues = z.infer<typeof AuthSchema>;
 
