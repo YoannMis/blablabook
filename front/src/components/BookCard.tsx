@@ -1,15 +1,24 @@
 import { Box, Image, IconButton, Text, VStack } from '@chakra-ui/react';
 import { TiPlus } from 'react-icons/ti';
+import { useNavigate } from 'react-router';
+import { slugify } from '../utils/stringUtils';
 
 interface BookCardProps {
   book: Book;
 }
 
 const BookCard = ({ book }: BookCardProps) => {
-  const { title, averageRating, imageLinks } = book.volumeInfo;
+  const navigate = useNavigate();
+  const { title, averageRating, imageLinks, categories } = book.volumeInfo;
+  const firstCategory = categories?.[0] ?? 'uncategorized';
+  const slugCategory = slugify(firstCategory);
+
+  const handleClick = () => {
+    navigate(`/books/${slugCategory}/${book.id}`);
+  };
 
   return (
-    <VStack gap={2} align="start" minW={{ base: '140px', md: '160px' }}>
+    <VStack gap={2} align="start" minW={{ base: '140px', md: '160px' }} onClick={handleClick}>
       <Box
         position="relative"
         w="100%"

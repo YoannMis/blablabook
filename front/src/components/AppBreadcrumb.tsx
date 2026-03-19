@@ -3,7 +3,7 @@ import { Link as RouterLink } from 'react-router';
 import { Breadcrumb } from '@chakra-ui/react';
 
 export interface BreadcrumbItem {
-  label: string;
+  label?: string;
   to?: string;
 }
 

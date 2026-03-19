@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Stack } from '@chakra-ui/react';
+import axios from 'axios';
 
 import { PageLayout } from '../components/layouts/PageLayout';
 import MobileMenu from '../components/MobileMenu';
@@ -11,10 +12,27 @@ import BookCardList from './BookCardList';
 import homeImage from '../assets/homePageImage.jpg';
 import { genresMock, booksMock } from '../mocks/mockData';
 import { slugify } from '../utils/stringUtils';
+import { getThemeLabel } from '../utils/themeUtils';
 
 const HomePage = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
+
+  const [featuredBooks, setFeaturedBooks] = useState<Record<string, Book[]>>({});
+
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      try {
+        // const res = await axios.get('/api/books/topFeaturedThemes');
+        // console.log("res.data : ", res.data)
+        // setFeaturedBooks(res.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchFeatured();
+  }, []);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(event.target.value);
@@ -54,6 +72,9 @@ const HomePage = () => {
 
           <CategoriesList categories={genresMock} onSelectCategory={handleSelectCategory} />
 
+          {/* {Object.entries(featuredBooks).map(([themeKey, books]) => (
+            <BookCardList key={themeKey} title={getThemeLabel(themeKey)} books={books} />
+          ))} */}
           <BookCardList title="List Title" books={booksMock} />
           <BookCardList title="Second List Title" books={booksMock} />
         </Stack>

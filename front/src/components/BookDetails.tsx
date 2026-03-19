@@ -1,8 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router';
 import {
   Box,
   Collapsible,
   Flex,
+  Grid,
+  GridItem,
   HStack,
   Icon,
   Image,
@@ -17,9 +20,50 @@ import homeImage from '../assets/homePageImage.jpg';
 import bookCover from '../assets/bookCover.webp';
 import AppBreadcrumb from './AppBreadcrumb';
 import { IoChevronDown, IoChevronUp } from 'react-icons/io5';
+import axios from 'axios';
 
 const BookDetails = () => {
+  const { id } = useParams();
+  const [book, setBook] = useState<Book | null>(null);
+
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchBook = async () => {
+      try {
+        // const res = await axios.get(`/api/books/${id}`);
+        // setBook(res.data);
+        setBook({
+          id: id,
+          volumeInfo: {
+            title: 'The Google Story (2018 Updated Edition)',
+            authors: ['David A. Vise', 'Mark Malseed'],
+            averageRating: 4,
+            imageLinks: {
+              thumbnail:
+                'http://books.google.com/books/content?id=zyTCAlFPjgYC&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE72zxGtzadexRusC1vDP_ft8fy3IruGpWEdr-kGyoL3-2qCESRoG_J7RQw8Rgz8FuscLg94AAVFk6Zqks5g8SDmIzNs_OuUt6yep-oK0mChHOMphSf33p4K7wqxB14PvKzLkv3Vk&source=gbs_api',
+            },
+            categories: ['Business & Economics', 'Entrepreneurship'],
+            description:
+              'Inside the hottest business, media, and technology success of our time...',
+            language: 'en',
+            pageCount: 384,
+            publisher: 'Random House Publishing Group',
+            industryIdentifiers: [
+              { type: 'ISBN_10', identifier: '0440335701' },
+              { type: 'ISBN_13', identifier: '9780440335702' },
+            ],
+          },
+        });
+      } catch (error) {
+        console.error('Error fetching book:', error);
+      }
+    };
+    fetchBook();
+  }, [id]);
+
   return (
     <PageLayout imageSrc={homeImage} imagePosition="left">
       <Flex
@@ -47,32 +91,30 @@ const BookDetails = () => {
               items={[
                 { label: 'Accueil', to: '/' },
                 { label: 'Catégorie', to: '/books' },
-                { label: 'Title' },
+                { label: book?.volumeInfo.title },
               ]}
             />
             <Text fontSize="3xl" fontWeight="bold">
-              Titre du livre
+              {book?.volumeInfo.title}
             </Text>
-            <Text fontSize="xl" color="gray.500">
-              Auteur
-            </Text>
+            <HStack>
+              <Text fontSize="xl" color="gray.500">
+                {book?.volumeInfo.authors?.join(', ')}
+              </Text>
+            </HStack>
+
             <VStack align="start" gap={4} mt={2}>
               <HStack>
-                <Tag.Root variant="solid" rounded="full" px={3} py={1}>
-                  <Tag.Label>Tag 1</Tag.Label>
-                </Tag.Root>
-                <Tag.Root variant="solid" rounded="full" px={3} py={1}>
-                  <Tag.Label>Tag 2</Tag.Label>
-                </Tag.Root>
+                {book?.volumeInfo.categories?.map((category) => (
+                  <Tag.Root key={category} variant="solid" rounded="full" px={3} py={1}>
+                    <Tag.Label>{category}</Tag.Label>
+                  </Tag.Root>
+                ))}
               </HStack>
             </VStack>
             <Stack mt={4}>
               <Text fontWeight="bold">Description</Text>
-              <Text>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ici viendra la description
-                du livre... Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              </Text>
+              <Text>{book?.volumeInfo.description}</Text>
 
               <Collapsible.Root
                 open={isDetailsOpen}
@@ -86,11 +128,37 @@ const BookDetails = () => {
                 </Collapsible.Trigger>
 
                 <Collapsible.Content>
-                  <Text>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                    nostrud exercitation ullamco laboris nisi.
-                  </Text>
+                  <Grid
+                    templateColumns={{ base: 'repeat(2, auto)', md: 'repeat(4, auto)' }}
+                    gap={4}
+                  >
+                    <GridItem>
+                      <Text fontWeight="bold">Langue:</Text>
+                      <Text>{book?.volumeInfo.language ?? '–'}</Text>
+                    </GridItem>
+                    <GridItem>
+                      <Text fontWeight="bold">Nombre de pages:</Text>
+                      <Text>{book?.volumeInfo.pageCount ?? '–'}</Text>
+                    </GridItem>
+                    <GridItem>
+                      <Text fontWeight="bold">Éditeur:</Text>
+                      <Text>{book?.volumeInfo.publisher ?? '–'}</Text>
+                    </GridItem>
+                    <GridItem>
+                      <Text fontWeight="bold">ISBN-13:</Text>
+                      <Text>
+                        {book?.volumeInfo.industryIdentifiers?.find((id) => id.type === 'ISBN_13')
+                          ?.identifier ?? '–'}
+                      </Text>
+                    </GridItem>
+                    <GridItem>
+                      <Text fontWeight="bold">ISBN-10:</Text>
+                      <Text>
+                        {book?.volumeInfo.industryIdentifiers?.find((id) => id.type === 'ISBN_10')
+                          ?.identifier ?? '–'}
+                      </Text>
+                    </GridItem>
+                  </Grid>
                 </Collapsible.Content>
               </Collapsible.Root>
             </Stack>
