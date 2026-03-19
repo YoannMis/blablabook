@@ -2,16 +2,6 @@ import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { type GoogleBook, searchBooks } from '../services/googleBooks.service';
 
-interface ITopFeaturedThemes {
-  dragon: string;
-  gardening: string;
-}
-
-interface Idata {
-  dragon?: GoogleBook[];
-  gardening?: GoogleBook[];
-}
-
 /**
  * Controller for handling top featured themes requests.
  */
@@ -25,7 +15,7 @@ const controller = {
    */
   getTopFeaturedThemes: async (req: Request, res: Response): Promise<void> => {
     const paginationSchema = z.object({
-      limit: z.coerce.number().min(1).max(40).default(20),
+      limit: z.coerce.number().min(1).max(40).default(20), // SearchBooks() coerces a limit of 40
       page: z.coerce.number().min(1).default(1),
     });
 
@@ -41,16 +31,16 @@ const controller = {
       const { limit, page } = parsed.data;
 
       // Define the top featured themes and their search queries
-      const topFeaturedThemes: ITopFeaturedThemes = {
+      const topFeaturedThemes: Record<string, string> = {
         dragon: 'dragon',
         gardening: 'jardinage',
       };
 
-      const data: Idata = {};
+      const data: Record<string, GoogleBook[]> = {};
 
       // Fetch and paginate books for each theme
       for (const theme in topFeaturedThemes) {
-        const key = theme as keyof ITopFeaturedThemes;
+        const key = theme;
         const books = await searchBooks(topFeaturedThemes[key]);
         const startIndex = (page - 1) * limit;
         const paginatedBooks = books.slice(startIndex, startIndex + limit);
