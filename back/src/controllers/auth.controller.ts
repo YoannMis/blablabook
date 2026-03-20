@@ -70,8 +70,7 @@ export const LoginUser = async (req: Request, res: Response) => {
     // creation d'une constante newuser contenant les information de user sans le password
     const newuser = {
       id: user.id,
-      username: user.username,
-      email: user.email,
+      token,
     };
 
     //response au frontend de la reussite de la connexion
@@ -83,7 +82,7 @@ export const LoginUser = async (req: Request, res: Response) => {
       if (error.message === 'INVALID_CREDENTIALS') {
         return res.status(401).json({ success: false, message: 'Invalid User or Email' });
       }
-      return res.status(500).json({ success: false, message: 'Login error' });
+      return res.status(500).json({ success: false, message: 'Registration error' });
     }
     return res.status(500).json({ success: false, message: 'Unknown error' });
   }

@@ -1,10 +1,13 @@
 // src/services/auth.service.ts
-import { AuthFormValues } from '../schemas/auth.schema';
+import { AuthSchema } from '../schema/auth.schema';
 import { prisma } from '../utils/prisma.utils';
 import * as argon2 from 'argon2';
 import { convertInMs } from '../utils/time.utils';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
+
+//Typage Typescript
+type AuthFormValues = z.infer<typeof AuthSchema>;
 
 export class AuthService {
   // Vérifie si l'utilisateur existe déjà
@@ -62,16 +65,16 @@ export class AuthService {
   }
 
   // Enregistre le refresh token en base de données
-  static async saveRefreshToken(userId: number, token: string, expiresAt: Date) {
-    return prisma.refreshToken.create({
-      data: {
-        token,
-        userId,
-        issued_at: new Date(),
-        expires_at: expiresAt,
-      },
-    });
-  }
+  // static async saveRefreshToken(userId: number, token: string, expiresAt: Date) {
+  //   return prisma.refreshToken.create({
+  //     data: {
+  //       token,
+  //       userId,
+  //       issued_at: new Date(),
+  //       expires_at: expiresAt,
+  //     },
+  //   });
+  // }
 
   // Logique complète de login
   static async login(email: string, password: string) {
@@ -97,7 +100,7 @@ export class AuthService {
     const { token: refreshToken, expiresAt } = this.generateRefreshToken();
 
     // Enregistrement du refresh token en base de données
-    await this.saveRefreshToken(user.id, refreshToken, expiresAt);
+    // await this.saveRefreshToken(user.id, refreshToken, expiresAt);
 
     return {
       user: { id: user.id, username: user.username, email: user.email },
