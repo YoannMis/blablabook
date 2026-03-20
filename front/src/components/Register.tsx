@@ -1,15 +1,19 @@
-import z, { string } from 'zod';
+import z from 'zod';
 import { Box, Field, Input, Button, Heading, FieldErrorIcon, Flex, VStack } from '@chakra-ui/react';
 import { PasswordInput } from './ui/password-input';
 import RegisterSchema from '../schema/register.schema.js';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { useState } from 'react';
 import { RiArrowRightLine } from 'react-icons/ri';
 import type { RegisterErrorResponse, RegisterResponse } from '@/types/api.type';
 import { Toaster, toaster } from './ui/toaster';
+import { PageLayout } from './layouts/PageLayout';
+import homeImage from '../assets/homePageImage.jpg';
+import { Navigate } from 'react-router';
 
 //Typage Typescript
 type RegisterFormValues = z.infer<typeof RegisterSchema>;
+type RegisterFormErrors = Partial<Record<keyof RegisterFormValues, string>>;
 
 //Formulaire
 const Register = () => {
@@ -20,7 +24,7 @@ const Register = () => {
     confirmPassword: '',
   });
 
-  const [errors, setErrors] = useState<RegisterFormValues>({
+  const [errors, setErrors] = useState<RegisterFormErrors>({
     username: '',
     email: '',
     password: '',
@@ -56,9 +60,18 @@ const Register = () => {
           duration: 3000,
           closable: true,
         });
+
+        // Vider le formulaire
+        setUserInfos({
+          username: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
+        });
+
         // Redirection vers la page de connexion
         setTimeout(() => {
-          window.location.href = '/login';
+          Navigate({ to: '/login' });
         }, 3000);
       } else {
         console.error('User creation failed', response.data.message);
@@ -102,101 +115,110 @@ const Register = () => {
     const result = RegisterSchema.safeParse(newUserInfos);
 
     setUserInfos(newUserInfos);
+  };
 
-    if (!result.success) {
-      const flattenedErrors = z.flattenError(result.error);
-      const newErrors = {
-        username: flattenedErrors.fieldErrors.username?.[0] || '',
-        email: flattenedErrors.fieldErrors.email?.[0] || '',
-        password: flattenedErrors.fieldErrors.password?.[0] || '',
-        confirmPassword: flattenedErrors.fieldErrors.confirmPassword?.[0] || '',
-      };
+  const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
 
-      setErrors(newErrors);
-    } else {
-      setErrors({
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-      });
-    }
+    // Sert à créer une validation pour un champ individuel
+    const miniSchema = z.object({
+      [name]: RegisterSchema.shape[name as keyof RegisterFormValues],
+    });
+
+    const result = miniSchema.safeParse({ [name]: value });
+
+    setErrors((prev) => {
+      if (!result.success) {
+        const flattened = z.flattenError(result.error);
+        return {
+          ...prev,
+          [name]: flattened.fieldErrors[name as keyof RegisterFormValues]?.[0] ?? '',
+        };
+      }
+      return { ...prev, [name]: '' };
+    });
   };
 
   return (
-    <Flex justify="center">
-      <Box as="form" onSubmit={handleSubmit}>
-        <VStack gap={4}>
-          <Heading size="3xl">Register</Heading>
-          <Field.Root invalid={!!errors.username}>
-            <Field.Label>Username</Field.Label>
-            <Input
-              name="username"
-              placeholder="Username"
-              value={userInfos.username}
-              onChange={handleChange}
-            />
-            <Field.ErrorText>
-              <FieldErrorIcon />
-              {errors.username}
-            </Field.ErrorText>
-          </Field.Root>
+    <PageLayout imageSrc={homeImage}>
+      <Flex justify="center">
+        <Box as="form" onSubmit={handleSubmit}>
+          <VStack gap={4}>
+            <Heading size="3xl">Register</Heading>
+            <Field.Root invalid={!!errors.username}>
+              <Field.Label>Username</Field.Label>
+              <Input
+                name="username"
+                placeholder="Username"
+                value={userInfos.username}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <Field.ErrorText>
+                <FieldErrorIcon />
+                {errors.username}
+              </Field.ErrorText>
+            </Field.Root>
 
-          <Field.Root invalid={!!errors.email}>
-            <Field.Label>Email</Field.Label>
-            <Input
-              name="email"
-              placeholder="Email"
-              value={userInfos.email}
-              onChange={handleChange}
-            />
-            <Field.ErrorText>
-              <FieldErrorIcon />
-              {errors.email}
-            </Field.ErrorText>
-          </Field.Root>
+            <Field.Root invalid={!!errors.email}>
+              <Field.Label>Email</Field.Label>
+              <Input
+                name="email"
+                placeholder="Email"
+                value={userInfos.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <Field.ErrorText>
+                <FieldErrorIcon />
+                {errors.email}
+              </Field.ErrorText>
+            </Field.Root>
 
-          <Field.Root invalid={!!errors.password}>
-            <Field.Label>Password</Field.Label>
-            <PasswordInput
-              name="password"
-              type="password"
-              placeholder="Password"
-              value={userInfos.password}
-              onChange={handleChange}
-            />
-            <Field.ErrorText>
-              <FieldErrorIcon /> {errors.password}
-            </Field.ErrorText>
-          </Field.Root>
+            <Field.Root invalid={!!errors.password}>
+              <Field.Label>Password</Field.Label>
+              <PasswordInput
+                name="password"
+                type="password"
+                placeholder="Password"
+                value={userInfos.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <Field.ErrorText>
+                <FieldErrorIcon /> {errors.password}
+              </Field.ErrorText>
+            </Field.Root>
 
-          <Field.Root invalid={!!errors.confirmPassword}>
-            <Field.Label>Confirm your Password</Field.Label>
-            <PasswordInput
-              name="confirmPassword"
-              type="password"
-              placeholder="Confirm your Password"
-              value={userInfos.confirmPassword}
-              onChange={handleChange}
-            />
-            <Field.ErrorText>
-              <FieldErrorIcon />
-              {errors.confirmPassword}
-            </Field.ErrorText>
-          </Field.Root>
-          <Button
-            disabled={isFormInvalid}
-            loading={isSubmitting}
-            loadingText="Submitting ..."
-            type="submit"
-          >
-            Submit
-            <RiArrowRightLine />
-          </Button>
-        </VStack>
-      </Box>
-      <Toaster />
-    </Flex>
+            <Field.Root invalid={!!errors.confirmPassword}>
+              <Field.Label>Confirm your Password</Field.Label>
+              <PasswordInput
+                name="confirmPassword"
+                type="password"
+                placeholder="Confirm your Password"
+                value={userInfos.confirmPassword}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <Field.ErrorText>
+                <FieldErrorIcon />
+                {errors.confirmPassword}
+              </Field.ErrorText>
+            </Field.Root>
+            <Button
+              disabled={isFormInvalid}
+              loading={isSubmitting}
+              loadingText="Submitting ..."
+              type="submit"
+            >
+              Submit
+              <RiArrowRightLine />
+            </Button>
+          </VStack>
+        </Box>
+        <Toaster />
+      </Flex>
+    </PageLayout>
   );
 };
 

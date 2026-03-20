@@ -3,17 +3,17 @@ export function convertInMs(time: string) {
   const regex = /^(\d+)([smhd])$/;
   const match = time.match(regex);
   if (!match) throw new Error('Bad Format of time.');
-  const valeur = parseInt(match[1], 10);
+  const value = parseInt(match[1], 10);
   const unite = match[2];
   switch (unite) {
     case 's':
-      return valeur * 1000;
+      return value * 1000;
     case 'm':
-      return valeur * 1000 * 60;
+      return value * 1000 * 60;
     case 'h':
-      return valeur * 1000 * 60 * 60;
+      return value * 1000 * 60 * 60;
     case 'd':
-      return valeur * 1000 * 60 * 60 * 24;
+      return value * 1000 * 60 * 60 * 24;
     default:
       throw new Error('Unite not supported.');
   }
