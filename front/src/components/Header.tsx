@@ -24,7 +24,7 @@ const Header = () => {
           Bibliothèque
         </NavLink>
         <NavLink to="/login" icon={<BsPersonCircle />}>
-          Se connecter
+          <Text whiteSpace="nowrap">Se connecter</Text>
         </NavLink>
       </HStack>
     </Flex>
