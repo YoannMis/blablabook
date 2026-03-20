@@ -11,7 +11,7 @@ import BookCardList from './BookCardList';
 
 import homeImage from '../assets/homePageImage.jpg';
 import { genresMock } from '../mocks/mockData';
-import { slugify } from '../utils/stringUtils';
+import { slugify } from '..//utils/stringUtils';
 import { getThemeLabel } from '../utils/themeUtils';
 
 const HomePage = () => {

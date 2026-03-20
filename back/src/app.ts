@@ -9,7 +9,12 @@ import apiRouter from './routers/index.router.js';
 const app = express();
 
 app.use(helmet());
-app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 app.use(xss());

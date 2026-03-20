@@ -1,34 +1,31 @@
 import z from 'zod';
 import { Box, Field, Input, Button, Heading, FieldErrorIcon, Flex, VStack } from '@chakra-ui/react';
-import { PasswordInput } from './ui/password-input';
-import RegisterSchema from '../schema/register.schema';
+import { PasswordInput } from '../components/ui/password-input';
+import LoginSchema from '../schema/login.schema';
 import axios from 'axios';
 import { useState } from 'react';
 import { RiArrowRightLine } from 'react-icons/ri';
-import type { RegisterErrorResponse, RegisterResponse } from '@/types/api.type';
+import { IoMailOutline } from 'react-icons/io5';
+import { TbPasswordUser } from 'react-icons/tb';
 import { Toaster, toaster } from './ui/toaster';
 import { PageLayout } from './layouts/PageLayout';
 import homeImage from '../assets/homePageImage.jpg';
 import { Link as RouterLink, useNavigate } from 'react-router';
 
 //Typage Typescript
-type RegisterFormValues = z.infer<typeof RegisterSchema>;
-type RegisterFormErrors = Partial<Record<keyof RegisterFormValues, string>>;
+type LoginFormValues = z.infer<typeof LoginSchema>;
+type LoginErrorResponse = Partial<Record<keyof LoginFormValues, string>>;
 
 //Formulaire
-const Register = () => {
-  const [userInfos, setUserInfos] = useState<RegisterFormValues>({
-    username: '',
+const Login = () => {
+  const [userInfos, setUserInfos] = useState<LoginFormValues>({
     email: '',
     password: '',
-    confirmPassword: '',
   });
 
-  const [errors, setErrors] = useState<RegisterFormErrors>({
-    username: '',
+  const [errors, setErrors] = useState<LoginErrorResponse>({
     email: '',
     password: '',
-    confirmPassword: '',
   });
 
   const navigate = useNavigate();
@@ -40,24 +37,22 @@ const Register = () => {
     Object.values(userInfos).some((value) => !value);
 
   // fonction de soumission du formulaire
+  // en attente du back pour les responses de axios
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
     setIsSubmitting(true);
-
     try {
-      const response = await axios.post<RegisterResponse>(
-        `${import.meta.env.VITE_API_URL}/api/auth/register`,
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
         userInfos,
-        {
-          headers: { 'Content-Type': 'application/json' },
-        }
+        { headers: { 'Content-Type': 'application/json', withCredentials: true } }
       );
       // Traitement de la résponse
       if (response.data.success && response.data.data) {
         console.log('User created', response.data.data);
         toaster.create({
-          title: 'Inscription Success',
-          description: `You have successfully registered ${response.data.data.username}`,
+          title: 'Login Success',
+          description: `You have successfully Logged in`,
           type: 'success',
           duration: 3000,
           closable: true,
@@ -65,25 +60,23 @@ const Register = () => {
 
         // Vider le formulaire
         setUserInfos({
-          username: '',
           email: '',
           password: '',
-          confirmPassword: '',
         });
 
         // Redirection vers la page de connexion
         setTimeout(() => {
-          navigate('/login');
+          navigate('/');
         }, 2000);
+        // navigate('/');
       } else {
-        console.error('User creation failed', response.data.message);
+        console.error('Logging in failed', response.data.message);
       }
     } catch (error) {
       console.log('error', error);
       // Traitement des erreurs
-      if (axios.isAxiosError<RegisterErrorResponse>(error)) {
-        const registerError =
-          error.response?.data.message || 'An error occurred during registration';
+      if (axios.isAxiosError<LoginErrorResponse>(error)) {
+        const registerError = error.response?.data || 'An error occurred during registration';
         if (registerError) {
           toaster.create({
             title: 'Register Error',
@@ -121,7 +114,7 @@ const Register = () => {
 
     // Sert à créer une validation pour un champ individuel
     const miniSchema = z.object({
-      [name]: RegisterSchema.shape[name as keyof RegisterFormValues],
+      [name]: LoginSchema.shape[name as keyof LoginFormValues],
     });
 
     const result = miniSchema.safeParse({ [name]: value });
@@ -131,7 +124,7 @@ const Register = () => {
         const flattened = z.flattenError(result.error);
         return {
           ...prev,
-          [name]: flattened.fieldErrors[name as keyof RegisterFormValues]?.[0] ?? '',
+          [name]: flattened.fieldErrors[name as keyof LoginFormValues]?.[0] ?? '',
         };
       }
       return { ...prev, [name]: '' };
@@ -143,24 +136,13 @@ const Register = () => {
       <Flex justify="center">
         <Box as="form" onSubmit={handleSubmit}>
           <VStack gap={4}>
-            <Heading size="3xl">Register</Heading>
-            <Field.Root invalid={!!errors.username}>
-              <Field.Label>Username</Field.Label>
-              <Input
-                name="username"
-                placeholder="Username"
-                value={userInfos.username}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              <Field.ErrorText>
-                <FieldErrorIcon />
-                {errors.username}
-              </Field.ErrorText>
-            </Field.Root>
+            <Heading size="3xl">Connection</Heading>
 
             <Field.Root invalid={!!errors.email}>
-              <Field.Label>Email</Field.Label>
+              <Field.Label>
+                <IoMailOutline />
+                Email
+              </Field.Label>
               <Input
                 name="email"
                 placeholder="Email"
@@ -175,7 +157,10 @@ const Register = () => {
             </Field.Root>
 
             <Field.Root invalid={!!errors.password}>
-              <Field.Label>Password</Field.Label>
+              <Field.Label>
+                <TbPasswordUser />
+                Password
+              </Field.Label>
               <PasswordInput
                 name="password"
                 type="password"
@@ -189,31 +174,16 @@ const Register = () => {
               </Field.ErrorText>
             </Field.Root>
 
-            <Field.Root invalid={!!errors.confirmPassword}>
-              <Field.Label>Confirm your Password</Field.Label>
-              <PasswordInput
-                name="confirmPassword"
-                type="password"
-                placeholder="Confirm your Password"
-                value={userInfos.confirmPassword}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              <Field.ErrorText>
-                <FieldErrorIcon />
-                {errors.confirmPassword}
-              </Field.ErrorText>
-            </Field.Root>
             <Button
               disabled={isFormInvalid}
               loading={isSubmitting}
-              loadingText="Submitting ..."
+              loadingText="Logging in ..."
               type="submit"
             >
-              Submit
+              Login
               <RiArrowRightLine />
             </Button>
-            <RouterLink to="/login">Already have an account ?</RouterLink>
+            <RouterLink to="/register">You don't have an account ?</RouterLink>
           </VStack>
         </Box>
         <Toaster />
@@ -222,4 +192,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;
