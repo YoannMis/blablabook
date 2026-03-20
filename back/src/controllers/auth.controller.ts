@@ -86,8 +86,8 @@ export const loginUserController = async (req: Request, res: Response) => {
       if (error.message === 'INVALID_CREDENTIALS') {
         return res.status(401).json({ success: false, message: 'Invalid User or Email' });
       }
-      return res.status(500).json({ success: false, message: 'Registration error' });
+      return res.status(500).json({ success: false, message: 'Internal server error' });
     }
-    return res.status(500).json({ success: false, message: 'Unknown error' });
+    return res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
