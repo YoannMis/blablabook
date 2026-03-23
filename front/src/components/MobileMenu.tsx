@@ -1,10 +1,19 @@
 import { Flex } from '@chakra-ui/react';
 import NavLink from './NavLink';
-import { IoTelescopeSharp } from 'react-icons/io5';
+import { LiaCompass } from 'react-icons/lia';
 import { TbBookFilled } from 'react-icons/tb';
 import { BsPersonCircle } from 'react-icons/bs';
+import { useTranslation } from 'react-i18next';
+
+const links = [
+  { to: '/', i18nKey: 'nav.discover', icon: LiaCompass },
+  { to: '/library', i18nKey: 'nav.library', icon: TbBookFilled },
+  { to: '/login', i18nKey: 'nav.login', icon: BsPersonCircle },
+];
 
 const MobileMenu = () => {
+  const { t } = useTranslation('common');
+
   return (
     <Flex
       as="nav"
@@ -13,19 +22,19 @@ const MobileMenu = () => {
       bottom={0}
       left={0}
       right={0}
-      bg="grey"
+      bg={{ _light: 'light.50', _dark: 'brown.800' }}
+      borderTop={{
+        _light: '1px solid var(--chakra-colors-light-200)',
+        _dark: '1px solid var(--chakra-colors-brown-600)',
+      }}
       justify="space-around"
-      p={4}
+      py={3}
     >
-      <NavLink to="/" icon={<IoTelescopeSharp />} vertical>
-        Découvrir
-      </NavLink>
-      <NavLink to="/library" icon={<TbBookFilled />} vertical>
-        Bibliothèque
-      </NavLink>
-      <NavLink to="/login" icon={<BsPersonCircle />} vertical>
-        Se connecter
-      </NavLink>
+      {links.map(({ to, i18nKey, icon }) => (
+        <NavLink key={to} to={to} icon={icon} vertical>
+          {t(i18nKey)}
+        </NavLink>
+      ))}
     </Flex>
   );
 };

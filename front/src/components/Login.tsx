@@ -23,6 +23,7 @@ import { Toaster, toaster } from './ui/toaster';
 import { PageLayout } from './layouts/PageLayout';
 import homeImage from '../assets/homePageImage.jpg';
 import { Link as RouterLink, useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import MobileMenu from './MobileMenu';
 
 //Typage Typescript
@@ -31,6 +32,8 @@ type LoginErrorResponse = Partial<Record<keyof LoginFormValues, string>>;
 
 //Formulaire
 const Login = () => {
+  const { t } = useTranslation('auth');
+
   const [userInfos, setUserInfos] = useState<LoginFormValues>({
     email: '',
     password: '',
@@ -53,7 +56,6 @@ const Login = () => {
     checked;
 
   // fonction de soumission du formulaire
-  // en attente du back pour les responses de axios
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
     setIsSubmitting(true);
@@ -67,8 +69,8 @@ const Login = () => {
       if (response.data.success && response.data.data) {
         console.log('User created', response.data.data);
         toaster.create({
-          title: 'Login Success',
-          description: `You have successfully Logged in`,
+          title: t('login.successTitle'),
+          description: t('login.successDescription'),
           type: 'success',
           duration: 3000,
           closable: true,
@@ -80,7 +82,7 @@ const Login = () => {
           password: '',
         });
 
-        // Redirection vers la page de connexion
+        // Redirection vers la page d'accueil
         setTimeout(() => {
           navigate('/');
         }, 2000);
@@ -93,7 +95,7 @@ const Login = () => {
         // Erreur HTTP (ex: 401, 500)
         const errorMessage = error.response?.data?.message || error.message;
         toaster.create({
-          title: 'Login Error',
+          title: t('login.defaultError'),
           description:
             errorMessage === 'INVALID_CREDENTIALS' ? 'Invalid email or password' : errorMessage,
           type: 'error',
@@ -103,7 +105,7 @@ const Login = () => {
       } else if (error instanceof Error) {
         // Erreur lancée manuellement (ex: throw new Error)
         toaster.create({
-          title: 'Login Error',
+          title: t('login.errorTitle'),
           description:
             error.message === 'INVALID_CREDENTIALS'
               ? 'Invalid email or password'
@@ -115,8 +117,8 @@ const Login = () => {
       } else {
         // Erreur inattendue
         toaster.create({
-          title: 'Server Error',
-          description: 'The server is not reachable',
+          title: t('login.serverErrorTitle'),
+          description: t('login.serverErrorDescription'),
           type: 'error',
           duration: 3000,
           closable: true,
@@ -159,7 +161,7 @@ const Login = () => {
   };
 
   return (
-    <PageLayout imageSrc={homeImage} imagePosition="left" imageSize="25%">
+    <PageLayout imageSrc={homeImage} imagePosition="left" imageSize={25}>
       <AbsoluteCenter pt={{ base: '25%', md: '10%' }} pl={{ md: '25%' }}>
         <Flex justify="center">
           <Box
@@ -170,16 +172,16 @@ const Login = () => {
             width={{ base: '35vh', md: '50vh' }}
           >
             <VStack gap={4} p={{ base: 4, md: 8 }}>
-              <Heading size="3xl">Connection</Heading>
+              <Heading size="3xl">{t('login.title')}</Heading>
 
               <Field.Root invalid={!!errors.email}>
                 <Field.Label>
                   <IoMailOutline />
-                  Email
+                  {t('login.email')}
                 </Field.Label>
                 <Input
                   name="email"
-                  placeholder="Email"
+                  placeholder={t('login.emailPlaceholder')}
                   value={userInfos.email}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -195,12 +197,12 @@ const Login = () => {
               <Field.Root invalid={!!errors.password}>
                 <Field.Label>
                   <TbPasswordUser />
-                  Password
+                  {t('login.password')}
                 </Field.Label>
                 <PasswordInput
                   name="password"
                   type="password"
-                  placeholder="Password"
+                  placeholder={t('login.passwordPlaceholder')}
                   value={userInfos.password}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -235,14 +237,14 @@ const Login = () => {
               <Button
                 disabled={!isFormInvalid}
                 loading={isSubmitting}
-                loadingText="Logging in ..."
+                loadingText={t('login.submitting')}
                 type="submit"
                 width={{ base: '30vh', md: '40vh' }}
               >
-                Login
+                {t('login.submit')}
                 <RiArrowRightLine />
               </Button>
-              <RouterLink to="/register">You don't have an account ?</RouterLink>
+              <RouterLink to="/register">{t('login.noAccount')}</RouterLink>
             </VStack>
           </Box>
           <Toaster />

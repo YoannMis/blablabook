@@ -1,8 +1,9 @@
-import { Box, Image, IconButton, Text, VStack } from '@chakra-ui/react';
+import { Box, Image, IconButton, VStack, Heading } from '@chakra-ui/react';
 import { TiPlus } from 'react-icons/ti';
 import { useNavigate } from 'react-router';
 import { slugify } from '../utils/stringUtils';
 import noBookCover from '../assets/noBookCover.jpg';
+import { useTranslation } from 'react-i18next';
 
 interface BookCardProps {
   book: Book;
@@ -10,6 +11,7 @@ interface BookCardProps {
 
 const BookCard = ({ book }: BookCardProps) => {
   const navigate = useNavigate();
+  const { t } = useTranslation('common');
   const { title, averageRating, imageLinks, categories } = book;
 
   const firstCategory = categories?.[0] ?? 'uncategorized';
@@ -72,7 +74,7 @@ const BookCard = ({ book }: BookCardProps) => {
         )}
 
         <IconButton
-          aria-label="Add book"
+          aria-label={t('bookCard.addBook')}
           size="xs"
           position="absolute"
           top={2}
@@ -85,9 +87,9 @@ const BookCard = ({ book }: BookCardProps) => {
         </IconButton>
       </Box>
 
-      <Text fontSize="sm" fontWeight="medium" lineClamp={2}>
+      <Heading size="sm" fontWeight="medium" lineClamp={2}>
         {title}
-      </Text>
+      </Heading>
     </VStack>
   );
 };

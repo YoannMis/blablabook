@@ -1,13 +1,8 @@
-export const themeLabels: Record<string, string> = {
-  dragon: 'Passion dragons 🐉',
-  gardening: 'Envie de jardinage 🌱',
-  ecology: 'Pour la planète 🌍',
-  cooking: 'À vos fourneaux 🍳',
-  travel: 'Envie de voyager ✈️',
-  tech: 'Les nouvelles technologies 💻',
-  animals: 'Compagnons poilus 🐾',
-};
+import i18n from '../i18n';
 
 export const getThemeLabel = (themeKey: string): string => {
-  return themeLabels[themeKey] ?? themeKey;
+  const key = `book:themes.${themeKey}`;
+  const translated = i18n.t(key);
+  // Si la clé n'existe pas, i18next retourne la clé elle-même
+  return translated === key ? themeKey : translated;
 };

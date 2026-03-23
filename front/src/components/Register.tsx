@@ -20,6 +20,7 @@ import { Toaster, toaster } from './ui/toaster';
 import { PageLayout } from './layouts/PageLayout';
 import homeImage from '../assets/homePageImage.jpg';
 import { Link as RouterLink, useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import MobileMenu from './MobileMenu';
 
 //Typage Typescript
@@ -28,6 +29,8 @@ type RegisterFormErrors = Partial<Record<keyof RegisterFormValues, string>>;
 
 //Formulaire
 const Register = () => {
+  const { t } = useTranslation('auth');
+
   const [userInfos, setUserInfos] = useState<RegisterFormValues>({
     username: '',
     email: '',
@@ -68,8 +71,10 @@ const Register = () => {
       if (response.data.success && response.data.data) {
         console.log('User created', response.data.data);
         toaster.create({
-          title: 'Inscription Success',
-          description: `You have successfully registered ${response.data.data.username}`,
+          title: t('register.successTitle'),
+          description: t('register.successDescription', {
+            username: response.data.data.username,
+          }),
           type: 'success',
           duration: 3000,
           closable: true,
@@ -94,11 +99,10 @@ const Register = () => {
       console.log('error', error);
       // Traitement des erreurs
       if (axios.isAxiosError<RegisterErrorResponse>(error)) {
-        const registerError =
-          error.response?.data.message || 'An error occurred during registration';
+        const registerError = error.response?.data.message || t('register.defaultError');
         if (registerError) {
           toaster.create({
-            title: 'Register Error',
+            title: t('register.errorTitle'),
             description: registerError,
             type: 'error',
             duration: 3000,
@@ -106,8 +110,8 @@ const Register = () => {
           });
         } else {
           toaster.create({
-            title: 'Server Error',
-            description: 'The server is not reachable',
+            title: t('register.serverErrorTitle'),
+            description: t('register.serverErrorDescription'),
             type: 'error',
             duration: 3000,
             closable: true,
@@ -169,7 +173,7 @@ const Register = () => {
   };
 
   return (
-    <PageLayout imageSrc={homeImage} imagePosition="left" imageSize="25%">
+    <PageLayout imageSrc={homeImage} imagePosition="left" imageSize={25}>
       <AbsoluteCenter pt={{ base: '25%', md: '10%' }} pl={{ md: '25%' }}>
         <Flex justify="center">
           <Box
@@ -180,12 +184,12 @@ const Register = () => {
             width={{ base: '35vh', md: '50vh' }}
           >
             <VStack p={{ base: 4, md: 8 }}>
-              <Heading size="3xl">Register</Heading>
+              <Heading size="3xl">{t('register.title')}</Heading>
               <Field.Root invalid={!!errors.username}>
-                <Field.Label>Username</Field.Label>
+                <Field.Label>{t('register.username')}</Field.Label>
                 <Input
                   name="username"
-                  placeholder="Username"
+                  placeholder={t('register.usernamePlaceholder')}
                   value={userInfos.username}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -199,10 +203,10 @@ const Register = () => {
               </Field.Root>
 
               <Field.Root invalid={!!errors.email}>
-                <Field.Label>Email</Field.Label>
+                <Field.Label>{t('register.email')}</Field.Label>
                 <Input
                   name="email"
-                  placeholder="Email"
+                  placeholder={t('register.emailPlaceholder')}
                   value={userInfos.email}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -216,11 +220,11 @@ const Register = () => {
               </Field.Root>
 
               <Field.Root invalid={!!errors.password}>
-                <Field.Label>Password</Field.Label>
+                <Field.Label>{t('register.password')}</Field.Label>
                 <PasswordInput
                   name="password"
                   type="password"
-                  placeholder="Password"
+                  placeholder={t('register.passwordPlaceholder')}
                   value={userInfos.password}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -234,11 +238,11 @@ const Register = () => {
               </Field.Root>
 
               <Field.Root invalid={!!errors.confirmPassword}>
-                <Field.Label>Confirm your Password</Field.Label>
+                <Field.Label>{t('register.confirmPassword')}</Field.Label>
                 <PasswordInput
                   name="confirmPassword"
                   type="password"
-                  placeholder="Confirm your Password"
+                  placeholder={t('register.confirmPasswordPlaceholder')}
                   value={userInfos.confirmPassword}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -253,14 +257,14 @@ const Register = () => {
               <Button
                 disabled={isFormInvalid}
                 loading={isSubmitting}
-                loadingText="Submitting ..."
+                loadingText={t('register.submitting')}
                 type="submit"
                 width={{ base: '30vh', md: '40vh' }}
               >
-                Submit
+                {t('register.submit')}
                 <RiArrowRightLine />
               </Button>
-              <RouterLink to="/login">Already have an account ?</RouterLink>
+              <RouterLink to="/login">{t('register.alreadyHaveAccount')}</RouterLink>
             </VStack>
           </Box>
           <Toaster />
