@@ -1,9 +1,11 @@
-import { Box, Image, IconButton, VStack, Heading } from '@chakra-ui/react';
+import { Box, Text, Image, IconButton, VStack, Heading } from '@chakra-ui/react';
 import { TiPlus } from 'react-icons/ti';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { slugify } from '../utils/stringUtils';
 import noBookCover from '../assets/noBookCover.jpg';
 import { useTranslation } from 'react-i18next';
+
+import BookDotsMenu from './BookDotsMenu';
 
 interface BookCardProps {
   book: Book;
@@ -11,8 +13,9 @@ interface BookCardProps {
 
 const BookCard = ({ book }: BookCardProps) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { t } = useTranslation('common');
-  const { title, averageRating, imageLinks, categories } = book;
+  const { title, authors, averageRating, imageLinks, categories } = book;
 
   const firstCategory = categories?.[0] ?? 'uncategorized';
   const slugCategory = slugify(firstCategory);
@@ -73,23 +76,45 @@ const BookCard = ({ book }: BookCardProps) => {
           </Box>
         )}
 
-        <IconButton
-          aria-label={t('bookCard.addBook')}
-          size="xs"
-          position="absolute"
-          top={2}
-          right={2}
-          variant="ghost"
-          bg="whiteAlpha.800"
-          backdropFilter="blur(6px)"
-        >
-          <TiPlus color="black" />
-        </IconButton>
+        {pathname === '/library' ? (
+          <Box
+            aria-label={'Voir les actions disponibles pour ce livre'}
+            display={{ base: 'none', md: 'block' }}
+            position="absolute"
+            top={2}
+            right={2}
+            bg="whiteAlpha.800"
+            backdropFilter="blur(6px)"
+            color="blackAlpha.800"
+            px={1}
+            py={1}
+            borderRadius="xl"
+          >
+            <BookDotsMenu />
+          </Box>
+        ) : (
+          <IconButton
+            aria-label={t('bookCard.addBook')}
+            size="xs"
+            position="absolute"
+            top={2}
+            right={2}
+            variant="ghost"
+            bg="whiteAlpha.800"
+            backdropFilter="blur(6px)"
+          >
+            <TiPlus color="black" />
+          </IconButton>
+        )}
       </Box>
 
       <Heading size="sm" fontWeight="medium" lineClamp={2}>
         {title}
       </Heading>
+      {pathname === '/library' && <Text>{authors?.join(', ')}</Text>}
+      <Box display={{ base: 'block', md: 'none' }}>
+        <BookDotsMenu />
+      </Box>
     </VStack>
   );
 };
