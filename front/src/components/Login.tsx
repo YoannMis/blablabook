@@ -1,5 +1,15 @@
-import z from 'zod';
-import { Box, Field, Input, Button, Heading, FieldErrorIcon, Flex, VStack } from '@chakra-ui/react';
+import z, { set } from 'zod';
+import {
+  Box,
+  Field,
+  Input,
+  Button,
+  Heading,
+  FieldErrorIcon,
+  Flex,
+  VStack,
+  AbsoluteCenter,
+} from '@chakra-ui/react';
 import { PasswordInput } from '../components/ui/password-input';
 import LoginSchema from '../schema/login.schema';
 import axios from 'axios';
@@ -11,6 +21,7 @@ import { Toaster, toaster } from './ui/toaster';
 import { PageLayout } from './layouts/PageLayout';
 import homeImage from '../assets/homePageImage.jpg';
 import { Link as RouterLink, useNavigate } from 'react-router';
+import MobileMenu from './MobileMenu';
 
 //Typage Typescript
 type LoginFormValues = z.infer<typeof LoginSchema>;
@@ -68,32 +79,43 @@ const Login = () => {
         setTimeout(() => {
           navigate('/');
         }, 2000);
-        // navigate('/');
       } else {
         console.error('Logging in failed', response.data.message);
       }
     } catch (error) {
-      console.log('error', error);
-      // Traitement des erreurs
-      if (axios.isAxiosError<LoginErrorResponse>(error)) {
-        const registerError = error.response?.data || 'An error occurred during registration';
-        if (registerError) {
-          toaster.create({
-            title: 'Register Error',
-            description: registerError,
-            type: 'error',
-            duration: 3000,
-            closable: true,
-          });
-        } else {
-          toaster.create({
-            title: 'Server Error',
-            description: 'The server is not reachable',
-            type: 'error',
-            duration: 3000,
-            closable: true,
-          });
-        }
+      // Gestion des erreurs (y compris les erreurs lancées par le backend)
+      if (axios.isAxiosError(error)) {
+        // Cas 1 : Erreur HTTP (ex: 401, 500)
+        const errorMessage = error.response?.data?.message || error.message;
+        toaster.create({
+          title: 'Login Error',
+          description:
+            errorMessage === 'INVALID_CREDENTIALS' ? 'Invalid email or password' : errorMessage,
+          type: 'error',
+          duration: 3000,
+          closable: true,
+        });
+      } else if (error instanceof Error) {
+        // Cas 2 : Erreur lancée manuellement (ex: throw new Error)
+        toaster.create({
+          title: 'Login Error',
+          description:
+            error.message === 'INVALID_CREDENTIALS'
+              ? 'Invalid email or password'
+              : 'An unexpected error occurred',
+          type: 'error',
+          duration: 3000,
+          closable: true,
+        });
+      } else {
+        // Cas 3 : Erreur inattendue
+        toaster.create({
+          title: 'Server Error',
+          description: 'The server is not reachable',
+          type: 'error',
+          duration: 3000,
+          closable: true,
+        });
       }
     } finally {
       setIsSubmitting(false);
@@ -132,62 +154,77 @@ const Login = () => {
   };
 
   return (
-    <PageLayout imageSrc={homeImage}>
-      <Flex justify="center">
-        <Box as="form" onSubmit={handleSubmit}>
-          <VStack gap={4}>
-            <Heading size="3xl">Connection</Heading>
+    <PageLayout imageSrc={homeImage} imagePosition="left" imageSize="25%">
+      <AbsoluteCenter pt={{ base: '25%', md: '10%' }} pl={{ md: '25%' }}>
+        <Flex justify="center">
+          <Box
+            as="form"
+            onSubmit={handleSubmit}
+            borderWidth={{ base: 0, md: 4 }}
+            borderRadius={{ base: 0, md: 4 }}
+            width={{ base: '35vh', md: '50vh' }}
+          >
+            <VStack gap={4} p={{ base: 4, md: 8 }}>
+              <Heading size="3xl">Connection</Heading>
 
-            <Field.Root invalid={!!errors.email}>
-              <Field.Label>
-                <IoMailOutline />
-                Email
-              </Field.Label>
-              <Input
-                name="email"
-                placeholder="Email"
-                value={userInfos.email}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              <Field.ErrorText>
-                <FieldErrorIcon />
-                {errors.email}
-              </Field.ErrorText>
-            </Field.Root>
+              <Field.Root invalid={!!errors.email}>
+                <Field.Label>
+                  <IoMailOutline />
+                  Email
+                </Field.Label>
+                <Input
+                  name="email"
+                  placeholder="Email"
+                  value={userInfos.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <Box minH={6}>
+                  <Field.ErrorText>
+                    <FieldErrorIcon />
+                    {errors.email}
+                  </Field.ErrorText>
+                </Box>
+              </Field.Root>
 
-            <Field.Root invalid={!!errors.password}>
-              <Field.Label>
-                <TbPasswordUser />
-                Password
-              </Field.Label>
-              <PasswordInput
-                name="password"
-                type="password"
-                placeholder="Password"
-                value={userInfos.password}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              <Field.ErrorText>
-                <FieldErrorIcon /> {errors.password}
-              </Field.ErrorText>
-            </Field.Root>
+              <Field.Root invalid={!!errors.password}>
+                <Field.Label>
+                  <TbPasswordUser />
+                  Password
+                </Field.Label>
+                <PasswordInput
+                  name="password"
+                  type="password"
+                  placeholder="Password"
+                  value={userInfos.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <Box minH={6}>
+                  <Field.ErrorText>
+                    <FieldErrorIcon />
+                    {errors.password}
+                  </Field.ErrorText>
+                </Box>
+              </Field.Root>
 
-            <Button
-              disabled={isFormInvalid}
-              loading={isSubmitting}
-              loadingText="Logging in ..."
-              type="submit"
-            >
-              Login
-              <RiArrowRightLine />
-            </Button>
-            <RouterLink to="/register">You don't have an account ?</RouterLink>
-          </VStack>
-        </Box>
-        <Toaster />
-      </Flex>
+              <Button
+                disabled={isFormInvalid}
+                loading={isSubmitting}
+                loadingText="Logging in ..."
+                type="submit"
+                width={{ base: '30vh', md: '40vh' }}
+              >
+                Login
+                <RiArrowRightLine />
+              </Button>
+              <RouterLink to="/register">You don't have an account ?</RouterLink>
+            </VStack>
+          </Box>
+          <Toaster />
+        </Flex>
+      </AbsoluteCenter>
+      <MobileMenu />
     </PageLayout>
   );
 };

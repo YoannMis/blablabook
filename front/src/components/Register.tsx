@@ -49,7 +49,8 @@ const Register = () => {
 
   const isFormInvalid =
     Object.values(errors).some((error) => error.length > 0) ||
-    Object.values(userInfos).some((value) => !value);
+    Object.values(userInfos).some((value) => !value) ||
+    (userInfos.confirmPassword && userInfos.password !== userInfos.confirmPassword);
 
   // fonction de soumission du formulaire
   const handleSubmit = async (event: React.SyntheticEvent) => {
@@ -126,6 +127,17 @@ const Register = () => {
     };
 
     setUserInfos(newUserInfos);
+    // Vérification en temps réel pour confirmPassword
+    if (event.target.name === 'password' || event.target.name === 'confirmPassword') {
+      setErrors((prev) => ({
+        ...prev,
+        confirmPassword:
+          newUserInfos.password !== newUserInfos.confirmPassword &&
+          newUserInfos.confirmPassword !== ''
+            ? 'Passwords do not match'
+            : '',
+      }));
+    }
   };
 
   const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
@@ -146,6 +158,13 @@ const Register = () => {
           [name]: flattened.fieldErrors[name as keyof RegisterFormValues]?.[0] ?? '',
         };
       }
+      // Vérification en temps réel pour confirmPassword
+      if (name === 'confirmPassword' && value !== userInfos.password) {
+        return {
+          ...prev,
+          [name]: 'Passwords do not match',
+        };
+      }
       return { ...prev, [name]: '' };
     });
   };
@@ -161,7 +180,7 @@ const Register = () => {
             borderRadius={{ base: 0, md: 4 }}
             width={{ base: '35vh', md: '50vh' }}
           >
-            <VStack gap={4} p={{ base: 4, md: 8 }}>
+            <VStack p={{ base: 4, md: 8 }}>
               <Heading size="3xl">Register</Heading>
               <Field.Root invalid={!!errors.username}>
                 <Field.Label>Username</Field.Label>
@@ -172,10 +191,12 @@ const Register = () => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
-                <Field.ErrorText>
-                  <FieldErrorIcon />
-                  {errors.username}
-                </Field.ErrorText>
+                <Box minH={6}>
+                  <Field.ErrorText>
+                    <FieldErrorIcon />
+                    {errors.username}
+                  </Field.ErrorText>
+                </Box>
               </Field.Root>
 
               <Field.Root invalid={!!errors.email}>
@@ -187,10 +208,12 @@ const Register = () => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
-                <Field.ErrorText>
-                  <FieldErrorIcon />
-                  {errors.email}
-                </Field.ErrorText>
+                <Box minH={6}>
+                  <Field.ErrorText>
+                    <FieldErrorIcon />
+                    {errors.email}
+                  </Field.ErrorText>
+                </Box>
               </Field.Root>
 
               <Field.Root invalid={!!errors.password}>
@@ -203,9 +226,12 @@ const Register = () => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
-                <Field.ErrorText>
-                  <FieldErrorIcon /> {errors.password}
-                </Field.ErrorText>
+                <Box minH={6}>
+                  <Field.ErrorText>
+                    <FieldErrorIcon />
+                    {errors.password}
+                  </Field.ErrorText>
+                </Box>
               </Field.Root>
 
               <Field.Root invalid={!!errors.confirmPassword}>
@@ -218,10 +244,12 @@ const Register = () => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
-                <Field.ErrorText>
-                  <FieldErrorIcon />
-                  {errors.confirmPassword}
-                </Field.ErrorText>
+                <Box minH={6}>
+                  <Field.ErrorText>
+                    <FieldErrorIcon />
+                    {errors.confirmPassword}
+                  </Field.ErrorText>
+                </Box>
               </Field.Root>
               <Button
                 disabled={isFormInvalid}
