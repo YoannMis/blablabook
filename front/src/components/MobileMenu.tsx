@@ -3,14 +3,17 @@ import NavLink from './NavLink';
 import { LiaCompass } from 'react-icons/lia';
 import { TbBookFilled } from 'react-icons/tb';
 import { BsPersonCircle } from 'react-icons/bs';
+import { useTranslation } from 'react-i18next';
 
 const links = [
-  { to: '/', label: 'Découvrir', icon: LiaCompass },
-  { to: '/library', label: 'Bibliothèque', icon: TbBookFilled },
-  { to: '/login', label: 'Se connecter', icon: BsPersonCircle },
+  { to: '/', i18nKey: 'nav.discover', icon: LiaCompass },
+  { to: '/library', i18nKey: 'nav.library', icon: TbBookFilled },
+  { to: '/login', i18nKey: 'nav.login', icon: BsPersonCircle },
 ];
 
 const MobileMenu = () => {
+  const { t } = useTranslation('common');
+
   return (
     <Flex
       as="nav"
@@ -27,9 +30,9 @@ const MobileMenu = () => {
       justify="space-around"
       py={3}
     >
-      {links.map(({ to, label, icon }) => (
+      {links.map(({ to, i18nKey, icon }) => (
         <NavLink key={to} to={to} icon={icon} vertical>
-          {label}
+          {t(i18nKey)}
         </NavLink>
       ))}
     </Flex>

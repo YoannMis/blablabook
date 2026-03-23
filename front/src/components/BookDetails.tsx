@@ -23,12 +23,13 @@ import { IoChevronDown, IoChevronUp } from 'react-icons/io5';
 import { renderDescription } from '../utils/htmlParser';
 import { getBookImageByScreen } from '../utils/bookUtils';
 import { useTruncatedTitle } from '../utils/stringUtils';
+import { useTranslation } from 'react-i18next';
 
 const BookDetails = () => {
   const { id } = useParams();
   const [book, setBook] = useState<Book | null>(null);
-
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const { t } = useTranslation('book');
 
   useEffect(() => {
     if (!id) return;
@@ -58,7 +59,7 @@ const BookDetails = () => {
         <Box flexShrink={0} width={{ sm: 'calc(10vw * 0.5)', md: 'calc(50vw * 0.5)' }}>
           <Image
             src={getBookImageByScreen(book?.imageLinks)}
-            alt="Book cover"
+            alt={t('details.coverAlt')}
             borderRadius="md"
             boxShadow="xl"
             width={{ base: '180px', sm: '200px', md: '100%' }}
@@ -70,8 +71,8 @@ const BookDetails = () => {
           <Stack gap={2}>
             <AppBreadcrumb
               items={[
-                { label: 'Accueil', to: '/' },
-                { label: 'Catégorie', to: '/books' },
+                { label: t('breadcrumb.home'), to: '/' },
+                { label: t('breadcrumb.category'), to: '/books' },
                 { label: useTruncatedTitle(book?.title) },
               ]}
             />
@@ -94,7 +95,7 @@ const BookDetails = () => {
               </HStack>
             </VStack>
             <Stack mt={4}>
-              <Text fontWeight="bold">Description</Text>
+              <Text fontWeight="bold">{t('details.description')}</Text>
               <Text>{renderDescription(book?.description)}</Text>
 
               <Collapsible.Root
@@ -103,7 +104,7 @@ const BookDetails = () => {
               >
                 <Collapsible.Trigger asChild>
                   <Flex align="center" justify="space-between" cursor="pointer" py={3}>
-                    <Text fontWeight="bold">Détails techniques</Text>
+                    <Text fontWeight="bold">{t('details.technicalDetails')}</Text>
                     <Icon>{isDetailsOpen ? <IoChevronUp /> : <IoChevronDown />}</Icon>
                   </Flex>
                 </Collapsible.Trigger>
@@ -114,26 +115,26 @@ const BookDetails = () => {
                     gap={4}
                   >
                     <GridItem>
-                      <Text fontWeight="bold">Langue:</Text>
+                      <Text fontWeight="bold">{t('details.language')} :</Text>
                       <Text>{book?.language ?? '–'}</Text>
                     </GridItem>
                     <GridItem>
-                      <Text fontWeight="bold">Nombre de pages:</Text>
+                      <Text fontWeight="bold">{t('details.pageCount')} :</Text>
                       <Text>{book?.pageCount ?? '–'}</Text>
                     </GridItem>
                     <GridItem>
-                      <Text fontWeight="bold">Éditeur:</Text>
+                      <Text fontWeight="bold">{t('details.publisher')} :</Text>
                       <Text>{book?.publisher ?? '–'}</Text>
                     </GridItem>
                     <GridItem>
-                      <Text fontWeight="bold">ISBN-13:</Text>
+                      <Text fontWeight="bold">ISBN-13 :</Text>
                       <Text>
                         {book?.industryIdentifiers?.find((id) => id.type === 'ISBN_13')
                           ?.identifier ?? '–'}
                       </Text>
                     </GridItem>
                     <GridItem>
-                      <Text fontWeight="bold">ISBN-10:</Text>
+                      <Text fontWeight="bold">ISBN-10 :</Text>
                       <Text>
                         {book?.industryIdentifiers?.find((id) => id.type === 'ISBN_10')
                           ?.identifier ?? '–'}
