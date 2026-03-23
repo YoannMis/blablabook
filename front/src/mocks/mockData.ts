@@ -46,82 +46,82 @@ export const genresMock = [
 export const booksMock = [
   {
     id: '1',
-    volumeInfo: {
-      title: 'The Hobbit',
-      authors: ['J.R.R. Tolkien'],
-      averageRating: 4.8,
-      imageLinks: { thumbnail: bookCover },
-      categories: ['Fantasy', 'Adventure'],
-    },
+    title: 'The Hobbit',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam laoreet, nulla et condimentum vehicula, libero metus consequat nulla, non tincidunt massa elit eu urna. Sed commodo sit amet enim sed dictum. Suspendisse potenti. Vivamus nunc metus, laoreet ut aliquet ut, finibus quis neque. Proin condimentum turpis est, a viverra odio luctus vitae. Aenean consectetur leo diam. Etiam eget massa dolor. Vestibulum maximus lacus et hendrerit condimentum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam sed velit dui. Duis diam nibh, ultrices nec mi a, laoreet viverra risus. Ut lobortis diam nec nibh fermentum dignissim. Sed mauris libero, vestibulum sed fermentum sit amet, ultricies ac sapien. Integer venenatis et felis feugiat consequat. Pellentesque hendrerit, ante ac tristique convallis, enim purus porttitor velit, a feugiat neque ipsum et dui. Aliquam at faucibus libero.',
+    authors: ['J.R.R. Tolkien'],
+    averageRating: 4.8,
+    imageLinks: { thumbnail: bookCover },
+    categories: ['Fantasy', 'Adventure'],
   },
   {
     id: '2',
-    volumeInfo: {
-      title: 'Dune',
-      authors: ['Frank Herbert'],
-      averageRating: 4.6,
-      imageLinks: { thumbnail: bookCover },
-      categories: ['Science Fiction', 'Adventure'],
-    },
+    title: 'Dune',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam laoreet, nulla et condimentum vehicula, libero metus consequat nulla, non tincidunt massa elit eu urna. Sed commodo sit amet enim sed dictum. Suspendisse potenti. Vivamus nunc metus, laoreet ut aliquet ut, finibus quis neque. Proin condimentum turpis est, a viverra odio luctus vitae. Aenean consectetur leo diam. Etiam eget massa dolor. Vestibulum maximus lacus et hendrerit condimentum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam sed velit dui. Duis diam nibh, ultrices nec mi a, laoreet viverra risus. Ut lobortis diam nec nibh fermentum dignissim. Sed mauris libero, vestibulum sed fermentum sit amet, ultricies ac sapien. Integer venenatis et felis feugiat consequat. Pellentesque hendrerit, ante ac tristique convallis, enim purus porttitor velit, a feugiat neque ipsum et dui. Aliquam at faucibus libero.',
+    authors: ['Frank Herbert'],
+    averageRating: 4.6,
+    imageLinks: { thumbnail: bookCover },
+    categories: ['Science Fiction', 'Adventure'],
   },
   {
     id: '3',
-    volumeInfo: {
-      title: 'The Name of the Wind',
-      authors: ['Patrick Rothfuss'],
-      averageRating: 4.7,
-      imageLinks: { thumbnail: bookCover },
-      categories: ['Fantasy', 'Epic'],
-    },
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam laoreet, nulla et condimentum vehicula, libero metus consequat nulla, non tincidunt massa elit eu urna. Sed commodo sit amet enim sed dictum. Suspendisse potenti. Vivamus nunc metus, laoreet ut aliquet ut, finibus quis neque. Proin condimentum turpis est, a viverra odio luctus vitae. Aenean consectetur leo diam. Etiam eget massa dolor. Vestibulum maximus lacus et hendrerit condimentum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam sed velit dui. Duis diam nibh, ultrices nec mi a, laoreet viverra risus. Ut lobortis diam nec nibh fermentum dignissim. Sed mauris libero, vestibulum sed fermentum sit amet, ultricies ac sapien. Integer venenatis et felis feugiat consequat. Pellentesque hendrerit, ante ac tristique convallis, enim purus porttitor velit, a feugiat neque ipsum et dui. Aliquam at faucibus libero.',
+    title: 'The Name of the Wind',
+    authors: ['Patrick Rothfuss'],
+    averageRating: 4.7,
+    imageLinks: { thumbnail: bookCover },
+    categories: ['Fantasy', 'Epic'],
   },
   {
     id: '4',
-    volumeInfo: {
-      title: 'Gone Girl',
-      authors: ['Gillian Flynn'],
-      averageRating: 4.1,
-      imageLinks: { thumbnail: bookCover },
-      categories: ['Thriller', 'Mystery'],
-    },
+    title: 'Gone Girl',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam laoreet, nulla et condimentum vehicula, libero metus consequat nulla, non tincidunt massa elit eu urna. Sed commodo sit amet enim sed dictum. Suspendisse potenti. Vivamus nunc metus, laoreet ut aliquet ut, finibus quis neque. Proin condimentum turpis est, a viverra odio luctus vitae. Aenean consectetur leo diam. Etiam eget massa dolor. Vestibulum maximus lacus et hendrerit condimentum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam sed velit dui. Duis diam nibh, ultrices nec mi a, laoreet viverra risus. Ut lobortis diam nec nibh fermentum dignissim. Sed mauris libero, vestibulum sed fermentum sit amet, ultricies ac sapien. Integer venenatis et felis feugiat consequat. Pellentesque hendrerit, ante ac tristique convallis, enim purus porttitor velit, a feugiat neque ipsum et dui. Aliquam at faucibus libero.',
+    authors: ['Gillian Flynn'],
+    averageRating: 4.1,
+    imageLinks: { thumbnail: bookCover },
+    categories: ['Thriller', 'Mystery'],
   },
   {
     id: '5',
-    volumeInfo: {
-      title: '1984',
-      authors: ['George Orwell'],
-      averageRating: 4.4,
-      imageLinks: { thumbnail: bookCover },
-      categories: ['Dystopia', 'Political Fiction'],
-    },
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam laoreet, nulla et condimentum vehicula, libero metus consequat nulla, non tincidunt massa elit eu urna. Sed commodo sit amet enim sed dictum. Suspendisse potenti. Vivamus nunc metus, laoreet ut aliquet ut, finibus quis neque. Proin condimentum turpis est, a viverra odio luctus vitae. Aenean consectetur leo diam. Etiam eget massa dolor. Vestibulum maximus lacus et hendrerit condimentum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam sed velit dui. Duis diam nibh, ultrices nec mi a, laoreet viverra risus. Ut lobortis diam nec nibh fermentum dignissim. Sed mauris libero, vestibulum sed fermentum sit amet, ultricies ac sapien. Integer venenatis et felis feugiat consequat. Pellentesque hendrerit, ante ac tristique convallis, enim purus porttitor velit, a feugiat neque ipsum et dui. Aliquam at faucibus libero.',
+    title: '1984',
+    authors: ['George Orwell'],
+    averageRating: 4.4,
+    imageLinks: { thumbnail: bookCover },
+    categories: ['Dystopia', 'Political Fiction'],
   },
   {
     id: '6',
-    volumeInfo: {
-      title: 'The Shining',
-      authors: ['Stephen King'],
-      averageRating: 4.3,
-      imageLinks: { thumbnail: bookCover },
-      categories: ['Horror', 'Thriller'],
-    },
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam laoreet, nulla et condimentum vehicula, libero metus consequat nulla, non tincidunt massa elit eu urna. Sed commodo sit amet enim sed dictum. Suspendisse potenti. Vivamus nunc metus, laoreet ut aliquet ut, finibus quis neque. Proin condimentum turpis est, a viverra odio luctus vitae. Aenean consectetur leo diam. Etiam eget massa dolor. Vestibulum maximus lacus et hendrerit condimentum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam sed velit dui. Duis diam nibh, ultrices nec mi a, laoreet viverra risus. Ut lobortis diam nec nibh fermentum dignissim. Sed mauris libero, vestibulum sed fermentum sit amet, ultricies ac sapien. Integer venenatis et felis feugiat consequat. Pellentesque hendrerit, ante ac tristique convallis, enim purus porttitor velit, a feugiat neque ipsum et dui. Aliquam at faucibus libero.',
+    title: 'The Shining',
+    authors: ['Stephen King'],
+    averageRating: 4.3,
+    imageLinks: { thumbnail: bookCover },
+    categories: ['Horror', 'Thriller'],
   },
   {
     id: '7',
-    volumeInfo: {
-      title: 'Pride and Prejudice',
-      authors: ['Jane Austen'],
-      averageRating: 4.5,
-      imageLinks: { thumbnail: bookCover },
-      categories: ['Romance', 'Classic'],
-    },
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam laoreet, nulla et condimentum vehicula, libero metus consequat nulla, non tincidunt massa elit eu urna. Sed commodo sit amet enim sed dictum. Suspendisse potenti. Vivamus nunc metus, laoreet ut aliquet ut, finibus quis neque. Proin condimentum turpis est, a viverra odio luctus vitae. Aenean consectetur leo diam. Etiam eget massa dolor. Vestibulum maximus lacus et hendrerit condimentum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam sed velit dui. Duis diam nibh, ultrices nec mi a, laoreet viverra risus. Ut lobortis diam nec nibh fermentum dignissim. Sed mauris libero, vestibulum sed fermentum sit amet, ultricies ac sapien. Integer venenatis et felis feugiat consequat. Pellentesque hendrerit, ante ac tristique convallis, enim purus porttitor velit, a feugiat neque ipsum et dui. Aliquam at faucibus libero.',
+    title: 'Pride and Prejudice',
+    authors: ['Jane Austen'],
+    averageRating: 4.5,
+    imageLinks: { thumbnail: bookCover },
+    categories: ['Romance', 'Classic'],
   },
   {
     id: '8',
-    volumeInfo: {
-      title: 'The Martian',
-      authors: ['Andy Weir'],
-      averageRating: 4.6,
-      imageLinks: { thumbnail: bookCover },
-      categories: ['Science Fiction', 'Survival'],
-    },
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam laoreet, nulla et condimentum vehicula, libero metus consequat nulla, non tincidunt massa elit eu urna. Sed commodo sit amet enim sed dictum. Suspendisse potenti. Vivamus nunc metus, laoreet ut aliquet ut, finibus quis neque. Proin condimentum turpis est, a viverra odio luctus vitae. Aenean consectetur leo diam. Etiam eget massa dolor. Vestibulum maximus lacus et hendrerit condimentum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam sed velit dui. Duis diam nibh, ultrices nec mi a, laoreet viverra risus. Ut lobortis diam nec nibh fermentum dignissim. Sed mauris libero, vestibulum sed fermentum sit amet, ultricies ac sapien. Integer venenatis et felis feugiat consequat. Pellentesque hendrerit, ante ac tristique convallis, enim purus porttitor velit, a feugiat neque ipsum et dui. Aliquam at faucibus libero.',
+    title: 'The Martian',
+    authors: ['Andy Weir'],
+    averageRating: 4.6,
+    imageLinks: { thumbnail: bookCover },
+    categories: ['Science Fiction', 'Survival'],
   },
 ];
