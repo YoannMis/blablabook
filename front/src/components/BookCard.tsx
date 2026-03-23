@@ -22,18 +22,11 @@ const BookCard = ({ book }: BookCardProps) => {
   };
 
   return (
-    <VStack
-      role="group"
-      gap={3}
-      align="start"
-      minW={{ base: '140px', md: '160px' }}
-      cursor="pointer"
-      onClick={handleClick}
-    >
+    <VStack role="group" gap={3} align="start" cursor="pointer" onClick={handleClick} h="100%">
       <Box
         position="relative"
         w="100%"
-        h={{ base: '210px', md: '230px' }}
+        h={{ base: '220px', md: '260px' }}
         borderRadius="xl"
         overflow="hidden"
         bg="gray.50"
@@ -48,7 +41,7 @@ const BookCard = ({ book }: BookCardProps) => {
         <Image
           src={imageLinks?.thumbnail || noBookCover}
           alt={title}
-          objectFit="cover"
+          objectFit="fill"
           w="100%"
           h="100%"
           transition="transform 0.3s ease"

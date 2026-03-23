@@ -13,10 +13,13 @@ import homeImage from '../assets/homePageImage.jpg';
 import { genresMock } from '../mocks/mockData';
 import { slugify } from '..//utils/stringUtils';
 import { getThemeLabel } from '../utils/themeUtils';
+import { useTranslation } from 'react-i18next';
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation('common');
   const [searchValue, setSearchValue] = useState('');
+  const [searchResults, setSearchResults] = useState<Book[]>([]);
 
   const [featuredBooks, setFeaturedBooks] = useState<Record<string, Book[]>>({});
 
@@ -42,15 +45,14 @@ const HomePage = () => {
   };
 
   const handleSubmit = async () => {
-    // En attende de l'API Back
-    // try {
-    // const response = await axios.get('/api/books/search', {
-    //   params: { q: searchValue },
-    // });
-    // setSearchResults(response.data);
-    // } catch (error) {
-    //   console.error('Erreur lors de la recherche :', error);
-    // }
+    try {
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/books/search`, {
+        params: { q: searchValue },
+      });
+      setSearchResults(data);
+    } catch (error) {
+      console.error('Erreur lors de la recherche :', error);
+    }
   };
 
   const handleSelectCategory = (categoryName: string) => {
@@ -71,9 +73,21 @@ const HomePage = () => {
 
           <CategoriesList categories={genresMock} onSelectCategory={handleSelectCategory} />
 
-          {Object.entries(featuredBooks).map(([themeKey, books]) => (
-            <BookCardList key={themeKey} title={getThemeLabel(themeKey)} books={books} />
-          ))}
+          {searchResults && searchResults.length > 0 ? (
+            <BookCardList
+              title={t('search.resultsFor', { query: searchValue })}
+              books={searchResults}
+            />
+          ) : (
+            Object.entries(featuredBooks).map(([themeKey, books]) => (
+              <BookCardList
+                key={themeKey}
+                title={getThemeLabel(themeKey)}
+                books={books}
+                wrap={false}
+              />
+            ))
+          )}
         </Stack>
 
         <MobileMenu />
