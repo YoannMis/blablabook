@@ -88,8 +88,8 @@ export const saveRefreshToken = async (userId: number, token: string, expiresAt:
     data: {
       token,
       userId,
-      issued_at: new Date(),
-      expires_at: expiresAt,
+      issuedAt: new Date(),
+      expiresAt: expiresAt,
     },
   });
 };
@@ -122,7 +122,7 @@ export const login = async (email: string, password: string, rememberMe: boolean
   });
 
   let refreshToken = null;
-  if (!rememberMe) {
+  if (rememberMe) {
     const { token: newRefreshToken, expiresAt } = generateRefreshToken();
     refreshToken = newRefreshToken;
 
