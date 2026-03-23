@@ -60,7 +60,7 @@ const HomePage = () => {
 
   return (
     <>
-      <PageLayout imageSrc={homeImage} imagePosition="top" imageSize="25%">
+      <PageLayout imageSrc={homeImage} imagePosition="top" imageSize={25}>
         <Stack gap={6} pb={{ base: 20, md: 2 }}>
           <SearchBar
             searchValue={searchValue}

@@ -1,4 +1,4 @@
-import { Box, Text, HStack } from '@chakra-ui/react';
+import { Box, HStack, Heading } from '@chakra-ui/react';
 import BookCard from './BookCard';
 
 interface BookCardListProps {
@@ -8,9 +8,9 @@ interface BookCardListProps {
 
 const BookCardList = ({ title, books }: BookCardListProps) => (
   <Box overflowX="auto">
-    <Text fontWeight="bold" mb={2}>
+    <Heading size="xl" fontWeight="bold" mb={2}>
       {title}
-    </Text>
+    </Heading>
     <HStack gap={6} flexWrap="nowrap" align="stretch">
       {books.map((book) => (
         <BookCard key={book.id} book={book} />
