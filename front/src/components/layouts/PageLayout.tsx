@@ -22,7 +22,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
 
   return (
     <Flex direction={flexDirection} width="100%" position="relative">
-      <Box position="absolute" top={0} right={0} width="100%" zIndex={10} padding={4}>
+      <Box position="absolute" top={0} right={0} width="100%" padding={4} zIndex={9999}>
         <Header />
       </Box>
 

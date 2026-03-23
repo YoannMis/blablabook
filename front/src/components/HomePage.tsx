@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Stack } from '@chakra-ui/react';
+import { Button, Stack } from '@chakra-ui/react';
 import axios from 'axios';
 
 import { PageLayout } from '../components/layouts/PageLayout';
@@ -20,8 +20,13 @@ const HomePage = () => {
   const { t } = useTranslation('common');
   const [searchValue, setSearchValue] = useState('');
   const [searchResults, setSearchResults] = useState<Book[]>([]);
+  const [startIndex, setStartIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMoreResults, setHasMoreResults] = useState(true);
 
   const [featuredBooks, setFeaturedBooks] = useState<Record<string, Book[]>>({});
+
+  const hasSearchResults = searchResults.length > 0;
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -46,12 +51,39 @@ const HomePage = () => {
 
   const handleSubmit = async () => {
     try {
+      setIsLoading(true);
+      setStartIndex(0);
       const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/books/search`, {
         params: { q: searchValue },
       });
       setSearchResults(data);
+      setHasMoreResults(data.length === 20);
     } catch (error) {
       console.error('Erreur lors de la recherche :', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLoadMoreBooks = async () => {
+    try {
+      setIsLoading(true);
+
+      const nextIndex = startIndex + 20;
+
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/books/search`, {
+        params: { q: searchValue, startIndex: nextIndex },
+      });
+
+      setSearchResults((prev) => [...prev, ...res.data]);
+      setStartIndex(nextIndex);
+      if (res.data.length < 20) {
+        setHasMoreResults(false);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargemen de plus de résultats :', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -73,23 +105,32 @@ const HomePage = () => {
 
           <CategoriesList categories={genresMock} onSelectCategory={handleSelectCategory} />
 
-          {searchResults && searchResults.length > 0 ? (
-            <BookCardList
-              title={t('search.resultsFor', { query: searchValue })}
-              books={searchResults}
-            />
-          ) : (
-            Object.entries(featuredBooks).map(([themeKey, books]) => (
-              <BookCardList
-                key={themeKey}
-                title={getThemeLabel(themeKey)}
-                books={books}
-                wrap={false}
-              />
-            ))
-          )}
-        </Stack>
+          <>
+            {hasSearchResults ? (
+              <>
+                <BookCardList
+                  title={t('search.resultsFor', { query: searchValue })}
+                  books={searchResults}
+                />
 
+                {hasMoreResults && (
+                  <Button onClick={handleLoadMoreBooks} loading={isLoading} mt={4}>
+                    {t('search.loadMore')}
+                  </Button>
+                )}
+              </>
+            ) : (
+              Object.entries(featuredBooks).map(([themeKey, books]) => (
+                <BookCardList
+                  key={themeKey}
+                  title={getThemeLabel(themeKey)}
+                  books={books}
+                  wrap={false}
+                />
+              ))
+            )}
+          </>
+        </Stack>
         <MobileMenu />
       </PageLayout>
     </>

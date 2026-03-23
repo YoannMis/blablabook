@@ -8,7 +8,8 @@
     "placeholder": "Rechercher par mot-clé, auteur...",
     "clear": "Effacer",
     "ariaLabel": "Rechercher un livre",
-    "resultsFor": "Résultats pour \"{{query}}\""
+    "resultsFor": "Résultats pour \"{{query}}\"",
+    "loadMore": "Afficher plus de résultats"
   },
   "categories": {
     "title": "Catégories",
