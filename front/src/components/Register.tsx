@@ -1,5 +1,16 @@
 import z from 'zod';
-import { Box, Field, Input, Button, Heading, FieldErrorIcon, Flex, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Field,
+  Input,
+  Button,
+  Heading,
+  FieldErrorIcon,
+  Flex,
+  VStack,
+  Center,
+  AbsoluteCenter,
+} from '@chakra-ui/react';
 import { PasswordInput } from './ui/password-input';
 import RegisterSchema from '../schema/register.schema';
 import axios from 'axios';
@@ -10,6 +21,7 @@ import { Toaster, toaster } from './ui/toaster';
 import { PageLayout } from './layouts/PageLayout';
 import homeImage from '../assets/homePageImage.jpg';
 import { Link as RouterLink, useNavigate } from 'react-router';
+import MobileMenu from './MobileMenu';
 
 //Typage Typescript
 type RegisterFormValues = z.infer<typeof RegisterSchema>;
@@ -139,85 +151,95 @@ const Register = () => {
   };
 
   return (
-    <PageLayout imageSrc={homeImage}>
-      <Flex justify="center">
-        <Box as="form" onSubmit={handleSubmit}>
-          <VStack gap={4}>
-            <Heading size="3xl">Register</Heading>
-            <Field.Root invalid={!!errors.username}>
-              <Field.Label>Username</Field.Label>
-              <Input
-                name="username"
-                placeholder="Username"
-                value={userInfos.username}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              <Field.ErrorText>
-                <FieldErrorIcon />
-                {errors.username}
-              </Field.ErrorText>
-            </Field.Root>
+    <PageLayout imageSrc={homeImage} imagePosition="left" imageSize="25%">
+      <AbsoluteCenter pt={{ base: '25%', md: '10%' }} pl={{ md: '25%' }}>
+        <Flex justify="center">
+          <Box
+            as="form"
+            onSubmit={handleSubmit}
+            borderWidth={{ base: 0, md: 4 }}
+            borderRadius={{ base: 0, md: 4 }}
+            width={{ base: '35vh', md: '50vh' }}
+          >
+            <VStack gap={4} p={{ base: 4, md: 8 }}>
+              <Heading size="3xl">Register</Heading>
+              <Field.Root invalid={!!errors.username}>
+                <Field.Label>Username</Field.Label>
+                <Input
+                  name="username"
+                  placeholder="Username"
+                  value={userInfos.username}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <Field.ErrorText>
+                  <FieldErrorIcon />
+                  {errors.username}
+                </Field.ErrorText>
+              </Field.Root>
 
-            <Field.Root invalid={!!errors.email}>
-              <Field.Label>Email</Field.Label>
-              <Input
-                name="email"
-                placeholder="Email"
-                value={userInfos.email}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              <Field.ErrorText>
-                <FieldErrorIcon />
-                {errors.email}
-              </Field.ErrorText>
-            </Field.Root>
+              <Field.Root invalid={!!errors.email}>
+                <Field.Label>Email</Field.Label>
+                <Input
+                  name="email"
+                  placeholder="Email"
+                  value={userInfos.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <Field.ErrorText>
+                  <FieldErrorIcon />
+                  {errors.email}
+                </Field.ErrorText>
+              </Field.Root>
 
-            <Field.Root invalid={!!errors.password}>
-              <Field.Label>Password</Field.Label>
-              <PasswordInput
-                name="password"
-                type="password"
-                placeholder="Password"
-                value={userInfos.password}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              <Field.ErrorText>
-                <FieldErrorIcon /> {errors.password}
-              </Field.ErrorText>
-            </Field.Root>
+              <Field.Root invalid={!!errors.password}>
+                <Field.Label>Password</Field.Label>
+                <PasswordInput
+                  name="password"
+                  type="password"
+                  placeholder="Password"
+                  value={userInfos.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <Field.ErrorText>
+                  <FieldErrorIcon /> {errors.password}
+                </Field.ErrorText>
+              </Field.Root>
 
-            <Field.Root invalid={!!errors.confirmPassword}>
-              <Field.Label>Confirm your Password</Field.Label>
-              <PasswordInput
-                name="confirmPassword"
-                type="password"
-                placeholder="Confirm your Password"
-                value={userInfos.confirmPassword}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              <Field.ErrorText>
-                <FieldErrorIcon />
-                {errors.confirmPassword}
-              </Field.ErrorText>
-            </Field.Root>
-            <Button
-              disabled={isFormInvalid}
-              loading={isSubmitting}
-              loadingText="Submitting ..."
-              type="submit"
-            >
-              Submit
-              <RiArrowRightLine />
-            </Button>
-            <RouterLink to="/login">Already have an account ?</RouterLink>
-          </VStack>
-        </Box>
-        <Toaster />
-      </Flex>
+              <Field.Root invalid={!!errors.confirmPassword}>
+                <Field.Label>Confirm your Password</Field.Label>
+                <PasswordInput
+                  name="confirmPassword"
+                  type="password"
+                  placeholder="Confirm your Password"
+                  value={userInfos.confirmPassword}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <Field.ErrorText>
+                  <FieldErrorIcon />
+                  {errors.confirmPassword}
+                </Field.ErrorText>
+              </Field.Root>
+              <Button
+                disabled={isFormInvalid}
+                loading={isSubmitting}
+                loadingText="Submitting ..."
+                type="submit"
+                width={{ base: '30vh', md: '40vh' }}
+              >
+                Submit
+                <RiArrowRightLine />
+              </Button>
+              <RouterLink to="/login">Already have an account ?</RouterLink>
+            </VStack>
+          </Box>
+          <Toaster />
+        </Flex>
+      </AbsoluteCenter>
+      <MobileMenu />
     </PageLayout>
   );
 };

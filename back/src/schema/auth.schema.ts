@@ -8,7 +8,7 @@ export const AuthSchema = z.object({
     .string()
     .min(12)
     .max(100)
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()]).{8,14}$/),
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()]).{12,100}$/),
   confirmPassword: z.string().min(1),
 });
 
@@ -18,5 +18,5 @@ export const LoginSchema = z.object({
     .string()
     .min(12)
     .max(100)
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()]).{8,14}$/),
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()]).{12,100}$/),
 });
