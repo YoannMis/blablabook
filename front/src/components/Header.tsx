@@ -10,9 +10,7 @@ import ThemeToggle from './ThemeToggle';
 
 const Header = () => {
   const { t } = useTranslation('common');
-
   const { pathname } = useLocation();
-  console.log(pathname);
 
   return (
     <>
