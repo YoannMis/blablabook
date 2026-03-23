@@ -1,9 +1,10 @@
 import { Box, Flex, HStack, Text } from '@chakra-ui/react';
-import { IoTelescopeSharp } from 'react-icons/io5';
+import { LiaCompass } from 'react-icons/lia';
 import { TbBookFilled } from 'react-icons/tb';
 import { BsPersonCircle } from 'react-icons/bs';
 
 import NavLink from './NavLink';
+import ThemeToggle from './ThemeToggle';
 
 const Header = () => {
   return (
@@ -17,13 +18,14 @@ const Header = () => {
       </Box>
 
       <HStack flex="1" justify="flex-end" gap={6} display={{ base: 'none', md: 'flex' }}>
-        <NavLink to="/" icon={<IoTelescopeSharp />}>
+        <ThemeToggle />
+        <NavLink to="/" icon={LiaCompass}>
           Découvrir
         </NavLink>
-        <NavLink to="/library" icon={<TbBookFilled />}>
+        <NavLink to="/library" icon={TbBookFilled}>
           Bibliothèque
         </NavLink>
-        <NavLink to="/login" icon={<BsPersonCircle />}>
+        <NavLink to="/login" icon={BsPersonCircle}>
           <Text whiteSpace="nowrap">Se connecter</Text>
         </NavLink>
       </HStack>

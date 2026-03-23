@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Category } from '@/types/category';
-import { Button, Text, Box, HStack, Wrap, WrapItem } from '@chakra-ui/react';
+import { Button, Box, HStack, Wrap, WrapItem, Heading } from '@chakra-ui/react';
 
 export interface CategoriesListProps {
   categories: Category[];
@@ -16,14 +16,14 @@ const CategoriesList = ({ categories, onSelectCategory }: CategoriesListProps) =
 
   return (
     <Box>
-      <Text fontWeight="bold" mb={2}>
+      <Heading size="xl" fontWeight="bold" mb={2}>
         Catégories
-      </Text>
+      </Heading>
 
-      <Container {...(!showAll && { overflowX: 'auto', paddingInline: 2 })} gap={3}>
+      <Container {...(!showAll && { overflowX: 'auto', paddingInline: 2 })} gap={3} py={2}>
         {visibleCategories.map((category) => {
           const button = (
-            <Button size="sm" variant="outline" onClick={() => onSelectCategory(category.name)}>
+            <Button size="sm" variant="category" onClick={() => onSelectCategory(category.name)}>
               {category.name}
             </Button>
           );
@@ -36,7 +36,7 @@ const CategoriesList = ({ categories, onSelectCategory }: CategoriesListProps) =
         })}
 
         {categories.length > 10 && (
-          <Button size="sm" variant="ghost" onClick={() => setShowAll((prev) => !prev)}>
+          <Button size="sm" variant="category" onClick={() => setShowAll((prev) => !prev)}>
             {showAll ? 'Voir moins' : 'Voir toutes'}
           </Button>
         )}
