@@ -83,16 +83,16 @@ export const generateRefreshToken = (): { token: string; expiresAt: Date } => {
 };
 
 // Enregistre le refresh token en base de données
-// export const saveRefreshToken = async (userId: number, token: string, expiresAt: Date) => {
-//   return prisma.refreshToken.create({
-//     data: {
-//       token,
-//       userId,
-//       issued_at: new Date(),
-//       expires_at: expiresAt,
-//     },
-//   });
-// };
+export const saveRefreshToken = async (userId: number, token: string, expiresAt: Date) => {
+  return prisma.refreshToken.create({
+    data: {
+      token,
+      userId,
+      issued_at: new Date(),
+      expires_at: expiresAt,
+    },
+  });
+};
 
 // Logique complète de login
 export const login = async (email: string, password: string, rememberMe: boolean) => {
@@ -123,12 +123,12 @@ export const login = async (email: string, password: string, rememberMe: boolean
 
   let refreshToken = null;
   if (!rememberMe) {
-    const { token: newRefreshToken } = generateRefreshToken();
+    const { token: newRefreshToken, expiresAt } = generateRefreshToken();
     refreshToken = newRefreshToken;
-  }
 
-  // Enregistrement du refresh token en base de données
-  // await saveRefreshToken(user.id, refreshToken, expiresAt);
+    // Enregistrement du refresh token en base de données
+    await saveRefreshToken(user.id, refreshToken, expiresAt);
+  }
 
   return {
     user: { id: user.id, username: user.username, email: user.email },
