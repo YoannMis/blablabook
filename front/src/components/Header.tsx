@@ -17,17 +17,22 @@ const Header = () => {
         </Text>
       </Box>
 
-      <HStack flex="1" justify="flex-end" gap={6} display={{ base: 'none', md: 'flex' }}>
-        <ThemeToggle />
-        <NavLink to="/" icon={LiaCompass}>
-          Découvrir
-        </NavLink>
-        <NavLink to="/library" icon={TbBookFilled}>
-          Bibliothèque
-        </NavLink>
-        <NavLink to="/login" icon={BsPersonCircle}>
-          <Text whiteSpace="nowrap">Se connecter</Text>
-        </NavLink>
+      <HStack>
+        <Box display={{ base: 'block', md: 'block' }} ml={{ base: 2, md: 0 }}>
+          <ThemeToggle />
+        </Box>
+
+        <HStack flex="1" justify="flex-end" gap={6} display={{ base: 'none', md: 'flex' }}>
+          <NavLink to="/" icon={LiaCompass}>
+            Découvrir
+          </NavLink>
+          <NavLink to="/library" icon={TbBookFilled}>
+            Bibliothèque
+          </NavLink>
+          <NavLink to="/login" icon={BsPersonCircle}>
+            <Text whiteSpace="nowrap">Se connecter</Text>
+          </NavLink>
+        </HStack>
       </HStack>
     </Flex>
   );
