@@ -1,11 +1,15 @@
-import { Box, Flex, HStack, Text } from '@chakra-ui/react';
+import { Show, Box, Flex, HStack, Text } from '@chakra-ui/react';
 import { IoTelescopeSharp } from 'react-icons/io5';
 import { TbBookFilled } from 'react-icons/tb';
 import { BsPersonCircle } from 'react-icons/bs';
+import { useLocation } from 'react-router';
 
 import NavLink from './NavLink';
 
 const Header = () => {
+  const { pathname } = useLocation();
+  console.log(pathname);
+
   return (
     <Flex align="center" p={4}>
       <Box flex="1" display={{ base: 'none', md: 'block' }} />
@@ -14,6 +18,11 @@ const Header = () => {
         <Text fontSize={{ base: '2xl', md: '4xl', lg: '5xl' }} color="white">
           BlablaBook
         </Text>
+        <Show when={pathname === '/library'}>
+          <Text fontSize={{ base: '3xl', md: '4xl', lg: '5xl' }} color="white">
+            Ma bibliothèque
+          </Text>
+        </Show>
       </Box>
 
       <HStack flex="1" justify="flex-end" gap={6} display={{ base: 'none', md: 'flex' }}>
