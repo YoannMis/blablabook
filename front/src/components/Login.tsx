@@ -48,9 +48,9 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
 
   const isFormInvalid =
-    Object.values(errors).some((error) => error.length > 0) ||
-    Object.values(userInfos).some((value) => !value) ||
-    !checked;
+    Object.values(errors).every((error) => error.length === 0) &&
+    Object.values(userInfos).every((value) => !!value) &&
+    checked;
 
   // fonction de soumission du formulaire
   // en attente du back pour les responses de axios
@@ -233,7 +233,7 @@ const Login = () => {
               </Checkbox.Root>
 
               <Button
-                disabled={isFormInvalid && !checked}
+                disabled={!isFormInvalid}
                 loading={isSubmitting}
                 loadingText="Logging in ..."
                 type="submit"
