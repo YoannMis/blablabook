@@ -46,23 +46,24 @@ const BookDetails = () => {
   }, [id]);
 
   return (
-    <PageLayout imageSrc={homeImage} imagePosition="left">
+    <PageLayout imageSrc={homeImage} imagePosition="left" imageSize={25}>
       <Flex
         direction={{ base: 'column', md: 'row' }}
         align="center"
         height="100%"
         mt={{ base: '-100px', md: '40px' }}
         gap={8}
-        transform={{ base: 'translateY(0)', md: 'translateX(-20%)' }}
+        transform={{ base: 'translateY(0)', md: `translateX(-${25 * 0.5}vw)` }}
         pb={{ base: 20, md: 2 }}
       >
-        <Box>
+        <Box flexShrink={0} width={{ sm: 'calc(10vw * 0.5)', md: 'calc(50vw * 0.5)' }}>
           <Image
             src={getBookImageByScreen(book?.imageLinks)}
             alt={t('details.coverAlt')}
             borderRadius="md"
             boxShadow="xl"
-            width={{ base: '180px', sm: '200px', md: '340px', xl: '400px' }}
+            width={{ base: '180px', sm: '200px', md: '100%' }}
+            height="auto"
           />
         </Box>
 

@@ -1,4 +1,4 @@
-import { Box, Image, IconButton, Text, VStack } from '@chakra-ui/react';
+import { Box, Image, IconButton, VStack, Heading } from '@chakra-ui/react';
 import { TiPlus } from 'react-icons/ti';
 import { useNavigate } from 'react-router';
 import { slugify } from '../utils/stringUtils';
@@ -87,9 +87,9 @@ const BookCard = ({ book }: BookCardProps) => {
         </IconButton>
       </Box>
 
-      <Text fontSize="sm" fontWeight="medium" lineClamp={2}>
+      <Heading size="sm" fontWeight="medium" lineClamp={2}>
         {title}
-      </Text>
+      </Heading>
     </VStack>
   );
 };

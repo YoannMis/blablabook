@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Category } from '@/types/category';
-import { Button, Text, Box, HStack, Wrap, WrapItem } from '@chakra-ui/react';
+import { Button, Heading, Box, HStack, Wrap, WrapItem } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 
 export interface CategoriesListProps {
@@ -18,14 +18,14 @@ const CategoriesList = ({ categories, onSelectCategory }: CategoriesListProps) =
 
   return (
     <Box>
-      <Text fontWeight="bold" mb={2}>
+      <Heading fontWeight="bold" mb={2}>
         {t('categories.title')}
-      </Text>
+      </Heading>
 
-      <Container {...(!showAll && { overflowX: 'auto', paddingInline: 2 })} gap={3}>
+      <Container {...(!showAll && { overflowX: 'auto', paddingInline: 2 })} gap={3} py={2}>
         {visibleCategories.map((category) => {
           const button = (
-            <Button size="sm" variant="outline" onClick={() => onSelectCategory(category.name)}>
+            <Button size="sm" variant="category" onClick={() => onSelectCategory(category.name)}>
               {category.name}
             </Button>
           );

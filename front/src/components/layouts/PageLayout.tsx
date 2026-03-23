@@ -7,27 +7,32 @@ type PageLayoutProps = {
   children: ReactNode;
   header?: ReactNode;
   imagePosition?: 'top' | 'left';
-  imageSize?: string;
+  imageSize?: number;
 };
 
 export const PageLayout: React.FC<PageLayoutProps> = ({
   imageSrc,
   imagePosition = 'top',
-  imageSize = '20%',
+  imageSize = 20,
   children,
 }) => {
   const flexDirection = { base: 'column', md: imagePosition === 'left' ? 'row' : 'column' };
+  const imageHeight = `${imageSize}vh`;
+  const imageWidth = `${imageSize}vw`;
 
   return (
-    <Flex direction={flexDirection} width="100%" height="100vh" position="relative">
+    <Flex direction={flexDirection} width="100%" position="relative">
       <Box position="absolute" top={0} right={0} width="100%" zIndex={10} padding={4}>
         <Header />
       </Box>
 
       <Box
         flexShrink={0}
-        width={{ base: '100%', md: imagePosition === 'left' ? imageSize : '100%' }}
-        height={{ base: imageSize, md: imagePosition === 'left' ? '100%' : imageSize }}
+        width={{ base: '100%', md: imagePosition === 'left' ? imageWidth : '100%' }}
+        height={{
+          base: imageHeight,
+          md: imagePosition === 'left' ? '100vh' : imageHeight,
+        }}
         position="relative"
       >
         <Image src={imageSrc} alt="Page image" objectFit="cover" width="100%" height="100%" />

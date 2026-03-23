@@ -24,11 +24,16 @@ const SearchBar = ({ searchValue, onChange, onSubmit, onClear }: SearchBarProps)
       endElement={
         <HStack gap={1} paddingInline={0}>
           {searchValue && (
-            <Button aria-label={t('search.clear')} variant="plain" onClick={onClear} color="gray.400">
+            <Button
+              aria-label={t('search.clear')}
+              variant="plain"
+              onClick={onClear}
+              color="brown.600"
+            >
               {t('search.clear')}
             </Button>
           )}
-          <IconButton aria-label={t('search.ariaLabel')} size="sm" onClick={onSubmit}>
+          <IconButton aria-label={t('search.ariaLabel')} size="md" onClick={onSubmit}>
             <LuSearch />
           </IconButton>
         </HStack>
