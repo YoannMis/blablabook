@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Category } from '@/types/category';
 import { Button, Text, Box, HStack, Wrap, WrapItem } from '@chakra-ui/react';
+import { useTranslation } from 'react-i18next';
 
 export interface CategoriesListProps {
   categories: Category[];
@@ -9,6 +10,7 @@ export interface CategoriesListProps {
 
 const CategoriesList = ({ categories, onSelectCategory }: CategoriesListProps) => {
   const [showAll, setShowAll] = useState(false);
+  const { t } = useTranslation('common');
 
   const visibleCategories = showAll ? categories : categories.slice(0, 10);
 
@@ -17,7 +19,7 @@ const CategoriesList = ({ categories, onSelectCategory }: CategoriesListProps) =
   return (
     <Box>
       <Text fontWeight="bold" mb={2}>
-        Catégories
+        {t('categories.title')}
       </Text>
 
       <Container {...(!showAll && { overflowX: 'auto', paddingInline: 2 })} gap={3}>
@@ -37,7 +39,7 @@ const CategoriesList = ({ categories, onSelectCategory }: CategoriesListProps) =
 
         {categories.length > 10 && (
           <Button size="sm" variant="ghost" onClick={() => setShowAll((prev) => !prev)}>
-            {showAll ? 'Voir moins' : 'Voir toutes'}
+            {showAll ? t('categories.showLess') : t('categories.showAll')}
           </Button>
         )}
       </Container>

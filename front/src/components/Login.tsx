@@ -11,6 +11,7 @@ import { Toaster, toaster } from './ui/toaster';
 import { PageLayout } from './layouts/PageLayout';
 import homeImage from '../assets/homePageImage.jpg';
 import { Link as RouterLink, useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 
 //Typage Typescript
 type LoginFormValues = z.infer<typeof LoginSchema>;
@@ -18,6 +19,8 @@ type LoginErrorResponse = Partial<Record<keyof LoginFormValues, string>>;
 
 //Formulaire
 const Login = () => {
+  const { t } = useTranslation('auth');
+
   const [userInfos, setUserInfos] = useState<LoginFormValues>({
     email: '',
     password: '',
@@ -37,7 +40,6 @@ const Login = () => {
     Object.values(userInfos).some((value) => !value);
 
   // fonction de soumission du formulaire
-  // en attente du back pour les responses de axios
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
     setIsSubmitting(true);
@@ -51,8 +53,8 @@ const Login = () => {
       if (response.data.success && response.data.data) {
         console.log('User created', response.data.data);
         toaster.create({
-          title: 'Login Success',
-          description: `You have successfully Logged in`,
+          title: t('login.successTitle'),
+          description: t('login.successDescription'),
           type: 'success',
           duration: 3000,
           closable: true,
@@ -64,11 +66,10 @@ const Login = () => {
           password: '',
         });
 
-        // Redirection vers la page de connexion
+        // Redirection vers la page d'accueil
         setTimeout(() => {
           navigate('/');
         }, 2000);
-        // navigate('/');
       } else {
         console.error('Logging in failed', response.data.message);
       }
@@ -76,19 +77,19 @@ const Login = () => {
       console.log('error', error);
       // Traitement des erreurs
       if (axios.isAxiosError<LoginErrorResponse>(error)) {
-        const registerError = error.response?.data || 'An error occurred during registration';
-        if (registerError) {
+        const loginError = error.response?.data || t('login.defaultError');
+        if (loginError) {
           toaster.create({
-            title: 'Register Error',
-            description: registerError,
+            title: t('login.errorTitle'),
+            description: loginError,
             type: 'error',
             duration: 3000,
             closable: true,
           });
         } else {
           toaster.create({
-            title: 'Server Error',
-            description: 'The server is not reachable',
+            title: t('login.serverErrorTitle'),
+            description: t('login.serverErrorDescription'),
             type: 'error',
             duration: 3000,
             closable: true,
@@ -136,16 +137,16 @@ const Login = () => {
       <Flex justify="center">
         <Box as="form" onSubmit={handleSubmit}>
           <VStack gap={4}>
-            <Heading size="3xl">Connection</Heading>
+            <Heading size="3xl">{t('login.title')}</Heading>
 
             <Field.Root invalid={!!errors.email}>
               <Field.Label>
                 <IoMailOutline />
-                Email
+                {t('login.email')}
               </Field.Label>
               <Input
                 name="email"
-                placeholder="Email"
+                placeholder={t('login.emailPlaceholder')}
                 value={userInfos.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -159,12 +160,12 @@ const Login = () => {
             <Field.Root invalid={!!errors.password}>
               <Field.Label>
                 <TbPasswordUser />
-                Password
+                {t('login.password')}
               </Field.Label>
               <PasswordInput
                 name="password"
                 type="password"
-                placeholder="Password"
+                placeholder={t('login.passwordPlaceholder')}
                 value={userInfos.password}
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -177,13 +178,13 @@ const Login = () => {
             <Button
               disabled={isFormInvalid}
               loading={isSubmitting}
-              loadingText="Logging in ..."
+              loadingText={t('login.submitting')}
               type="submit"
             >
-              Login
+              {t('login.submit')}
               <RiArrowRightLine />
             </Button>
-            <RouterLink to="/register">You don't have an account ?</RouterLink>
+            <RouterLink to="/register">{t('login.noAccount')}</RouterLink>
           </VStack>
         </Box>
         <Toaster />

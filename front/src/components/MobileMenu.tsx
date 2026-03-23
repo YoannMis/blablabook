@@ -3,8 +3,11 @@ import NavLink from './NavLink';
 import { IoTelescopeSharp } from 'react-icons/io5';
 import { TbBookFilled } from 'react-icons/tb';
 import { BsPersonCircle } from 'react-icons/bs';
+import { useTranslation } from 'react-i18next';
 
 const MobileMenu = () => {
+  const { t } = useTranslation('common');
+
   return (
     <Flex
       as="nav"
@@ -18,13 +21,13 @@ const MobileMenu = () => {
       p={4}
     >
       <NavLink to="/" icon={<IoTelescopeSharp />} vertical>
-        Découvrir
+        {t('nav.discover')}
       </NavLink>
       <NavLink to="/library" icon={<TbBookFilled />} vertical>
-        Bibliothèque
+        {t('nav.library')}
       </NavLink>
       <NavLink to="/login" icon={<BsPersonCircle />} vertical>
-        Se connecter
+        {t('nav.login')}
       </NavLink>
     </Flex>
   );
