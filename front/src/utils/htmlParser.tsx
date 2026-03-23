@@ -5,9 +5,10 @@ import parse, {
   type DOMNode,
 } from 'html-react-parser';
 import { Text, List, ListItem } from '@chakra-ui/react';
+import i18n from '../i18n';
 
 export const renderDescription = (html?: string) => {
-  if (!html) return <Text>No description available.</Text>;
+  if (!html) return <Text>{i18n.t('common:noDescription')}</Text>;
 
   const allowedTags = ['b', 'i', 'p', 'ul', 'li'];
 
