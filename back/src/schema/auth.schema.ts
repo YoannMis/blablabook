@@ -19,4 +19,5 @@ export const LoginSchema = z.object({
     .min(12)
     .max(100)
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()]).{12,100}$/),
+  rememberMe: z.boolean().default(false),
 });

@@ -27,11 +27,17 @@ export const registerUser = async (data: AuthFormValues) => {
 
   // Vérification de l'existence de l'utilisateur
   if (await userExists(email)) {
-    throw new Error('USER_ALREADY_EXISTS');
+    throw {
+      status: 401,
+      message: 'User already exists',
+    };
   }
 
   if (await usernameExists(username)) {
-    throw new Error('USERNAME_ALREADY_TAKEN');
+    throw {
+      status: 401,
+      message: 'Username already taken',
+    };
   }
 
   // Hachage du mot de passe
@@ -89,17 +95,23 @@ export const generateRefreshToken = (): { token: string; expiresAt: Date } => {
 // };
 
 // Logique complète de login
-export const login = async (email: string, password: string) => {
+export const login = async (email: string, password: string, rememberMe: boolean) => {
   // Recherche de l'utilisateur
   const user = await findUserByEmail(email);
   if (!user) {
-    throw new Error('INVALID_CREDENTIALS');
+    throw {
+      status: 401,
+      message: 'INVALID_CREDENTIALS',
+    };
   }
 
   // Vérification du mot de passe
   const isPasswordValid = await verifyPassword(user.password, password);
   if (!isPasswordValid) {
-    throw new Error('INVALID_CREDENTIALS');
+    throw {
+      status: 401,
+      message: 'INVALID_CREDENTIALS',
+    };
   }
 
   // Génération des tokens
@@ -109,7 +121,11 @@ export const login = async (email: string, password: string) => {
     email: user.email,
   });
 
-  const { token: refreshToken } = generateRefreshToken();
+  let refreshToken = null;
+  if (!rememberMe) {
+    const { token: newRefreshToken } = generateRefreshToken();
+    refreshToken = newRefreshToken;
+  }
 
   // Enregistrement du refresh token en base de données
   // await saveRefreshToken(user.id, refreshToken, expiresAt);

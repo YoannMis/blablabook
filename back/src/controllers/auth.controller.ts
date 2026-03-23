@@ -50,9 +50,9 @@ export const registerUserController = async (req: Request, res: Response) => {
 export const loginUserController = async (req: Request, res: Response) => {
   try {
     // validation du body de la requête
-    const { email, password } = LoginSchema.parse(req.body) as LoginFormValues;
+    const { email, password, rememberMe } = LoginSchema.parse(req.body) as LoginFormValues;
     // appelle auth service pour se connecter
-    const { user, token, refreshtoken } = await login(email, password);
+    const { user, token, refreshtoken } = await login(email, password, rememberMe);
 
     // mise en place des cookies
     res.cookie('token', token, {

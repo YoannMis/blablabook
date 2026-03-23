@@ -9,6 +9,8 @@ import {
   Flex,
   VStack,
   AbsoluteCenter,
+  Checkbox,
+  Link,
 } from '@chakra-ui/react';
 import { PasswordInput } from '../components/ui/password-input';
 import LoginSchema from '../schema/login.schema';
@@ -42,10 +44,13 @@ const Login = () => {
   const navigate = useNavigate();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [checked, setChecked] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const isFormInvalid =
     Object.values(errors).some((error) => error.length > 0) ||
-    Object.values(userInfos).some((value) => !value);
+    Object.values(userInfos).some((value) => !value) ||
+    !checked;
 
   // fonction de soumission du formulaire
   // en attente du back pour les responses de axios
@@ -55,7 +60,7 @@ const Login = () => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/auth/login`,
-        userInfos,
+        { ...userInfos, rememberMe },
         { headers: { 'Content-Type': 'application/json', withCredentials: true } }
       );
       // Traitement de la résponse
@@ -85,7 +90,7 @@ const Login = () => {
     } catch (error) {
       // Gestion des erreurs (y compris les erreurs lancées par le backend)
       if (axios.isAxiosError(error)) {
-        // Cas 1 : Erreur HTTP (ex: 401, 500)
+        // Erreur HTTP (ex: 401, 500)
         const errorMessage = error.response?.data?.message || error.message;
         toaster.create({
           title: 'Login Error',
@@ -96,7 +101,7 @@ const Login = () => {
           closable: true,
         });
       } else if (error instanceof Error) {
-        // Cas 2 : Erreur lancée manuellement (ex: throw new Error)
+        // Erreur lancée manuellement (ex: throw new Error)
         toaster.create({
           title: 'Login Error',
           description:
@@ -108,7 +113,7 @@ const Login = () => {
           closable: true,
         });
       } else {
-        // Cas 3 : Erreur inattendue
+        // Erreur inattendue
         toaster.create({
           title: 'Server Error',
           description: 'The server is not reachable',
@@ -207,9 +212,28 @@ const Login = () => {
                   </Field.ErrorText>
                 </Box>
               </Field.Root>
+              <Checkbox.Root
+                checked={rememberMe}
+                onCheckedChange={(e) => setRememberMe(!!e.checked)}
+              >
+                <Checkbox.HiddenInput name="rememberMe" />
+                <Checkbox.Control />
+                <Checkbox.Label>Remember me</Checkbox.Label>
+              </Checkbox.Root>
+
+              <Checkbox.Root checked={checked} onCheckedChange={(e) => setChecked(!!e.checked)}>
+                <Checkbox.HiddenInput />
+                <Checkbox.Control />
+                <Checkbox.Label>
+                  I agree to the{' '}
+                  <Link colorPalette="teal" href="https://google.com">
+                    terms and conditions
+                  </Link>
+                </Checkbox.Label>
+              </Checkbox.Root>
 
               <Button
-                disabled={isFormInvalid}
+                disabled={isFormInvalid && !checked}
                 loading={isSubmitting}
                 loadingText="Logging in ..."
                 type="submit"
