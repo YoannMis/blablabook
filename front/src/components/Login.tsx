@@ -64,8 +64,8 @@ const Login = () => {
         ...userInfos,
         rememberMe,
       });
-      console.log('Login response:', response.data.data.user);
-      setUser(response.data.user);
+
+      setUser(response.data.data);
 
       if (response.data.success && response.data.data) {
         toaster.create({
