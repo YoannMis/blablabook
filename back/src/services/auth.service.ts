@@ -152,3 +152,10 @@ export const login = async (email: string, password: string, rememberMe: boolean
     RefreshToken,
   };
 };
+
+export const getCurrentUser = async (userId: number) => {
+  return prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, username: true, email: true, createdAt: true },
+  });
+};

@@ -2,7 +2,8 @@ import type z from 'zod';
 import { AuthSchema, LoginSchema } from '../schema/auth.schema';
 import type { Request, Response } from 'express';
 import { convertInMs } from '../utils/time.utils';
-import { login, registerUser, type UserError } from '../services/auth.service';
+import { getCurrentUser, login, registerUser, type UserError } from '../services/auth.service';
+import { AuthRequest } from '../middlewares/auth.middleware';
 
 //Typage Typescript
 type AuthFormValues = z.infer<typeof AuthSchema>;
@@ -92,5 +93,24 @@ export const loginUserController = async (req: Request, res: Response) => {
       return res.status(401).json({ success: false, message: 'INVALID_CREDENTIALS' });
     }
     return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+export const getCurrentUserController = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.userId;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Not authenticated' });
+    }
+
+    const user = await getCurrentUser(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    return res.json({ success: true, data: user });
+  } catch (error) {
+    console.error('getCurrentUser error', error);
+    return res.status(500).json({ success: false, message: 'Server error' });
   }
 };
