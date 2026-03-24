@@ -62,8 +62,12 @@ const LibraryPage = () => {
             onSubmit={handleSubmit}
             onClear={handleClear}
           />
-          <Tabs.Root defaultValue="all-books" navigate={({ value }) => navigate(`/${value}`)}>
-            <Tabs.List>
+          <Tabs.Root
+            defaultValue="all-books"
+            justify="center"
+            navigate={({ value }) => navigate(`/${value}`)}
+          >
+            <Tabs.List justifySelf="center">
               <Tabs.Trigger value="all-books" asChild>
                 <ChakraLink unstyled>
                   <GiBookshelf />

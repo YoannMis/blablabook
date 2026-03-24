@@ -114,11 +114,11 @@ const BookCard = ({ book }: BookCardProps) => {
       </Box>
 
       <Box textAlign="left">
-        <Heading size="sm" fontWeight="medium" lineClamp={2}>
+        <Heading size={{ base: 'md', md: 'sm' }} fontWeight="medium" lineClamp={2}>
           {title}
         </Heading>
         <Show when={pathname === '/library'}>
-          <Text>{authors?.join(', ')}</Text>
+          <Text fontSize={{ base: 'md', md: 'sm' }}>{authors?.join(', ')}</Text>
         </Show>
       </Box>
       {pathname === '/library' && (
