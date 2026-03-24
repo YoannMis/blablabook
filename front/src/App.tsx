@@ -4,6 +4,8 @@ import Register from './components/Register';
 import HomePage from './components/HomePage';
 import BookDetails from './components/BookDetails';
 import Login from './components/Login';
+import ProtectedRoute from './components/ProtectedRoute';
+import Account from './components/Account';
 
 const App = () => {
   return (
@@ -14,6 +16,14 @@ const App = () => {
           <Route path="/books/:category/:id" element={<BookDetails />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route
+            path="/account"
+            element={
+              <ProtectedRoute>
+                <Account />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </UserProvider>
