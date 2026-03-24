@@ -1,5 +1,7 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import axios from 'axios';
 import type { User } from '../types/user';
+import { Spinner } from '@chakra-ui/react';
 
 type UserContextType = {
   user: User | null;
@@ -16,6 +18,27 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   const isLoggedIn = !!user;
+
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
+          withCredentials: true,
+        });
+
+        setUser(response.data?.data ?? null);
+      } catch (error) {
+        console.error('Failed to fetch current user', error);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCurrentUser();
+  }, []);
+
+  if (loading) return <Spinner />;
 
   return (
     <UserContext.Provider
