@@ -30,11 +30,11 @@ export const buttonRecipe = defineRecipe({
       category: {
         borderRadius: 'xl',
         bg: { _light: 'brown.400', _dark: 'brown.600' },
-        color: { _light: 'light.100', _dark: 'light.100' },
-        boxShadow: { _light: '2px 2px 5px 0px var(--chakra-colors-brown-600)' },
+        color: { _light: 'light.50', _dark: 'light.100' },
+        boxShadow: { _light: '0 1px 2px rgba(122,111,93,0.2)' },
         _hover: {
           transform: 'translateY(-1px)',
-          boxShadow: { _light: '2px 4px 6px 0px var(--chakra-colors-brown-600)' },
+          boxShadow: { _light: '0 2px 4px rgba(122,111,93,0.25)' },
         },
       },
     },
