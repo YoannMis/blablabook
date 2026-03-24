@@ -30,6 +30,7 @@ const HomePage = () => {
     handleLoadMoreBooks,
     handleClear,
     isLoading,
+    isInitialLoading,
     hasMoreResults,
     activeQuery,
   } = useBookSearch();
@@ -82,6 +83,7 @@ const HomePage = () => {
             <BookCardList
               title={t('search.resultsFor', { query: searchValue })}
               books={searchResults}
+              isLoading={isInitialLoading}
             />
             {hasMoreResults && (
               <Button onClick={handleLoadMoreBooks} loading={isLoading} mt={4}>

@@ -16,6 +16,7 @@ export const useBookSearch = () => {
   const [searchResults, setSearchResults] = useState<Book[]>([]);
   const [startIndex, setStartIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(false);
   const [hasMoreResults, setHasMoreResults] = useState(true);
   const [activeQuery, setActiveQuery] = useState('');
 
@@ -43,17 +44,17 @@ export const useBookSearch = () => {
    */
   const fetchBooks = async (query: string, index = 0, setUrl = false) => {
     if (!query) return;
+    const initial = index === 0;
+    if (initial) setIsInitialLoading(true);
+    else setIsLoading(true);
     try {
-      setIsLoading(true);
-      setStartIndex(index);
-
       if (setUrl) setSearchParams({ q: query });
 
       const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/books/search`, {
         params: { q: query, startIndex: index },
       });
 
-      if (index === 0) {
+      if (initial) {
         setSearchResults(data);
         setHasMoreResults(data.length === 20);
       } else {
@@ -62,7 +63,8 @@ export const useBookSearch = () => {
         if (data.length < 20) setHasMoreResults(false);
       }
     } finally {
-      setIsLoading(false);
+      if (initial) setIsInitialLoading(false);
+      else setIsLoading(false);
     }
   };
 
@@ -93,6 +95,7 @@ export const useBookSearch = () => {
     handleLoadMoreBooks,
     handleClear,
     isLoading,
+    isInitialLoading,
     hasMoreResults,
     activeQuery,
   };
