@@ -59,7 +59,7 @@ export const loginUserController = async (req: Request, res: Response) => {
     // validation du body de la requête
     const { email, password, rememberMe } = LoginSchema.parse(req.body) as LoginFormValues;
     // appelle auth service pour se connecter
-    const { user, token, RefreshToken } = await login(email, password, rememberMe);
+    const { user, token, refreshToken } = await login(email, password, rememberMe);
 
     // mise en place des cookies
     res.cookie('token', token, {
@@ -69,7 +69,7 @@ export const loginUserController = async (req: Request, res: Response) => {
       maxAge: convertInMs(process.env.JWT_EXPIRES_IN as string),
       path: '/api',
     });
-    res.cookie('refreshtoken', RefreshToken, {
+    res.cookie('refreshtoken', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',

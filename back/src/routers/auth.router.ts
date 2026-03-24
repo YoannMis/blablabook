@@ -4,6 +4,7 @@ import {
   loginUserController,
   registerUserController,
 } from '../controllers/auth.controller.js';
+import { refreshTokenController } from '../controllers/refreshToken.controller.js';
 import { authenticateToken } from '../middlewares/auth.middleware.js';
 
 const authRouter = Router();
@@ -11,6 +12,7 @@ const authRouter = Router();
 authRouter.post('/register', registerUserController);
 authRouter.post('/login', loginUserController);
 authRouter.get('/me', authenticateToken, getCurrentUserController);
+authRouter.post('/refresh', refreshTokenController);
 // authRouter.post('/logout');
 
 export default authRouter;
