@@ -90,11 +90,11 @@ export const generateToken = (payload: { id: number; username: string; email: st
 };
 
 // Génère un refresh token
-export const generateRefreshToken = (): { token: string; expiresAt: Date } => {
+export const generateRefreshToken = (expiresIn: string): { token: string; expiresAt: Date } => {
   const token = crypto.randomBytes(128).toString('base64');
-  const expiresAt = new Date(
-    Date.now() + convertInMs(process.env.REFRESH_TOKEN_EXPIRES_IN as string)
-  );
+
+  const expiresAt = new Date(Date.now() + convertInMs(expiresIn));
+
   return { token, expiresAt };
 };
 
@@ -137,14 +137,9 @@ export const login = async (email: string, password: string, rememberMe: boolean
     email: user.email,
   });
 
-  let refreshToken = null;
-  if (rememberMe) {
-    const { token: newRefreshToken, expiresAt } = generateRefreshToken();
-    refreshToken = newRefreshToken;
+  const { token: refreshToken, expiresAt } = generateRefreshToken(rememberMe ? '30d' : '1d');
 
-    // Enregistrement du refresh token en base de données
-    await saveRefreshToken(user.id, refreshToken, expiresAt);
-  }
+  await saveRefreshToken(user.id, refreshToken, expiresAt);
 
   return {
     user: { id: user.id, username: user.username, email: user.email },

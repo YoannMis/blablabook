@@ -74,7 +74,7 @@ export const loginUserController = async (req: Request, res: Response) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       maxAge: convertInMs(process.env.REFRESH_TOKEN_EXPIRES_IN as string),
-      path: '/api/auth',
+      path: '/api',
     });
 
     // creation d'une constante newuser contenant les information de user sans le password
