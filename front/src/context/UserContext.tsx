@@ -32,7 +32,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   // --- Try to refresh the token via /auth/refresh ---
   const tryRefreshSession = async (): Promise<User | null> => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/refresh`, {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/refresh`, {
         withCredentials: true,
       });
       return response.data?.data ?? null;
@@ -42,13 +42,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const fetchUserWithRefresh = async () => {
-    // If there is no refreshToken cookie: do nothing (avoids unnecessary API calls)
-    if (!document.cookie.includes('refreshToken')) {
-      setUser(null);
-      setLoading(false);
-      return;
-    }
-
     let currentUser = await tryFetchUser();
 
     if (!currentUser) {
