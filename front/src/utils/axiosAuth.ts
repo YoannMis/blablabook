@@ -1,4 +1,3 @@
-import { useCurrentUser } from '../context/UserContext';
 import axios from 'axios';
 
 // Create an Axios instance for all authenticated requests
@@ -20,20 +19,13 @@ axiosAuth.interceptors.response.use(
 
       try {
         // Call the refresh endpoint to get a new token
-        const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/refresh`, {
+        await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/refresh`, {
           withCredentials: true,
         });
-
-        // Update the UserContext with new user info
-        const { setUser } = useCurrentUser();
-        setUser(data.data);
 
         // Retry the original request with the new token
         return axiosAuth(originalRequest);
       } catch (refreshError) {
-        // If refresh fails → logout the user
-        const { setUser } = useCurrentUser();
-        setUser(null);
         return Promise.reject(refreshError);
       }
     }

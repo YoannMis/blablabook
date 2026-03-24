@@ -23,6 +23,8 @@ import homeImage from '../assets/homePageImage.jpg';
 import { Link as RouterLink, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import MobileMenu from './MobileMenu';
+import { axiosAuth } from '../utils/axiosAuth';
+import { useCurrentUser } from '../context/UserContext';
 
 //Typage Typescript
 type LoginFormValues = z.infer<typeof LoginSchema>;
@@ -31,6 +33,7 @@ type LoginErrorResponse = Partial<Record<keyof LoginFormValues, string>>;
 //Formulaire
 const Login = () => {
   const { t } = useTranslation('auth');
+  const { setUser } = useCurrentUser();
 
   const [userInfos, setUserInfos] = useState<LoginFormValues>({
     email: '',
@@ -57,12 +60,13 @@ const Login = () => {
     event.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/auth/login`,
-        { ...userInfos, rememberMe },
-        { headers: { 'Content-Type': 'application/json', withCredentials: true } }
-      );
-      // Traitement de la résponse
+      const response = await axiosAuth.post('/api/auth/login', {
+        ...userInfos,
+        rememberMe,
+      });
+      console.log('Login response:', response.data.data.user);
+      setUser(response.data.user);
+
       if (response.data.success && response.data.data) {
         toaster.create({
           title: t('login.successTitle'),
@@ -72,7 +76,6 @@ const Login = () => {
           closable: true,
         });
 
-        // Vider le formulaire
         setUserInfos({
           email: '',
           password: '',
