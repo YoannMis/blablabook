@@ -1,4 +1,4 @@
-import { Box, VStack } from '@chakra-ui/react';
+import { Box, VStack, HStack } from '@chakra-ui/react';
 import BookCard from './BookCard';
 
 interface CollectionListProps {
@@ -7,7 +7,12 @@ interface CollectionListProps {
 
 const CollectionList = ({ books }: CollectionListProps) => (
   <Box>
-    <VStack gap={6} align="stretch">
+    <HStack display={{ base: 'none', md: 'flex' }} flexWrap="wrap" gap={6} align="stretch">
+      {books.map((book) => (
+        <BookCard key={book.id} book={book} />
+      ))}
+    </HStack>
+    <VStack display={{ md: 'none' }} gap={6} align="stretch">
       {books.map((book) => (
         <BookCard key={book.id} book={book} />
       ))}

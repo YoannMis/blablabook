@@ -1,4 +1,4 @@
-import { Box, Text, Image, IconButton, VStack, Heading } from '@chakra-ui/react';
+import { Box, Text, Image, IconButton, Heading, Flex, Show } from '@chakra-ui/react';
 import { TiPlus } from 'react-icons/ti';
 import { useNavigate, useLocation } from 'react-router';
 import { slugify } from '../utils/stringUtils';
@@ -25,17 +25,21 @@ const BookCard = ({ book }: BookCardProps) => {
   };
 
   return (
-    <VStack
+    <Flex
       role="group"
-      gap={3}
-      align="start"
+      position="relative"
+      direction={pathname === '/library' ? { base: 'row', md: 'column' } : 'column'}
+      gapX={6}
+      gapY={3}
+      align="center"
       minW={{ base: '140px', md: '160px' }}
       cursor="pointer"
-      onClick={handleClick}
+      borderTop={pathname === '/library' ? { base: 'solid', md: 'none' } : 'none'}
+      borderTopWidth="1px"
+      py={pathname === '/library' ? { base: '3', md: '0' } : '0'}
     >
       <Box
         position="relative"
-        w="100%"
         h={{ base: '210px', md: '230px' }}
         borderRadius="xl"
         overflow="hidden"
@@ -52,10 +56,11 @@ const BookCard = ({ book }: BookCardProps) => {
           src={imageLinks?.thumbnail || noBookCover}
           alt={title}
           objectFit="cover"
-          w="100%"
+          w={{ base: '140px', md: '100%' }}
           h="100%"
           transition="transform 0.3s ease"
           _groupHover={{ transform: 'scale(1.05)' }}
+          onClick={handleClick}
         />
 
         {averageRating !== undefined && (
@@ -108,14 +113,20 @@ const BookCard = ({ book }: BookCardProps) => {
         )}
       </Box>
 
-      <Heading size="sm" fontWeight="medium" lineClamp={2}>
-        {title}
-      </Heading>
-      {pathname === '/library' && <Text>{authors?.join(', ')}</Text>}
-      <Box display={{ base: 'block', md: 'none' }}>
-        <BookDotsMenu />
+      <Box textAlign="left">
+        <Heading size="sm" fontWeight="medium" lineClamp={2}>
+          {title}
+        </Heading>
+        <Show when={pathname === '/library'}>
+          <Text>{authors?.join(', ')}</Text>
+        </Show>
       </Box>
-    </VStack>
+      {pathname === '/library' && (
+        <Box display={{ base: 'block', md: 'none' }} position="absolute" top={3} right={2}>
+          <BookDotsMenu />
+        </Box>
+      )}
+    </Flex>
   );
 };
 
