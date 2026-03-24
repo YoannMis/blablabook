@@ -8,9 +8,7 @@ import {
   FieldErrorIcon,
   Flex,
   VStack,
-  AbsoluteCenter,
   Checkbox,
-  Link,
 } from '@chakra-ui/react';
 import { PasswordInput } from '../components/ui/password-input';
 import LoginSchema from '../schema/login.schema';
@@ -47,13 +45,12 @@ const Login = () => {
   const navigate = useNavigate();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [checked, setChecked] = useState(false);
+
   const [rememberMe, setRememberMe] = useState(false);
 
   const isFormInvalid =
     Object.values(errors).every((error) => error.length === 0) &&
-    Object.values(userInfos).every((value) => !!value) &&
-    checked;
+    Object.values(userInfos).every((value) => !!value.trim());
 
   // fonction de soumission du formulaire
   const handleSubmit = async (event: React.SyntheticEvent) => {
@@ -67,7 +64,6 @@ const Login = () => {
       );
       // Traitement de la résponse
       if (response.data.success && response.data.data) {
-        console.log('User created', response.data.data);
         toaster.create({
           title: t('login.successTitle'),
           description: t('login.successDescription'),
@@ -97,19 +93,7 @@ const Login = () => {
         toaster.create({
           title: t('login.defaultError'),
           description:
-            errorMessage === 'INVALID_CREDENTIALS' ? 'Invalid email or password' : errorMessage,
-          type: 'error',
-          duration: 3000,
-          closable: true,
-        });
-      } else if (error instanceof Error) {
-        // Erreur lancée manuellement (ex: throw new Error)
-        toaster.create({
-          title: t('login.errorTitle'),
-          description:
-            error.message === 'INVALID_CREDENTIALS'
-              ? 'Invalid email or password'
-              : 'An unexpected error occurred',
+            errorMessage === 'INVALID_CREDENTIALS' ? t('login.error') : t('login.serverErrorTitle'),
           type: 'error',
           duration: 3000,
           closable: true,
@@ -161,59 +145,66 @@ const Login = () => {
   };
 
   return (
-    <PageLayout imageSrc={homeImage} imagePosition="left" imageSize={25}>
-      <AbsoluteCenter pt={{ base: '25%', md: '10%' }} pl={{ md: '25%' }}>
-        <Flex justify="center">
-          <Box
-            as="form"
-            onSubmit={handleSubmit}
-            borderWidth={{ base: 0, md: 4 }}
-            borderRadius={{ base: 0, md: 4 }}
-            width={{ base: '35vh', md: '50vh' }}
-          >
-            <VStack gap={4} p={{ base: 4, md: 8 }}>
-              <Heading size="3xl">{t('login.title')}</Heading>
+    <PageLayout imageSrc={homeImage} imagePosition="left" imageSize={20}>
+      <Flex justify="center" align="center" mt={{ md: '15%' }}>
+        <Box
+          as="form"
+          onSubmit={handleSubmit}
+          borderWidth={{ base: 0, md: 4 }}
+          borderRadius={{ base: 0, md: 4 }}
+          width={{ base: '40vh', md: '50vh' }}
+          height={{ base: '100vh', md: 'auto' }}
+        >
+          <VStack p={{ base: 4, md: 8 }} align="start" width="100%">
+            <Heading
+              size={{ base: 'xl', md: '3xl' }}
+              fontWeight={{ base: 'sm', md: 'md' }}
+              alignSelf="center"
+            >
+              {t('login.title')}
+            </Heading>
 
-              <Field.Root invalid={!!errors.email}>
-                <Field.Label>
-                  <IoMailOutline />
-                  {t('login.email')}
-                </Field.Label>
-                <Input
-                  name="email"
-                  placeholder={t('login.emailPlaceholder')}
-                  value={userInfos.email}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-                <Box minH={6}>
-                  <Field.ErrorText>
-                    <FieldErrorIcon />
-                    {errors.email}
-                  </Field.ErrorText>
-                </Box>
-              </Field.Root>
+            <Field.Root invalid={!!errors.email}>
+              <Field.Label>
+                <IoMailOutline />
+                {t('login.email')}
+              </Field.Label>
+              <Input
+                name="email"
+                placeholder={t('login.emailPlaceholder')}
+                value={userInfos.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <Box minH={6}>
+                <Field.ErrorText>
+                  <FieldErrorIcon />
+                  {errors.email}
+                </Field.ErrorText>
+              </Box>
+            </Field.Root>
 
-              <Field.Root invalid={!!errors.password}>
-                <Field.Label>
-                  <TbPasswordUser />
-                  {t('login.password')}
-                </Field.Label>
-                <PasswordInput
-                  name="password"
-                  type="password"
-                  placeholder={t('login.passwordPlaceholder')}
-                  value={userInfos.password}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-                <Box minH={6}>
-                  <Field.ErrorText>
-                    <FieldErrorIcon />
-                    {errors.password}
-                  </Field.ErrorText>
-                </Box>
-              </Field.Root>
+            <Field.Root invalid={!!errors.password}>
+              <Field.Label>
+                <TbPasswordUser />
+                {t('login.password')}
+              </Field.Label>
+              <PasswordInput
+                name="password"
+                type="password"
+                placeholder={t('login.passwordPlaceholder')}
+                value={userInfos.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <Box minH={6}>
+                <Field.ErrorText>
+                  <FieldErrorIcon />
+                  {errors.password}
+                </Field.ErrorText>
+              </Box>
+            </Field.Root>
+            <VStack align="start" width="100%" gap={6}>
               <Checkbox.Root
                 checked={rememberMe}
                 onCheckedChange={(e) => setRememberMe(!!e.checked)}
@@ -223,33 +214,25 @@ const Login = () => {
                 <Checkbox.Label>Remember me</Checkbox.Label>
               </Checkbox.Root>
 
-              <Checkbox.Root checked={checked} onCheckedChange={(e) => setChecked(!!e.checked)}>
-                <Checkbox.HiddenInput />
-                <Checkbox.Control />
-                <Checkbox.Label>
-                  I agree to the{' '}
-                  <Link colorPalette="teal" href="https://google.com">
-                    terms and conditions
-                  </Link>
-                </Checkbox.Label>
-              </Checkbox.Root>
-
               <Button
                 disabled={!isFormInvalid}
                 loading={isSubmitting}
                 loadingText={t('login.submitting')}
                 type="submit"
-                width={{ base: '30vh', md: '40vh' }}
+                width="100%"
+                variant="solid"
               >
                 {t('login.submit')}
                 <RiArrowRightLine />
               </Button>
-              <RouterLink to="/register">{t('login.noAccount')}</RouterLink>
+              <Box textDecoration="underline" alignSelf="center">
+                <RouterLink to="/register">{t('login.needAnAccount')}</RouterLink>
+              </Box>
             </VStack>
-          </Box>
-          <Toaster />
-        </Flex>
-      </AbsoluteCenter>
+          </VStack>
+        </Box>
+        <Toaster />
+      </Flex>
       <MobileMenu />
     </PageLayout>
   );

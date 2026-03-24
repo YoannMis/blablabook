@@ -3,7 +3,7 @@ import z from 'zod';
 //Création du Schema Zod
 export const AuthSchema = z.object({
   username: z.string().min(1),
-  email: z.string().email().min(1),
+  email: z.email().min(1),
   password: z
     .string()
     .min(12)
@@ -13,7 +13,7 @@ export const AuthSchema = z.object({
 });
 
 export const LoginSchema = z.object({
-  email: z.string().email().min(1),
+  email: z.email().min(1),
   password: z
     .string()
     .min(12)

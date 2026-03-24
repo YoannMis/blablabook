@@ -4,21 +4,39 @@ import { prisma } from '../utils/prisma.utils';
 import * as argon2 from 'argon2';
 import { convertInMs } from '../utils/time.utils';
 import crypto from 'crypto';
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { z } from 'zod';
 
 // Typage TypeScript
 type AuthFormValues = z.infer<typeof AuthSchema>;
-
-// Vérifie si l'utilisateur existe déjà
-export const userExists = async (email: string): Promise<boolean> => {
-  const user = await prisma.user.findUnique({ where: { email } });
-  return !!user;
+export type UserError = {
+  status?: number;
+  field: 'username' | 'generic';
+  message: string;
 };
 
-const usernameExists = async (username: string): Promise<boolean> => {
-  const user = await prisma.user.findUnique({ where: { username } });
-  return !!user;
+// Vérifie si l'utilisateur existe déjà
+export const checkUserExists = async (email: string, username: string) => {
+  const existingUsername = await prisma.user.findUnique({ where: { username } });
+  if (existingUsername) {
+    const error: UserError = {
+      status: 409,
+      field: 'username',
+      message: 'USERNAME_TAKEN',
+    };
+    throw error;
+  }
+
+  const existingEmail = await prisma.user.findUnique({ where: { email } });
+  if (existingEmail) {
+    const error: UserError = {
+      status: 409,
+      field: 'generic',
+      message: 'GENERIC',
+    };
+    throw error;
+  }
+  return null;
 };
 
 // Crée un nouvel utilisateur
@@ -26,19 +44,7 @@ export const registerUser = async (data: AuthFormValues) => {
   const { username, email, password } = data;
 
   // Vérification de l'existence de l'utilisateur
-  if (await userExists(email)) {
-    throw {
-      status: 401,
-      message: 'User already exists',
-    };
-  }
-
-  if (await usernameExists(username)) {
-    throw {
-      status: 401,
-      message: 'Username already taken',
-    };
-  }
+  await checkUserExists(email, username);
 
   // Hachage du mot de passe
   const hashedPassword = await argon2.hash(password);
@@ -68,9 +74,19 @@ export const verifyPassword = async (
 
 // Génère un token JWT
 export const generateToken = (payload: { id: number; username: string; email: string }): string => {
-  return jwt.sign(payload, process.env.JWT_SECRET as string, {
-    expiresIn: process.env.JWT_EXPIRES_IN as string,
-  });
+  const secret = process.env.JWT_SECRET;
+  const expiresIn = process.env.JWT_EXPIRES_IN;
+
+  if (!secret) {
+    throw new Error('JWT_SECRET environment variable is not defined');
+  }
+
+  if (!expiresIn) {
+    throw new Error('JWT_EXPIRES_IN environment variable is not defined');
+  }
+
+  const options: SignOptions = { expiresIn: expiresIn as jwt.SignOptions['expiresIn'] };
+  return jwt.sign(payload, secret as jwt.Secret, options);
 };
 
 // Génère un refresh token
@@ -121,18 +137,18 @@ export const login = async (email: string, password: string, rememberMe: boolean
     email: user.email,
   });
 
-  let refreshToken = null;
+  let RefreshToken = null;
   if (rememberMe) {
     const { token: newRefreshToken, expiresAt } = generateRefreshToken();
-    refreshToken = newRefreshToken;
+    RefreshToken = newRefreshToken;
 
     // Enregistrement du refresh token en base de données
-    await saveRefreshToken(user.id, refreshToken, expiresAt);
+    await saveRefreshToken(user.id, RefreshToken, expiresAt);
   }
 
   return {
     user: { id: user.id, username: user.username, email: user.email },
     token,
-    refreshToken,
+    RefreshToken,
   };
 };
