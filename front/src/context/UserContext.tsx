@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import axios from 'axios';
 import type { User } from '../types/user';
 import { Spinner } from '@chakra-ui/react';
+import { axiosAuth } from '../utils/axiosAuth';
 
 type UserContextType = {
   user: User | null;
@@ -22,9 +22,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
-          withCredentials: true,
-        });
+        const response = await axiosAuth.get('/api/auth/me');
 
         setUser(response.data?.data ?? null);
       } catch (error) {
