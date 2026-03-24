@@ -1,5 +1,15 @@
 import z from 'zod';
-import { Box, Field, Input, Button, Heading, FieldErrorIcon, Flex, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Field,
+  Input,
+  Button,
+  Heading,
+  FieldErrorIcon,
+  Flex,
+  VStack,
+  Checkbox,
+} from '@chakra-ui/react';
 import { PasswordInput } from '../components/ui/password-input';
 import LoginSchema from '../schema/login.schema';
 import axios from 'axios';
@@ -12,6 +22,7 @@ import { PageLayout } from './layouts/PageLayout';
 import homeImage from '../assets/homePageImage.jpg';
 import { Link as RouterLink, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import MobileMenu from './MobileMenu';
 
 //Typage Typescript
 type LoginFormValues = z.infer<typeof LoginSchema>;
@@ -35,9 +46,11 @@ const Login = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [rememberMe, setRememberMe] = useState(false);
+
   const isFormInvalid =
-    Object.values(errors).some((error) => error.length > 0) ||
-    Object.values(userInfos).some((value) => !value);
+    Object.values(errors).every((error) => error.length === 0) &&
+    Object.values(userInfos).every((value) => !!value.trim());
 
   // fonction de soumission du formulaire
   const handleSubmit = async (event: React.SyntheticEvent) => {
@@ -46,12 +59,11 @@ const Login = () => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/auth/login`,
-        userInfos,
+        { ...userInfos, rememberMe },
         { headers: { 'Content-Type': 'application/json', withCredentials: true } }
       );
       // Traitement de la résponse
       if (response.data.success && response.data.data) {
-        console.log('User created', response.data.data);
         toaster.create({
           title: t('login.successTitle'),
           description: t('login.successDescription'),
@@ -74,27 +86,27 @@ const Login = () => {
         console.error('Logging in failed', response.data.message);
       }
     } catch (error) {
-      console.log('error', error);
-      // Traitement des erreurs
-      if (axios.isAxiosError<LoginErrorResponse>(error)) {
-        const loginError = error.response?.data || t('login.defaultError');
-        if (loginError) {
-          toaster.create({
-            title: t('login.errorTitle'),
-            description: loginError,
-            type: 'error',
-            duration: 3000,
-            closable: true,
-          });
-        } else {
-          toaster.create({
-            title: t('login.serverErrorTitle'),
-            description: t('login.serverErrorDescription'),
-            type: 'error',
-            duration: 3000,
-            closable: true,
-          });
-        }
+      // Gestion des erreurs (y compris les erreurs lancées par le backend)
+      if (axios.isAxiosError(error)) {
+        // Erreur HTTP (ex: 401, 500)
+        const errorMessage = error.response?.data?.message || error.message;
+        toaster.create({
+          title: t('login.defaultError'),
+          description:
+            errorMessage === 'INVALID_CREDENTIALS' ? t('login.error') : t('login.serverErrorTitle'),
+          type: 'error',
+          duration: 6000,
+          closable: true,
+        });
+      } else {
+        // Erreur inattendue
+        toaster.create({
+          title: t('login.serverErrorTitle'),
+          description: t('login.serverErrorDescription'),
+          type: 'error',
+          duration: 6000,
+          closable: true,
+        });
       }
     } finally {
       setIsSubmitting(false);
@@ -133,11 +145,24 @@ const Login = () => {
   };
 
   return (
-    <PageLayout imageSrc={homeImage}>
-      <Flex justify="center">
-        <Box as="form" onSubmit={handleSubmit}>
-          <VStack gap={4}>
-            <Heading size="3xl">{t('login.title')}</Heading>
+    <PageLayout imageSrc={homeImage} imagePosition="left" imageSize={20}>
+      <Flex justify="center" align="center" mt={{ md: '15%' }}>
+        <Box
+          as="form"
+          onSubmit={handleSubmit}
+          borderWidth={{ base: 0, md: 4 }}
+          borderRadius={{ base: 0, md: 4 }}
+          width={{ base: '40vh', md: '50vh' }}
+          height={{ base: '100vh', md: 'auto' }}
+        >
+          <VStack p={{ base: 4, md: 8 }} align="start" width="100%">
+            <Heading
+              size={{ base: 'xl', md: '3xl' }}
+              fontWeight={{ base: 'sm', md: 'md' }}
+              alignSelf="center"
+            >
+              {t('login.title')}
+            </Heading>
 
             <Field.Root invalid={!!errors.email}>
               <Field.Label>
@@ -151,10 +176,12 @@ const Login = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
-              <Field.ErrorText>
-                <FieldErrorIcon />
-                {errors.email}
-              </Field.ErrorText>
+              <Box minH={6}>
+                <Field.ErrorText>
+                  <FieldErrorIcon />
+                  {errors.email}
+                </Field.ErrorText>
+              </Box>
             </Field.Root>
 
             <Field.Root invalid={!!errors.password}>
@@ -170,25 +197,43 @@ const Login = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
-              <Field.ErrorText>
-                <FieldErrorIcon /> {errors.password}
-              </Field.ErrorText>
+              <Box minH={6}>
+                <Field.ErrorText>
+                  <FieldErrorIcon />
+                  {errors.password}
+                </Field.ErrorText>
+              </Box>
             </Field.Root>
+            <VStack align="start" width="100%" gap={6}>
+              <Checkbox.Root
+                checked={rememberMe}
+                onCheckedChange={(e) => setRememberMe(!!e.checked)}
+              >
+                <Checkbox.HiddenInput name="rememberMe" />
+                <Checkbox.Control />
+                <Checkbox.Label>Remember me</Checkbox.Label>
+              </Checkbox.Root>
 
-            <Button
-              disabled={isFormInvalid}
-              loading={isSubmitting}
-              loadingText={t('login.submitting')}
-              type="submit"
-            >
-              {t('login.submit')}
-              <RiArrowRightLine />
-            </Button>
-            <RouterLink to="/register">{t('login.noAccount')}</RouterLink>
+              <Button
+                disabled={!isFormInvalid}
+                loading={isSubmitting}
+                loadingText={t('login.submitting')}
+                type="submit"
+                width="100%"
+                variant="solid"
+              >
+                {t('login.submit')}
+                <RiArrowRightLine />
+              </Button>
+              <Box textDecoration="underline" alignSelf="center">
+                <RouterLink to="/register">{t('login.needAnAccount')}</RouterLink>
+              </Box>
+            </VStack>
           </VStack>
         </Box>
         <Toaster />
       </Flex>
+      <MobileMenu />
     </PageLayout>
   );
 };
