@@ -14,10 +14,6 @@ export const AuthSchema = z.object({
 
 export const LoginSchema = z.object({
   email: z.email().min(1),
-  password: z
-    .string()
-    .min(12)
-    .max(100)
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()]).{12,100}$/),
-  rememberMe: z.boolean().default(false),
+  password: z.string().min(1),
+  rememberMe: z.boolean().optional().default(false),
 });

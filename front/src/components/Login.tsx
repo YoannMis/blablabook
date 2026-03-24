@@ -95,7 +95,7 @@ const Login = () => {
           description:
             errorMessage === 'INVALID_CREDENTIALS' ? t('login.error') : t('login.serverErrorTitle'),
           type: 'error',
-          duration: 3000,
+          duration: 6000,
           closable: true,
         });
       } else {
@@ -104,7 +104,7 @@ const Login = () => {
           title: t('login.serverErrorTitle'),
           description: t('login.serverErrorDescription'),
           type: 'error',
-          duration: 3000,
+          duration: 6000,
           closable: true,
         });
       }

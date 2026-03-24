@@ -114,7 +114,7 @@ const Register = () => {
           title: t('register.errorTitle'),
           description: translatedMessage,
           type: 'error',
-          duration: 3000,
+          duration: 6000,
           closable: true,
         });
       } else {
@@ -122,7 +122,7 @@ const Register = () => {
           title: t('register.serverErrorTitle'),
           description: t('register.serverErrorDescription'),
           type: 'error',
-          duration: 3000,
+          duration: 6000,
           closable: true,
         });
       }
