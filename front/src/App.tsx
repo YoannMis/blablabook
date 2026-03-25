@@ -3,6 +3,7 @@ import Register from './components/Register';
 import HomePage from './components/HomePage';
 import BookDetails from './components/BookDetails';
 import Login from './components/Login';
+import Terms from './components/Terms';
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
         <Route path="/books/:category/:id" element={<BookDetails />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/terms" element={<Terms />} />
       </Routes>
     </BrowserRouter>
   );
