@@ -9,14 +9,14 @@
   "articles": {
     "article1": {
       "title": "Article 1 – Purpose",
-      "content": "These Terms of Use define the terms and conditions for using the <strong>Blablabook</strong> website. Using the site implies full acceptance of these Terms of Use."
+      "content": "These Terms of Use define the terms and conditions for using the Blablabook website. Using the site implies full acceptance of these Terms of Use."
     },
     "article2": {
       "title": "Article 2 – Site Publisher",
-      "content1": "The Blablabook website is published as part of an <strong>educational project carried out by a working group</strong>.",
+      "content1": "The Blablabook website is published as part of an educational project carried out by a working group.",
       "content2": "No formal legal structure (company or declared association) has been established to date.",
       "contact": "For any questions, you can contact:",
-      "email": "📧 Email: <i>[to be completed]</i>"
+      "email": "📧 Email: [to be completed]"
     },
     "article3": {
       "title": "Article 3 – Hosting",

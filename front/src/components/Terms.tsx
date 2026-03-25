@@ -32,7 +32,7 @@ const Terms = () => {
             >
               {t('articles.article1.title')}
             </Heading>
-            <Text dangerouslySetInnerHTML={{ __html: t('articles.article1.content') }} />
+            <Text mb={2}>{t('articles.article1.content')}</Text>
           </Box>
 
           {/* Article 2 */}
@@ -48,7 +48,7 @@ const Terms = () => {
             <Text mb={2}>{t('articles.article2.content1')}</Text>
             <Text mb={2}>{t('articles.article2.content2')}</Text>
             <Text>{t('articles.article2.contact')}</Text>
-            <Text mt={1} dangerouslySetInnerHTML={{ __html: t('articles.article2.email') }} />
+            <Text mt={1}>{t('articles.article2.email')}</Text>
           </Box>
 
           {/* Article 3 */}

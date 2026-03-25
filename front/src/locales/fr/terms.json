@@ -9,14 +9,14 @@
   "articles": {
     "article1": {
       "title": "Article 1 – Objet",
-      "content": "Les présentes Conditions Générales d’Utilisation (CGU) ont pour objet de définir les modalités et conditions d’utilisation du site <strong>Blablabook</strong>. L’utilisation du site implique l’acceptation pleine et entière des présentes CGU."
+      "content": "Les présentes Conditions Générales d’Utilisation (CGU) ont pour objet de définir les modalités et conditions d’utilisation du site Blablabook. L’utilisation du site implique l’acceptation pleine et entière des présentes CGU."
     },
     "article2": {
       "title": "Article 2 – Éditeur du site",
-      "content1": "Le site Blablabook est édité dans le cadre d’un <strong>projet pédagogique réalisé par un groupe de travail</strong>.",
+      "content1": "Le site Blablabook est édité dans le cadre d’un projet pédagogique réalisé par un groupe de travail.",
       "content2": "Aucune structure juridique formelle (société ou association déclarée) n’est constituée à ce jour.",
       "contact": "Pour toute question, vous pouvez contacter :",
-      "email": "📧 Email : <i>[à compléter]</i>"
+      "email": "📧 Email : [à compléter]"
     },
     "article3": {
       "title": "Article 3 – Hébergement",
