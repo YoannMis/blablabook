@@ -13,7 +13,7 @@ export const search = async (req: Request, res: Response): Promise<void> => {
   const parsed = searchQuerySchema.safeParse(req.query);
 
   if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.flatten().fieldErrors });
+    res.status(400).json({ error: z.flattenError(parsed.error).fieldErrors });
     return;
   }
 

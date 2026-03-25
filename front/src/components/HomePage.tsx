@@ -81,7 +81,7 @@ const HomePage = () => {
         {activeQuery ? (
           <>
             <BookCardList
-              title={t('search.resultsFor', { query: searchValue })}
+              title={t('search.resultsFor', { query: activeQuery })}
               books={searchResults}
               isLoading={isInitialLoading}
             />
