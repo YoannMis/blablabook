@@ -1,4 +1,7 @@
 {
+  "buttons": {
+    "back": "Retour"
+  },
   "cgu": {
     "title": "Conditions Générales d’Utilisation",
     "subtitle": "Application Blablabook"

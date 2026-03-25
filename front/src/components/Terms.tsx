@@ -76,7 +76,7 @@ const Terms = () => {
             </Heading>
             <Text mb={2}>{t('articles.article4.content1')}</Text>
             <List.Root pl={4}>
-              {t('articles.article4.list', { returnObjects: true }).map(
+              {(t('articles.article4.list', { returnObjects: true }) as Array<string>).map(
                 (item: string, index: number) => (
                   <List.Item key={index}>{item}</List.Item>
                 )
@@ -97,7 +97,7 @@ const Terms = () => {
             </Heading>
             <Text mb={2}>{t('articles.article5.content1')}</Text>
             <List.Root pl={4}>
-              {t('articles.article5.list', { returnObjects: true }).map(
+              {(t('articles.article5.list', { returnObjects: true }) as Array<string>).map(
                 (item: string, index: number) => (
                   <List.Item key={index}>{item}</List.Item>
                 )
@@ -118,7 +118,7 @@ const Terms = () => {
             </Heading>
             <Text mb={2}>{t('articles.article6.content1')}</Text>
             <List.Root pl={4}>
-              {t('articles.article6.list', { returnObjects: true }).map(
+              {(t('articles.article6.list', { returnObjects: true }) as Array<string>).map(
                 (item: string, index: number) => (
                   <List.Item key={index}>{item}</List.Item>
                 )
@@ -139,7 +139,7 @@ const Terms = () => {
             </Heading>
             <Text mb={2}>{t('articles.article7.content1')}</Text>
             <List.Root pl={4}>
-              {t('articles.article7.list1', { returnObjects: true }).map(
+              {(t('articles.article7.list1', { returnObjects: true }) as Array<string>).map(
                 (item: string, index: number) => (
                   <List.Item key={index}>{item}</List.Item>
                 )
@@ -148,7 +148,7 @@ const Terms = () => {
             <Text mt={3}>{t('articles.article7.content2')}</Text>
             <Text mt={3}>{t('articles.article7.content3')}</Text>
             <List.Root pl={4}>
-              {t('articles.article7.list2', { returnObjects: true }).map(
+              {(t('articles.article7.list2', { returnObjects: true }) as Array<string>).map(
                 (item: string, index: number) => (
                   <List.Item key={index}>{item}</List.Item>
                 )
@@ -183,7 +183,7 @@ const Terms = () => {
             </Heading>
             <Text mb={2}>{t('articles.article9.content1')}</Text>
             <List.Root pl={4}>
-              {t('articles.article9.list', { returnObjects: true }).map(
+              {(t('articles.article9.list', { returnObjects: true }) as Array<string>).map(
                 (item: string, index: number) => (
                   <List.Item key={index}>{item}</List.Item>
                 )
@@ -218,7 +218,7 @@ const Terms = () => {
             </Heading>
             <Text mb={2}>{t('articles.article11.content1')}</Text>
             <List.Root pl={4}>
-              {t('articles.article11.list', { returnObjects: true }).map(
+              {(t('articles.article11.list', { returnObjects: true }) as Array<string>).map(
                 (item: string, index: number) => (
                   <List.Item key={index}>{item}</List.Item>
                 )
@@ -267,7 +267,7 @@ const Terms = () => {
           </Box>
 
           <Button asChild width="100%" variant="solid">
-            <RouterLink to="/register">Retour</RouterLink>
+            <RouterLink to="/register">{t('buttons.back')}</RouterLink>
           </Button>
         </Stack>
       </Box>
