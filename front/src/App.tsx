@@ -39,7 +39,6 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route path="/terms" element={<Terms />} />
         </Routes>
       </BrowserRouter>
     </UserProvider>
