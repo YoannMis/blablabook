@@ -1,13 +1,14 @@
 import { Box, Heading, Text, Stack, List, Icon, Button } from '@chakra-ui/react';
-
 import { FaBook } from 'react-icons/fa';
 import { PageLayout } from './layouts/PageLayout';
-
 import homeImage from '../assets/homePageImage.jpg';
 import MobileMenu from './MobileMenu';
 import { Link as RouterLink } from 'react-router';
+import { useTranslation } from 'react-i18next';
 
 const Terms = () => {
+  const { t } = useTranslation('terms');
+
   return (
     <PageLayout imageSrc={homeImage}>
       <Box my={8} px={{ base: 4, md: 8 }} py={8} borderRadius="lg" boxShadow="md">
@@ -16,9 +17,9 @@ const Terms = () => {
           <Box textAlign="center" textDecoration={'underline'}>
             <Icon as={FaBook} boxSize={10} color="blue.500" mb={2} />
             <Heading size={{ base: '2xl', md: '4xl' }} fontWeight={{ base: 'sm', md: 'md' }} mb={2}>
-              Conditions Générales d’Utilisation
+              {t('cgu.title')}
             </Heading>
-            <Text fontWeight={{ base: 'sm', md: 'md' }}>Application Blablabook</Text>
+            <Text fontWeight={{ base: 'sm', md: 'md' }}>{t('cgu.subtitle')}</Text>
           </Box>
 
           {/* Article 1 */}
@@ -29,16 +30,9 @@ const Terms = () => {
               fontWeight={{ base: 'sm', md: 'md' }}
               mb={2}
             >
-              Article 1 – Objet
+              {t('articles.article1.title')}
             </Heading>
-            <Text>
-              Les présentes Conditions Générales d’Utilisation (CGU) ont pour objet de définir les
-              modalités et conditions d’utilisation du site{' '}
-              <Text as="span" fontWeight="semibold">
-                Blablabook
-              </Text>
-              . L’utilisation du site implique l’acceptation pleine et entière des présentes CGU.
-            </Text>
+            <Text dangerouslySetInnerHTML={{ __html: t('articles.article1.content') }} />
           </Box>
 
           {/* Article 2 */}
@@ -49,23 +43,12 @@ const Terms = () => {
               fontWeight={{ base: 'sm', md: 'md' }}
               mb={2}
             >
-              Article 2 – Éditeur du site
+              {t('articles.article2.title')}
             </Heading>
-            <Text mb={2}>
-              Le site Blablabook est édité dans le cadre d’un{' '}
-              <Text as="span" fontWeight="semibold">
-                projet pédagogique réalisé par un groupe de travail
-              </Text>
-              . Aucune structure juridique formelle (société ou association déclarée) n’est
-              constituée à ce jour.
-            </Text>
-            <Text>Pour toute question, vous pouvez contacter :</Text>
-            <Text mt={1}>
-              📧 Email :{' '}
-              <Text as="span" fontStyle="italic">
-                [à compléter]
-              </Text>
-            </Text>
+            <Text mb={2}>{t('articles.article2.content1')}</Text>
+            <Text mb={2}>{t('articles.article2.content2')}</Text>
+            <Text>{t('articles.article2.contact')}</Text>
+            <Text mt={1} dangerouslySetInnerHTML={{ __html: t('articles.article2.email') }} />
           </Box>
 
           {/* Article 3 */}
@@ -76,13 +59,9 @@ const Terms = () => {
               fontWeight={{ base: 'sm', md: 'md' }}
               mb={2}
             >
-              Article 3 – Hébergement
+              {t('articles.article3.title')}
             </Heading>
-            <Text>
-              Le site est hébergé à titre provisoire par une plateforme d’hébergement de type cloud
-              (ex : Vercel ou équivalent). Les informations précises d’hébergement pourront être
-              mises à jour ultérieurement.
-            </Text>
+            <Text>{t('articles.article3.content')}</Text>
           </Box>
 
           {/* Article 4 */}
@@ -93,20 +72,15 @@ const Terms = () => {
               fontWeight={{ base: 'sm', md: 'md' }}
               mb={2}
             >
-              Article 4 – Description du service
+              {t('articles.article4.title')}
             </Heading>
-            <Text mb={2}>Blablabook est une application permettant :</Text>
+            <Text mb={2}>{t('articles.article4.content1')}</Text>
             <List.Root pl={4}>
-              <List.Item>de consulter une base de données de livres ;</List.Item>
-              <List.Item>de rechercher des ouvrages ;</List.Item>
-              <List.Item>de constituer une bibliothèque personnelle ;</List.Item>
-              <List.Item>de marquer des livres comme lus ou à lire.</List.Item>
+              {t('articles.article4.list', { returnObjects: true }).map((item, index) => (
+                <List.Item key={index}>{item}</List.Item>
+              ))}
             </List.Root>
-            <Text mt={3}>
-              Les données relatives aux livres (titres, descriptions, images) proviennent
-              exclusivement de l’API fournie par Google Books API. Le site ne modifie pas ces
-              contenus.
-            </Text>
+            <Text mt={3}>{t('articles.article4.content2')}</Text>
           </Box>
 
           {/* Article 5 */}
@@ -117,20 +91,15 @@ const Terms = () => {
               fontWeight={{ base: 'sm', md: 'md' }}
               mb={2}
             >
-              Article 5 – Accès au service
+              {t('articles.article5.title')}
             </Heading>
-            <Text mb={2}>
-              Le site est accessible gratuitement à tout utilisateur disposant d’un accès à
-              Internet.
-            </Text>
+            <Text mb={2}>{t('articles.article5.content1')}</Text>
             <List.Root pl={4}>
-              <List.Item>
-                L’accès à certaines fonctionnalités (bibliothèque personnelle) nécessite la création
-                d’un compte.
-              </List.Item>
-              <List.Item>La consultation des livres peut être accessible sans compte.</List.Item>
+              {t('articles.article5.list', { returnObjects: true }).map((item, index) => (
+                <List.Item key={index}>{item}</List.Item>
+              ))}
             </List.Root>
-            <Text mt={3}>L’éditeur ne garantit pas un accès continu et sans interruption.</Text>
+            <Text mt={3}>{t('articles.article5.content2')}</Text>
           </Box>
 
           {/* Article 6 */}
@@ -141,16 +110,15 @@ const Terms = () => {
               fontWeight={{ base: 'sm', md: 'md' }}
               mb={2}
             >
-              Article 6 – Conditions d’inscription
+              {t('articles.article6.title')}
             </Heading>
-            <Text mb={2}>Pour créer un compte, l’utilisateur doit :</Text>
+            <Text mb={2}>{t('articles.article6.content1')}</Text>
             <List.Root pl={4}>
-              <List.Item>fournir une adresse email valide ;</List.Item>
-              <List.Item>ne pas usurper l’identité d’un tiers.</List.Item>
+              {t('articles.article6.list', { returnObjects: true }).map((item, index) => (
+                <List.Item key={index}>{item}</List.Item>
+              ))}
             </List.Root>
-            <Text mt={3}>
-              L’utilisateur est responsable de la confidentialité de ses identifiants.
-            </Text>
+            <Text mt={3}>{t('articles.article6.content2')}</Text>
           </Box>
 
           {/* Article 7 */}
@@ -161,19 +129,22 @@ const Terms = () => {
               fontWeight={{ base: 'sm', md: 'md' }}
               mb={2}
             >
-              Article 7 – Données personnelles
+              {t('articles.article7.title')}
             </Heading>
-            <Text mb={2}>Le site collecte uniquement les données suivantes :</Text>
+            <Text mb={2}>{t('articles.article7.content1')}</Text>
             <List.Root pl={4}>
-              <List.Item>adresse email.</List.Item>
+              {t('articles.article7.list1', { returnObjects: true }).map((item, index) => (
+                <List.Item key={index}>{item}</List.Item>
+              ))}
             </List.Root>
-            <Text mt={3}>Aucune donnée sensible n’est collectée.</Text>
-            <Text mt={3}>Des cookies strictement techniques peuvent être utilisés pour :</Text>
+            <Text mt={3}>{t('articles.article7.content2')}</Text>
+            <Text mt={3}>{t('articles.article7.content3')}</Text>
             <List.Root pl={4}>
-              <List.Item>assurer le fonctionnement du service ;</List.Item>
-              <List.Item>maintenir la session utilisateur.</List.Item>
+              {t('articles.article7.list2', { returnObjects: true }).map((item, index) => (
+                <List.Item key={index}>{item}</List.Item>
+              ))}
             </List.Root>
-            <Text mt={3}>Aucun tracking ni analyse comportementale n’est réalisé.</Text>
+            <Text mt={3}>{t('articles.article7.content4')}</Text>
           </Box>
 
           {/* Article 8 */}
@@ -184,16 +155,10 @@ const Terms = () => {
               fontWeight={{ base: 'sm', md: 'md' }}
               mb={2}
             >
-              Article 8 – Propriété intellectuelle
+              {t('articles.article8.title')}
             </Heading>
-            <Text mb={2}>
-              Les contenus affichés (livres, images, descriptions) proviennent de Google Books API
-              et restent la propriété de leurs ayants droit. L’application Blablabook ne revendique
-              aucun droit sur ces contenus.
-            </Text>
-            <Text>
-              L’utilisateur dispose uniquement d’un droit d’usage personnel et non commercial.
-            </Text>
+            <Text mb={2}>{t('articles.article8.content1')}</Text>
+            <Text>{t('articles.article8.content2')}</Text>
           </Box>
 
           {/* Article 9 */}
@@ -204,18 +169,15 @@ const Terms = () => {
               fontWeight={{ base: 'sm', md: 'md' }}
               mb={2}
             >
-              Article 9 – Utilisation du service
+              {t('articles.article9.title')}
             </Heading>
-            <Text mb={2}>L’utilisateur s’engage à ne pas :</Text>
+            <Text mb={2}>{t('articles.article9.content1')}</Text>
             <List.Root pl={4}>
-              <List.Item>utiliser le site de manière frauduleuse ;</List.Item>
-              <List.Item>tenter d’accéder de manière non autorisée aux systèmes ;</List.Item>
-              <List.Item>détourner le service de son usage normal ;</List.Item>
-              <List.Item>porter atteinte à la sécurité ou à l’intégrité du site.</List.Item>
+              {t('articles.article9.list', { returnObjects: true }).map((item, index) => (
+                <List.Item key={index}>{item}</List.Item>
+              ))}
             </List.Root>
-            <Text mt={3}>
-              Tout manquement peut entraîner la suspension ou la suppression du compte.
-            </Text>
+            <Text mt={3}>{t('articles.article9.content2')}</Text>
           </Box>
 
           {/* Article 10 */}
@@ -226,15 +188,10 @@ const Terms = () => {
               fontWeight={{ base: 'sm', md: 'md' }}
               mb={2}
             >
-              Article 10 – Gestion des comptes
+              {t('articles.article10.title')}
             </Heading>
-            <Text mb={2}>
-              L’utilisateur peut demander la suppression de son compte à tout moment.
-            </Text>
-            <Text>
-              L’éditeur se réserve le droit de suspendre ou supprimer un compte, et de refuser
-              l’accès au service sans préavis en cas de non-respect des présentes CGU.
-            </Text>
+            <Text mb={2}>{t('articles.article10.content1')}</Text>
+            <Text>{t('articles.article10.content2')}</Text>
           </Box>
 
           {/* Article 11 */}
@@ -245,21 +202,15 @@ const Terms = () => {
               fontWeight={{ base: 'sm', md: 'md' }}
               mb={2}
             >
-              Article 11 – Responsabilité
+              {t('articles.article11.title')}
             </Heading>
-            <Text mb={2}>Le site est fourni « tel quel », sans garantie.</Text>
+            <Text mb={2}>{t('articles.article11.content1')}</Text>
             <List.Root pl={4}>
-              <List.Item>
-                L’éditeur ne saurait être tenu responsable des interruptions de service (notamment
-                liées à l’API Google Books API) ;
-              </List.Item>
-              <List.Item>des bugs ou dysfonctionnements ;</List.Item>
-              <List.Item>de la perte éventuelle de données ;</List.Item>
-              <List.Item>de l’indisponibilité temporaire ou permanente du service.</List.Item>
+              {t('articles.article11.list', { returnObjects: true }).map((item, index) => (
+                <List.Item key={index}>{item}</List.Item>
+              ))}
             </List.Root>
-            <Text mt={3}>
-              L’utilisateur reconnaît utiliser le service sous sa seule responsabilité.
-            </Text>
+            <Text mt={3}>{t('articles.article11.content2')}</Text>
           </Box>
 
           {/* Article 12 */}
@@ -270,12 +221,9 @@ const Terms = () => {
               fontWeight={{ base: 'sm', md: 'md' }}
               mb={2}
             >
-              Article 12 – Évolution du service
+              {t('articles.article12.title')}
             </Heading>
-            <Text>
-              Le site peut être modifié, suspendu ou interrompu à tout moment, sans préavis. Aucune
-              garantie de continuité n’est assurée, notamment dans le cadre d’un projet pédagogique.
-            </Text>
+            <Text>{t('articles.article12.content')}</Text>
           </Box>
 
           {/* Article 13 */}
@@ -286,12 +234,9 @@ const Terms = () => {
               fontWeight={{ base: 'sm', md: 'md' }}
               mb={2}
             >
-              Article 13 – Modification des CGU
+              {t('articles.article13.title')}
             </Heading>
-            <Text>
-              Les présentes CGU peuvent être modifiées à tout moment. Les utilisateurs seront
-              informés en cas de modification substantielle.
-            </Text>
+            <Text>{t('articles.article13.content')}</Text>
           </Box>
 
           {/* Article 14 */}
@@ -302,13 +247,11 @@ const Terms = () => {
               fontWeight={{ base: 'sm', md: 'md' }}
               mb={2}
             >
-              Article 14 – Droit applicable
+              {t('articles.article14.title')}
             </Heading>
-            <Text>
-              Les présentes CGU sont régies par le droit français. En cas de litige, et à défaut de
-              résolution amiable, les juridictions françaises seront compétentes.
-            </Text>
+            <Text>{t('articles.article14.content')}</Text>
           </Box>
+
           <Button asChild width="100%" variant="solid">
             <RouterLink to="/register">Retour</RouterLink>
           </Button>

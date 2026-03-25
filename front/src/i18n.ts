@@ -6,6 +6,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import commonFr from './locales/fr/common.json';
 import authFr from './locales/fr/auth.json';
 import bookFr from './locales/fr/book.json';
+import termsFr from './locales/fr/terms.json';
 
 // EN
 import commonEn from './locales/en/common.json';
@@ -21,6 +22,7 @@ i18n
         common: commonFr,
         auth: authFr,
         book: bookFr,
+        terms: termsFr,
       },
       en: {
         common: commonEn,
