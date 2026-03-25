@@ -293,7 +293,12 @@ const Register = () => {
                     i18nKey="register.acceptTerms"
                     ns="auth"
                     components={{
-                      termsLink: <RouterLink to="/terms" color="teal.500"></RouterLink>,
+                      termsLink: (
+                        <RouterLink
+                          to="/terms"
+                          style={{ color: ' #00BCD4', textDecoration: 'underline' }}
+                        ></RouterLink>
+                      ),
                     }}
                   />
                 </Checkbox.Label>
