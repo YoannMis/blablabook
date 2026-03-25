@@ -7,6 +7,7 @@ import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import Account from './components/Account';
 import PublicRoute from './components/PublicRoute';
+import Terms from './components/Terms';
 
 const App = () => {
   return (
@@ -39,6 +40,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route path="/terms" element={<Terms />} />
         </Routes>
       </BrowserRouter>
     </UserProvider>
