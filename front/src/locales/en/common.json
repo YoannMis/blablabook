@@ -7,7 +7,9 @@
   "search": {
     "placeholder": "Search by keyword, author...",
     "clear": "Clear",
-    "ariaLabel": "Search book"
+    "ariaLabel": "Search book",
+    "resultsFor": "Results for \"{{query}}\"",
+    "loadMore": "Show more results"
   },
   "categories": {
     "title": "Categories",

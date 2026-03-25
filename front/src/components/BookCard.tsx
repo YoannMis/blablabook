@@ -40,7 +40,8 @@ const BookCard = ({ book }: BookCardProps) => {
     >
       <Box
         position="relative"
-        h={{ base: '210px', md: '230px' }}
+        w="100%"
+        h={{ base: '220px', md: '260px' }}
         borderRadius="xl"
         overflow="hidden"
         bg="gray.50"
@@ -55,7 +56,8 @@ const BookCard = ({ book }: BookCardProps) => {
         <Image
           src={imageLinks?.thumbnail || noBookCover}
           alt={title}
-          objectFit="cover"
+          objectFit="fill"
+          // w="100%"
           w={{ base: '140px', md: '100%' }}
           h="100%"
           transition="transform 0.3s ease"
