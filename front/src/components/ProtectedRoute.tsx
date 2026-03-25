@@ -1,7 +1,11 @@
 import { Navigate } from 'react-router';
 import { useCurrentUser } from '../context/UserContext';
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+}
+
+const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { isLoggedIn, loading } = useCurrentUser();
 
   if (loading) return null;

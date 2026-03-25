@@ -3,8 +3,8 @@ import {
   getCurrentUserController,
   loginUserController,
   registerUserController,
+  refreshTokenController,
 } from '../controllers/auth.controller.js';
-import { refreshTokenController } from '../controllers/refreshToken.controller.js';
 import { authenticateToken } from '../middlewares/auth.middleware.js';
 
 const authRouter = Router();

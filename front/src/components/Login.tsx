@@ -68,23 +68,12 @@ const Login = () => {
       setUser(response.data.data);
 
       if (response.data.success && response.data.data) {
-        toaster.create({
-          title: t('login.successTitle'),
-          description: t('login.successDescription'),
-          type: 'success',
-          duration: 3000,
-          closable: true,
-        });
-
         setUserInfos({
           email: '',
           password: '',
         });
 
-        // Redirection vers la page d'accueil
-        setTimeout(() => {
-          navigate('/');
-        }, 2000);
+        navigate('/');
       } else {
         console.error('Logging in failed', response.data.message);
       }

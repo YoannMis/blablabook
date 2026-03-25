@@ -6,6 +6,7 @@ import BookDetails from './components/BookDetails';
 import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import Account from './components/Account';
+import PublicRoute from './components/PublicRoute';
 
 const App = () => {
   return (
@@ -14,8 +15,22 @@ const App = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/books/:category/:id" element={<BookDetails />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <Register />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
           <Route
             path="/account"
             element={

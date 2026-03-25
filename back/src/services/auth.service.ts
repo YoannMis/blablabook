@@ -137,7 +137,15 @@ export const login = async (email: string, password: string, rememberMe: boolean
     email: user.email,
   });
 
-  const { token: refreshToken, expiresAt } = generateRefreshToken(rememberMe ? '30d' : '1d');
+  const refreshExpires = rememberMe
+    ? process.env.REFRESH_TOKEN_EXPIRES_IN
+    : process.env.JWT_EXPIRES_IN;
+
+  if (!refreshExpires) {
+    throw new Error('Missing refresh token expiration env variable');
+  }
+
+  const { token: refreshToken, expiresAt } = generateRefreshToken(refreshExpires);
 
   await saveRefreshToken(user.id, refreshToken, expiresAt);
 
