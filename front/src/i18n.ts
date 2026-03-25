@@ -12,6 +12,7 @@ import termsFr from './locales/fr/terms.json';
 import commonEn from './locales/en/common.json';
 import authEn from './locales/en/auth.json';
 import bookEn from './locales/en/book.json';
+import termsEn from './locales/en/terms.json';
 
 i18n
   .use(LanguageDetector)
@@ -28,6 +29,7 @@ i18n
         common: commonEn,
         auth: authEn,
         book: bookEn,
+        terms: termsEn,
       },
     },
     fallbackLng: 'fr',
