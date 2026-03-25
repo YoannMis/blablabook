@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Stack } from '@chakra-ui/react';
+import { Button, Stack } from '@chakra-ui/react';
 import axios from 'axios';
 
 import { PageLayout } from '../components/layouts/PageLayout';
@@ -11,47 +11,55 @@ import BookCardList from './BookCardList';
 
 import homeImage from '../assets/homePageImage.jpg';
 import { genresMock } from '../mocks/mockData';
-import { slugify } from '..//utils/stringUtils';
+import { slugify } from '../utils/stringUtils';
 import { getThemeLabel } from '../utils/themeUtils';
+import { useTranslation } from 'react-i18next';
+import { useBookSearch } from '../hooks/useBookSearch';
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const [searchValue, setSearchValue] = useState('');
+  const { t } = useTranslation('common');
+
+  const isInitialRender = useRef(true);
+
+  const {
+    searchValue,
+    searchResults,
+    handleSearchChange,
+    handleSubmit,
+    handleLoadMoreBooks,
+    handleClear,
+    isLoading,
+    isInitialLoading,
+    hasMoreResults,
+    activeQuery,
+  } = useBookSearch();
 
   const [featuredBooks, setFeaturedBooks] = useState<Record<string, Book[]>>({});
 
   useEffect(() => {
-    const fetchFeatured = async () => {
-      try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/books/topFeaturedThemes`);
-        setFeaturedBooks(res.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      return;
+    }
 
-    fetchFeatured();
-  }, []);
+    if (!activeQuery) {
+      const fetchFeatured = async () => {
+        try {
+          const res = await axios.get(
+            `${import.meta.env.VITE_API_URL}/api/books/topFeaturedThemes`
+          );
+          setFeaturedBooks(res.data);
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(event.target.value);
-  };
-
-  const handleClear = () => {
-    setSearchValue('');
-  };
-
-  const handleSubmit = async () => {
-    // En attende de l'API Back
-    // try {
-    // const response = await axios.get('/api/books/search', {
-    //   params: { q: searchValue },
-    // });
-    // setSearchResults(response.data);
-    // } catch (error) {
-    //   console.error('Erreur lors de la recherche :', error);
-    // }
-  };
+      fetchFeatured();
+    } else {
+      setFeaturedBooks({});
+    }
+  }, [activeQuery]);
 
   const handleSelectCategory = (categoryName: string) => {
     const slug = slugify(categoryName);
@@ -59,26 +67,44 @@ const HomePage = () => {
   };
 
   return (
-    <>
-      <PageLayout imageSrc={homeImage} imagePosition="top" imageSize={25}>
-        <Stack gap={6} pb={{ base: 20, md: 2 }}>
-          <SearchBar
-            searchValue={searchValue}
-            onChange={handleSearchChange}
-            onSubmit={handleSubmit}
-            onClear={handleClear}
-          />
+    <PageLayout imageSrc={homeImage} imagePosition="top" imageSize={25}>
+      <Stack gap={6} pb={{ base: 20, md: 2 }}>
+        <SearchBar
+          searchValue={searchValue}
+          onChange={handleSearchChange}
+          onSubmit={handleSubmit}
+          onClear={handleClear}
+        />
 
-          <CategoriesList categories={genresMock} onSelectCategory={handleSelectCategory} />
+        <CategoriesList categories={genresMock} onSelectCategory={handleSelectCategory} />
 
-          {Object.entries(featuredBooks).map(([themeKey, books]) => (
-            <BookCardList key={themeKey} title={getThemeLabel(themeKey)} books={books} />
-          ))}
-        </Stack>
+        {activeQuery ? (
+          <>
+            <BookCardList
+              title={t('search.resultsFor', { query: activeQuery })}
+              books={searchResults}
+              isLoading={isInitialLoading}
+            />
+            {hasMoreResults && (
+              <Button onClick={handleLoadMoreBooks} loading={isLoading} mt={4}>
+                {t('search.loadMore')}
+              </Button>
+            )}
+          </>
+        ) : (
+          Object.entries(featuredBooks).map(([themeKey, books]) => (
+            <BookCardList
+              key={themeKey}
+              title={getThemeLabel(themeKey)}
+              books={books}
+              wrap={false}
+            />
+          ))
+        )}
+      </Stack>
 
-        <MobileMenu />
-      </PageLayout>
-    </>
+      <MobileMenu />
+    </PageLayout>
   );
 };
 

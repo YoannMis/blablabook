@@ -38,7 +38,7 @@ const CategoriesList = ({ categories, onSelectCategory }: CategoriesListProps) =
         })}
 
         {categories.length > 10 && (
-          <Button size="sm" variant="ghost" onClick={() => setShowAll((prev) => !prev)}>
+          <Button size="sm" variant="primary" onClick={() => setShowAll((prev) => !prev)}>
             {showAll ? t('categories.showLess') : t('categories.showAll')}
           </Button>
         )}

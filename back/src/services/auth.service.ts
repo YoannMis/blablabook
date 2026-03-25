@@ -90,11 +90,11 @@ export const generateToken = (payload: { id: number; username: string; email: st
 };
 
 // Génère un refresh token
-export const generateRefreshToken = (): { token: string; expiresAt: Date } => {
+export const generateRefreshToken = (expiresIn: string): { token: string; expiresAt: Date } => {
   const token = crypto.randomBytes(128).toString('base64');
-  const expiresAt = new Date(
-    Date.now() + convertInMs(process.env.REFRESH_TOKEN_EXPIRES_IN as string)
-  );
+
+  const expiresAt = new Date(Date.now() + convertInMs(expiresIn));
+
   return { token, expiresAt };
 };
 
@@ -137,18 +137,54 @@ export const login = async (email: string, password: string, rememberMe: boolean
     email: user.email,
   });
 
-  let RefreshToken = null;
-  if (rememberMe) {
-    const { token: newRefreshToken, expiresAt } = generateRefreshToken();
-    RefreshToken = newRefreshToken;
+  const refreshExpires = rememberMe
+    ? process.env.REFRESH_TOKEN_EXPIRES_IN
+    : process.env.JWT_EXPIRES_IN;
 
-    // Enregistrement du refresh token en base de données
-    await saveRefreshToken(user.id, RefreshToken, expiresAt);
+  if (!refreshExpires) {
+    throw new Error('Missing refresh token expiration env variable');
   }
+
+  const { token: refreshToken, expiresAt } = generateRefreshToken(refreshExpires);
+
+  await saveRefreshToken(user.id, refreshToken, expiresAt);
 
   return {
     user: { id: user.id, username: user.username, email: user.email },
     token,
-    RefreshToken,
+    refreshToken,
+  };
+};
+
+export const getCurrentUser = async (userId: number) => {
+  return prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, username: true, email: true, createdAt: true },
+  });
+};
+
+export const refreshUserToken = async (refreshToken: string) => {
+  const tokenRecord = await prisma.refreshToken.findUnique({
+    where: { token: refreshToken },
+    include: { user: true },
+  });
+
+  if (!tokenRecord || tokenRecord.expiresAt < new Date()) {
+    throw { status: 401, message: 'Invalid or expired refresh token' };
+  }
+
+  const token = generateToken({
+    id: tokenRecord.user.id,
+    username: tokenRecord.user.username,
+    email: tokenRecord.user.email,
+  });
+
+  return {
+    token,
+    user: {
+      id: tokenRecord.user.id,
+      username: tokenRecord.user.username,
+      email: tokenRecord.user.email,
+    },
   };
 };

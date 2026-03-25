@@ -1,18 +1,14 @@
-import { Flex } from '@chakra-ui/react';
+import { Flex, Text } from '@chakra-ui/react';
 import NavLink from './NavLink';
 import { LiaCompass } from 'react-icons/lia';
 import { TbBookFilled } from 'react-icons/tb';
 import { BsPersonCircle } from 'react-icons/bs';
 import { useTranslation } from 'react-i18next';
-
-const links = [
-  { to: '/', i18nKey: 'nav.discover', icon: LiaCompass },
-  { to: '/library', i18nKey: 'nav.library', icon: TbBookFilled },
-  { to: '/login', i18nKey: 'nav.login', icon: BsPersonCircle },
-];
+import { useCurrentUser } from '../context/UserContext';
 
 const MobileMenu = () => {
   const { t } = useTranslation('common');
+  const { user, isLoggedIn } = useCurrentUser();
 
   return (
     <Flex
@@ -30,11 +26,25 @@ const MobileMenu = () => {
       justify="space-around"
       py={3}
     >
-      {links.map(({ to, i18nKey, icon }) => (
-        <NavLink key={to} to={to} icon={icon} vertical>
-          {t(i18nKey)}
+      <NavLink to="/" icon={LiaCompass} vertical>
+        {t('nav.discover')}
+      </NavLink>
+
+      <NavLink to="/library" icon={TbBookFilled} vertical>
+        {t('nav.library')}
+      </NavLink>
+
+      {isLoggedIn ? (
+        <NavLink to="/account" vertical icon={BsPersonCircle}>
+          <Text whiteSpace="nowrap" fontWeight="bold">
+            {user?.username}
+          </Text>
         </NavLink>
-      ))}
+      ) : (
+        <NavLink to="/login" icon={BsPersonCircle} vertical>
+          {t('nav.login')}
+        </NavLink>
+      )}
     </Flex>
   );
 };
