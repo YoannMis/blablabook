@@ -2,7 +2,14 @@ import type z from 'zod';
 import { AuthSchema, LoginSchema } from '../schema/auth.schema';
 import type { Request, Response } from 'express';
 import { convertInMs } from '../utils/time.utils';
-import { login, registerUser, type UserError } from '../services/auth.service';
+import {
+  getCurrentUser,
+  login,
+  refreshUserToken,
+  registerUser,
+  type UserError,
+} from '../services/auth.service';
+import { AuthRequest } from '../middlewares/auth.middleware';
 
 //Typage Typescript
 type AuthFormValues = z.infer<typeof AuthSchema>;
@@ -58,7 +65,7 @@ export const loginUserController = async (req: Request, res: Response) => {
     // validation du body de la requête
     const { email, password, rememberMe } = LoginSchema.parse(req.body) as LoginFormValues;
     // appelle auth service pour se connecter
-    const { user, token, RefreshToken } = await login(email, password, rememberMe);
+    const { user, token, refreshToken } = await login(email, password, rememberMe);
 
     // mise en place des cookies
     res.cookie('token', token, {
@@ -68,12 +75,12 @@ export const loginUserController = async (req: Request, res: Response) => {
       maxAge: convertInMs(process.env.JWT_EXPIRES_IN as string),
       path: '/api',
     });
-    res.cookie('refreshtoken', RefreshToken, {
+    res.cookie('refreshtoken', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       maxAge: convertInMs(process.env.REFRESH_TOKEN_EXPIRES_IN as string),
-      path: '/api/auth',
+      path: '/api',
     });
 
     // creation d'une constante newuser contenant les information de user sans le password
@@ -92,5 +99,50 @@ export const loginUserController = async (req: Request, res: Response) => {
       return res.status(401).json({ success: false, message: 'INVALID_CREDENTIALS' });
     }
     return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+export const getCurrentUserController = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.userId;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Not authenticated' });
+    }
+
+    const user = await getCurrentUser(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    return res.json({ success: true, data: user });
+  } catch (error) {
+    console.error('getCurrentUser error', error);
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+export const refreshTokenController = async (req: Request, res: Response) => {
+  try {
+    const refreshToken = req.cookies['refreshToken'];
+    if (!refreshToken) {
+      return res.status(401).json({ success: false, message: 'No refresh token provided' });
+    }
+
+    const { token, user } = await refreshUserToken(refreshToken);
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: convertInMs(process.env.JWT_EXPIRES_IN as string),
+    });
+
+    return res.json({ success: true, data: user });
+  } catch (error: any) {
+    console.error('refreshTokenController error:', error);
+    return res.status(error?.status || 401).json({
+      success: false,
+      message: error?.message || 'Could not refresh token',
+    });
   }
 };
