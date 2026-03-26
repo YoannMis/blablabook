@@ -3,6 +3,7 @@ import { AuthSchema, LoginSchema } from '../schema/auth.schema';
 import type { Request, Response } from 'express';
 import { convertInMs } from '../utils/time.utils';
 import {
+  deleteUser,
   getCurrentUser,
   login,
   refreshUserToken,
@@ -144,5 +145,31 @@ export const refreshTokenController = async (req: Request, res: Response) => {
       success: false,
       message: error?.message || 'Could not refresh token',
     });
+  }
+};
+
+export const deleteUserController = async (req: AuthRequest, res: Response) => {
+  const userId = req.params.id;
+  console.log('lalalalaal');
+  console.log(userId);
+  if (!userId) {
+    return res.status(400).json({ success: false, message: 'User ID is required' });
+  }
+  try {
+    await deleteUser(Number(userId));
+
+    //supprimer les cookies
+    res.clearCookie('token', { httpOnly: true, secure: true, sameSite: 'strict', path: '/api' });
+    res.clearCookie('refreshtoken', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/api',
+    });
+
+    return res.status(200).json({ success: true, message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('deleteUserController error', error);
+    return res.status(500).json({ success: false, message: 'Server error' });
   }
 };

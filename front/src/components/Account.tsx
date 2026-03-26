@@ -18,20 +18,21 @@ import MobileMenu from './MobileMenu';
 import { PasswordInput } from './ui/password-input';
 import { Toaster, toaster } from './ui/toaster';
 import { useNavigate } from 'react-router';
-import axios from 'axios';
 import RegisterSchema from '../schema/register.schema';
 import type { RegisterFormValues } from '../types/user';
 import z from 'zod';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
+import { axiosAuth } from '../utils/axiosAuth';
 
 const AccountPage = () => {
   const { t } = useTranslation('auth');
   const { user } = useCurrentUser();
+  const { logout } = useCurrentUser();
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    username: user?.username,
-    email: user?.email,
+  const [formData, setFormData] = useState<RegisterFormValues>({
+    username: user.username,
+    email: user.email,
     password: '',
     confirmPassword: '',
   });
@@ -131,27 +132,29 @@ const AccountPage = () => {
 
     setIsDeleting(true);
     try {
-      // Remplace cette URL par l'endpoint de ton API
-      const response = await axios.delete(`/api/users/${user.id}`, {
-        withCredentials: true,
-      });
+      const response = await axiosAuth.delete(`/api/auth/users/${user.id}`);
 
       if (response.data.success) {
+        logout();
         toaster.create({
           title: 'Compte supprimé',
           description: 'Votre compte a été supprimé avec succès.',
           type: 'success',
-          duration: 5000,
+          duration: 3000,
           closable: true,
         });
-        navigate('/');
+
+        //redirect to / after 3 seconds
+        setTimeout(() => {
+          navigate('/');
+        }, 4000);
       } else {
         console.error('Error deleting account:', response.data.message);
       }
     } catch (error) {
       toaster.create({
         title: 'Erreur',
-        description: error.message || 'Une erreur est survenue lors de la suppression du compte.',
+        description: 'Une erreur est survenue lors de la suppression du compte.',
         type: 'error',
         duration: 5000,
         closable: true,

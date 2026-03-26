@@ -188,3 +188,16 @@ export const refreshUserToken = async (refreshToken: string) => {
     },
   };
 };
+
+export const deleteUser = async (userId: number) => {
+  const deletedRefreshTokens = prisma.refreshToken.deleteMany({ where: { userId } });
+  const deletedUser = prisma.user.delete({ where: { id: userId } });
+  const deletedUserHasBook = prisma.userBook.deleteMany({ where: { userId: userId } });
+  const transactions = await prisma.$transaction([
+    deletedRefreshTokens,
+    deletedUserHasBook,
+    deletedUser,
+  ]);
+
+  return transactions;
+};
