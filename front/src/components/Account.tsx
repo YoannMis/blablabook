@@ -31,8 +31,8 @@ const AccountPage = () => {
   const { logout } = useCurrentUser();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<RegisterFormValues>({
-    username: user.username,
-    email: user.email,
+    username: user?.username || '',
+    email: user?.email || '',
     password: '',
     confirmPassword: '',
   });
@@ -63,8 +63,8 @@ const AccountPage = () => {
   const handleCancelClick = () => {
     setIsEditing(false);
     setFormData({
-      username: user?.username,
-      email: user?.email,
+      username: user?.username || '',
+      email: user?.email || '',
       password: '',
       confirmPassword: '',
     });
@@ -155,12 +155,33 @@ const AccountPage = () => {
         title: 'Erreur',
         description: 'Une erreur est survenue lors de la suppression du compte.',
         type: 'error',
-        duration: 5000,
+        duration: 3000,
         closable: true,
       });
     } finally {
       setIsDeleting(false);
     }
+  };
+
+  const handleLogoutClick = async () => {
+    try {
+      const response = await axiosAuth.post('/api/auth/logout');
+      if (!response.data.success) {
+        console.error('Error logging out:', response.data.message);
+        return;
+      }
+      logout();
+      toaster.create({
+        title: 'Deconnexion',
+        description: 'Vous avez bien vous deconnecté.',
+        type: 'success',
+        duration: 3000,
+        closable: true,
+      });
+      setTimeout(() => {
+        navigate('/');
+      }, 4000);
+    } catch (error) {}
   };
 
   return (
@@ -274,6 +295,9 @@ const AccountPage = () => {
           <Flex p={{ base: 4, md: 8 }} flexDirection={'column'} gap={4}>
             {!isEditing ? (
               <>
+                <Button variant={'solid'} width={'100%'} onClick={handleLogoutClick}>
+                  Se deconnecter
+                </Button>
                 <Button variant={'solid'} width={'100%'} onClick={handleEditClick}>
                   Modifier vos informations
                 </Button>

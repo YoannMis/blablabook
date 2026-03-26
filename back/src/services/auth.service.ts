@@ -201,3 +201,9 @@ export const deleteUser = async (userId: number) => {
 
   return transactions;
 };
+
+export const deleteRefreshToken = async (userId: number) => {
+  console.log('lololololo');
+  console.log('Deleting refresh token:', userId);
+  return prisma.refreshToken.deleteMany({ where: { userId: userId } });
+};

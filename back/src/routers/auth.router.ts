@@ -5,6 +5,7 @@ import {
   registerUserController,
   refreshTokenController,
   deleteUserController,
+  logoutUserController,
 } from '../controllers/auth.controller.js';
 import { authenticateToken } from '../middlewares/auth.middleware.js';
 
@@ -15,6 +16,6 @@ authRouter.post('/login', loginUserController);
 authRouter.get('/me', authenticateToken, getCurrentUserController);
 authRouter.post('/refresh', refreshTokenController);
 authRouter.delete('/users/:id', authenticateToken, deleteUserController);
-// authRouter.post('/logout');
+authRouter.post('/logout', authenticateToken, logoutUserController);
 
 export default authRouter;
