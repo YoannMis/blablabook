@@ -11,6 +11,13 @@ const colors = defineTokens.colors({
     50: { value: '#FEFDFB' },
     100: { value: '#F5F0EB' },
     200: { value: '#E8DFD6' },
+    300: { value: '#E2D6C8' },
+    400: { value: '#D8CBBF' },
+    500: { value: '#CFBFAF' },
+    600: { value: '#C6B59F' },
+    700: { value: '#BDA891' },
+    800: { value: '#B39C83' },
+    900: { value: '#A88F75' },
   },
   brown: {
     200: { value: '#E8D5C4' },

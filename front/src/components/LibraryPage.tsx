@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router';
-import { Box, useBreakpointValue } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { Stack, Tabs, HStack, Heading } from '@chakra-ui/react';
 import { GiBookshelf } from 'react-icons/gi';
 import { BsCollectionFill } from 'react-icons/bs';
