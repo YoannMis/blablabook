@@ -1,9 +1,10 @@
-import { includes, z } from 'zod';
+import { z } from 'zod';
 import type { Response } from 'express';
 
 import { prisma } from '../utils/prisma.utils';
 import type { AuthRequest } from '../middlewares/auth.middleware';
-import type { UserBook, ReadingStatus } from '../utils/prisma.utils';
+import type { ReadingStatus } from '../utils/prisma.utils';
+import { UserBookWithDetails } from '../types/userBook.types';
 
 const getUserLibraryQuerySchema = z.object({
   status: z.string().optional().default('all'),
@@ -43,7 +44,7 @@ export const getUserLibrary = async (req: AuthRequest, res: Response): Promise<v
     const limit = 20; // Default limit of 20 books per page
     const offset = query?.offset ? query.offset : 0; // Default offset starting at 0
 
-    let userBooks: UserBook[];
+    let userBooks: UserBookWithDetails[];
     let total: number; // the total count of books for the user
 
     // Query the database for books associated with the user with pagination
@@ -129,13 +130,34 @@ export const getUserLibrary = async (req: AuthRequest, res: Response): Promise<v
     const hasNext = offset + limit < total;
     const hasPrevious = offset > 0;
 
+    const formattedBooks = userBooks.map((userBook) => {
+      const bookData = userBook.book;
+
+      let imageLinks = null;
+      if (bookData.imageLinks && typeof bookData.imageLinks === 'object') {
+        imageLinks = {
+          thumbnail: (bookData.imageLinks as any).thumbnail || '',
+          small: (bookData.imageLinks as any).small,
+          medium: (bookData.imageLinks as any).medium,
+          large: (bookData.imageLinks as any).large,
+        };
+      }
+
+      return {
+        ...userBook,
+        book: {
+          ...bookData,
+          imageLinks,
+          authors: bookData.authors?.map((author) => author.author.name) || [],
+          publisher: bookData.publisher?.name || null,
+          categories: bookData.categories?.map((category) => category.category.name) || [],
+        },
+      };
+    });
+
     res.json({
-      pagination: {
-        total,
-        hasNext,
-        hasPrevious,
-      },
-      data: userBooks,
+      pagination: { total, hasNext, hasPrevious },
+      data: formattedBooks,
     });
   } catch (error) {
     console.error('Error fetching user library:', error);
