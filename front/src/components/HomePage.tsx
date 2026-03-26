@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Button, Stack } from '@chakra-ui/react';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 
+import type { Book } from '../types/book';
+import { Button, Stack } from '@chakra-ui/react';
 import { PageLayout } from '../components/layouts/PageLayout';
 import MobileMenu from '../components/MobileMenu';
 import SearchBar from './SearchBar';
@@ -13,7 +15,6 @@ import homeImage from '../assets/homePageImage.jpg';
 import { genresMock } from '../mocks/mockData';
 import { slugify } from '../utils/stringUtils';
 import { getThemeLabel } from '../utils/themeUtils';
-import { useTranslation } from 'react-i18next';
 import { useBookSearch } from '../hooks/useBookSearch';
 
 const HomePage = () => {

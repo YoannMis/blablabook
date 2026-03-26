@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router';
 import { Box } from '@chakra-ui/react';
 import { Stack, Tabs, HStack, Heading } from '@chakra-ui/react';
@@ -17,29 +17,21 @@ const LibraryPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('book');
   const [searchValue, setSearchValue] = useState('');
-  // const [userBooks, setUserBooks] = useState<Book[]>([]);
 
   const tabRoutes: Record<string, string> = {
     'all-books': '/library',
     collections: '/library/collections',
   };
 
+  const routeToTab = Object.fromEntries(
+    Object.entries(tabRoutes).map(([tab, route]) => [route, tab])
+  );
+  const activeTab = routeToTab[location.pathname] || 'all-books';
+
   const tabsData = [
     { value: 'all-books', icon: GiBookshelf, label: t('library.allBooks') },
     { value: 'collections', icon: BsCollectionFill, label: t('library.collections') },
   ];
-
-  useEffect(() => {
-    // const fetchUserBooks = async () => {
-    //   try {
-    //     const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/library`);
-    //     setUserBooks(res.data);
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
-    // };
-    // fetchUserBooks();
-  }, []);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(event.target.value);
@@ -73,7 +65,7 @@ const LibraryPage = () => {
           />
 
           <Tabs.Root
-            defaultValue="all-books"
+            value={activeTab}
             variant="line"
             onValueChange={({ value }) => navigate(tabRoutes[value])}
           >

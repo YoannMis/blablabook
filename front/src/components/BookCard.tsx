@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router';
 import { slugify } from '../utils/stringUtils';
 import noBookCover from '../assets/noBookCover.jpg';
 import { useTranslation } from 'react-i18next';
+import type { Book } from '../types/book';
 
 import BookDotsMenu from './BookDotsMenu';
 

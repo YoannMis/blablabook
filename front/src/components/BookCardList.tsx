@@ -1,6 +1,7 @@
 import { Box, Heading, Separator, SimpleGrid } from '@chakra-ui/react';
 import BookCard from './BookCard';
 import BookCardSkeleton from './BookCardSkeleton';
+import type { Book } from '../types/book';
 
 interface BookCardListProps {
   title?: string;
