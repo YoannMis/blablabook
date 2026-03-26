@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { includes, z } from 'zod';
 import type { Response } from 'express';
 
 import { prisma } from '../utils/prisma.utils';
@@ -54,7 +54,27 @@ export const getUserLibrary = async (req: AuthRequest, res: Response): Promise<v
           status: query.status as ReadingStatus,
         },
         include: {
-          book: true,
+          book: {
+            include: {
+              authors: {
+                select: {
+                  author: {
+                    select: { name: true },
+                  },
+                },
+              },
+              publisher: {
+                select: { name: true },
+              },
+              categories: {
+                select: {
+                  category: {
+                    select: { name: true },
+                  },
+                },
+              },
+            },
+          },
         },
         skip: offset,
         take: limit,
@@ -72,7 +92,27 @@ export const getUserLibrary = async (req: AuthRequest, res: Response): Promise<v
           userId: userId,
         },
         include: {
-          book: true,
+          book: {
+            include: {
+              authors: {
+                select: {
+                  author: {
+                    select: { name: true },
+                  },
+                },
+              },
+              publisher: {
+                select: { name: true },
+              },
+              categories: {
+                select: {
+                  category: {
+                    select: { name: true },
+                  },
+                },
+              },
+            },
+          },
         },
         skip: offset,
         take: limit,
