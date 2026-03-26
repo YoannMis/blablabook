@@ -6,8 +6,10 @@ import {
   Flex,
   Heading,
   Input,
-  Spacer,
   VStack,
+  Dialog,
+  CloseButton,
+  Portal,
 } from '@chakra-ui/react';
 import { useCurrentUser } from '../context/UserContext';
 import { PageLayout } from './layouts/PageLayout';
@@ -15,13 +17,13 @@ import homeImage from '../assets/homePageImage.jpg';
 import MobileMenu from './MobileMenu';
 import { PasswordInput } from './ui/password-input';
 import { Toaster, toaster } from './ui/toaster';
-import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
 import RegisterSchema from '../schema/register.schema';
 import type { RegisterFormValues } from '../types/user';
 import z from 'zod';
 import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 
 const AccountPage = () => {
   const { t } = useTranslation('auth');
@@ -271,18 +273,42 @@ const AccountPage = () => {
             {!isEditing ? (
               <>
                 <Button variant={'solid'} width={'100%'} onClick={handleEditClick}>
-                  Modifier
+                  Modifier vos informations
                 </Button>
-                <Spacer />
-                <Button
-                  variant={'solid'}
-                  width={'100%'}
-                  loading={isDeleting}
-                  colorScheme={'red'}
-                  onClick={handleDeleteClick}
-                >
-                  Supprimer
-                </Button>
+                <Dialog.Root>
+                  <Dialog.Trigger asChild>
+                    <Button variant={'solid'} width={'100%'} colorScheme="red">
+                      Supprimer
+                    </Button>
+                  </Dialog.Trigger>
+                  <Portal>
+                    <Dialog.Backdrop />
+                    <Dialog.Positioner>
+                      <Dialog.Content>
+                        <Dialog.Header>
+                          <Dialog.Title>Supprimer le compte</Dialog.Title>
+                        </Dialog.Header>
+                        <Dialog.Body>
+                          <p>
+                            Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est
+                            irréversible.
+                          </p>
+                        </Dialog.Body>
+                        <Dialog.Footer>
+                          <Dialog.ActionTrigger asChild>
+                            <Button>Non</Button>
+                          </Dialog.ActionTrigger>
+                          <Button onClick={handleDeleteClick} loading={isDeleting}>
+                            Oui
+                          </Button>
+                        </Dialog.Footer>
+                        <Dialog.CloseTrigger asChild>
+                          <CloseButton size="sm" position="absolute" top={2} right={2} />
+                        </Dialog.CloseTrigger>
+                      </Dialog.Content>
+                    </Dialog.Positioner>
+                  </Portal>
+                </Dialog.Root>
               </>
             ) : (
               <>
@@ -292,11 +318,11 @@ const AccountPage = () => {
                   onClick={handleSaveClick}
                   disabled={!isFormValid}
                 >
-                  Valider
+                  Valider les changements
                 </Button>
-                <Spacer />
+
                 <Button variant={'solid'} width={'100%'} onClick={handleCancelClick}>
-                  Annuler
+                  Annuler tous changements
                 </Button>
               </>
             )}
