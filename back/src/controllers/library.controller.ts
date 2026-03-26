@@ -1,6 +1,21 @@
+import { z } from 'zod';
 import type { Response } from 'express';
+
 import { prisma } from '../utils/prisma.utils';
 import type { AuthRequest } from '../middlewares/auth.middleware';
+import type { UserBook, ReadingStatus } from '../utils/prisma.utils';
+
+const getUserLibraryQuerySchema = z.object({
+  status: z.string().optional().default('all'),
+  offset: z.coerce
+    .number()
+    .refine((value) => value % 20 === 0, {
+      message: 'Number must be a multiple of 20',
+    })
+    .min(0)
+    .optional()
+    .default(0),
+});
 
 /**
  * Retrieves all books belonging to a connected user with pagination support.
@@ -13,8 +28,11 @@ import type { AuthRequest } from '../middlewares/auth.middleware';
  * @returns A Promise that resolves when the response is sent.
  */
 export const getUserLibrary = async (req: AuthRequest, res: Response): Promise<void> => {
+  const parsed = getUserLibraryQuerySchema.safeParse(req.query);
+
   try {
     const userId = req.userId;
+    const query = parsed.data;
 
     if (!userId) {
       res.status(401).json({ success: false, message: 'User not authenticated' });
@@ -23,26 +41,49 @@ export const getUserLibrary = async (req: AuthRequest, res: Response): Promise<v
 
     // Pagination settings
     const limit = 20; // Default limit of 20 books per page
-    const offset = req.query.offset ? parseInt(req.query.offset as string) : 0; // Default offset starting at 0
+    const offset = query?.offset ? query.offset : 0; // Default offset starting at 0
+
+    let userBooks: UserBook[];
+    let total: number; // the total count of books for the user
 
     // Query the database for books associated with the user with pagination
-    const userBooks = await prisma.userBook.findMany({
-      where: {
-        userId: userId,
-      },
-      include: {
-        book: true,
-      },
-      skip: offset,
-      take: limit,
-    });
+    if (query?.status && query.status !== 'all') {
+      userBooks = await prisma.userBook.findMany({
+        where: {
+          userId: userId,
+          status: query.status as ReadingStatus,
+        },
+        include: {
+          book: true,
+        },
+        skip: offset,
+        take: limit,
+      });
 
-    // Get the total count of books for the user
-    const total = await prisma.userBook.count({
-      where: {
-        userId: userId,
-      },
-    });
+      total = await prisma.userBook.count({
+        where: {
+          userId: userId,
+          status: query.status as ReadingStatus,
+        },
+      });
+    } else {
+      userBooks = await prisma.userBook.findMany({
+        where: {
+          userId: userId,
+        },
+        include: {
+          book: true,
+        },
+        skip: offset,
+        take: limit,
+      });
+
+      total = await prisma.userBook.count({
+        where: {
+          userId: userId,
+        },
+      });
+    }
 
     // Calculate pagination metadata
     const hasNext = offset + limit < total;
