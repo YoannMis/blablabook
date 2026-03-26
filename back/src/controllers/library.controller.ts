@@ -1,9 +1,8 @@
 import { z } from 'zod';
 import type { Response } from 'express';
 
-import { prisma } from '../utils/prisma.utils';
+import { prisma, type ReadingStatus } from '../utils/prisma.utils';
 import type { AuthRequest } from '../middlewares/auth.middleware';
-import type { ReadingStatus } from '../utils/prisma.utils';
 import { UserBookWithDetails } from '../types/userBook.types';
 
 const getUserLibraryQuerySchema = z.object({
@@ -29,11 +28,11 @@ const getUserLibraryQuerySchema = z.object({
  * @returns A Promise that resolves when the response is sent.
  */
 export const getUserLibrary = async (req: AuthRequest, res: Response): Promise<void> => {
-  const parsed = getUserLibraryQuerySchema.safeParse(req.query);
+  const parsed = getUserLibraryQuerySchema.parse(req.query);
 
   try {
     const userId = req.userId;
-    const query = parsed.data;
+    const query = parsed;
 
     if (!userId) {
       res.status(401).json({ success: false, message: 'User not authenticated' });
@@ -122,6 +121,354 @@ export const getUserLibrary = async (req: AuthRequest, res: Response): Promise<v
       total = await prisma.userBook.count({
         where: {
           userId: userId,
+        },
+      });
+    }
+
+    // Calculate pagination metadata
+    const hasNext = offset + limit < total;
+    const hasPrevious = offset > 0;
+
+    const formattedBooks = userBooks.map((userBook) => {
+      const bookData = userBook.book;
+
+      let imageLinks = null;
+      if (bookData.imageLinks && typeof bookData.imageLinks === 'object') {
+        imageLinks = {
+          thumbnail: (bookData.imageLinks as any).thumbnail || '',
+          small: (bookData.imageLinks as any).small,
+          medium: (bookData.imageLinks as any).medium,
+          large: (bookData.imageLinks as any).large,
+        };
+      }
+
+      return {
+        ...userBook,
+        book: {
+          ...bookData,
+          imageLinks,
+          authors: bookData.authors?.map((author) => author.author.name) || [],
+          publisher: bookData.publisher?.name || null,
+          categories: bookData.categories?.map((category) => category.category.name) || [],
+        },
+      };
+    });
+
+    res.json({
+      pagination: { total, hasNext, hasPrevious },
+      data: formattedBooks,
+    });
+  } catch (error) {
+    console.error('Error fetching user library:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error.',
+    });
+  }
+};
+
+const searchQuerySchema = z.object({
+  q: z.string().min(1, 'q param is required'),
+  status: z.string().optional().default('all'),
+  offset: z.coerce
+    .number()
+    .refine((value) => value % 20 === 0, {
+      message: 'Number must be a multiple of 20',
+    })
+    .min(0)
+    .optional()
+    .default(0),
+});
+
+export const searchInLibrary = async (req: AuthRequest, res: Response): Promise<void> => {
+  const parsed = searchQuerySchema.safeParse(req.query);
+
+  try {
+    const userId = req.userId;
+    const query = parsed.data;
+
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'User not authenticated' });
+      return;
+    }
+
+    // Pagination settings
+    const limit = 20; // Default limit of 20 books per page
+    const offset = query?.offset ? query.offset : 0; // Default offset starting at 0
+
+    let userBooks: UserBookWithDetails[];
+    let total: number; // the total count of books for the user
+
+    if (query?.status && query.status !== 'all') {
+      userBooks = await prisma.userBook.findMany({
+        where: {
+          userId: userId,
+          status: query?.status as ReadingStatus,
+          book: {
+            OR: [
+              {
+                authors: {
+                  some: {
+                    author: {
+                      name: {
+                        contains: query?.q,
+                        mode: 'insensitive',
+                      },
+                    },
+                  },
+                },
+              },
+              {
+                publisher: {
+                  name: {
+                    contains: query?.q,
+                    mode: 'insensitive',
+                  },
+                },
+              },
+              {
+                categories: {
+                  some: {
+                    category: {
+                      name: {
+                        contains: query?.q,
+                        mode: 'insensitive',
+                      },
+                    },
+                  },
+                },
+              },
+              {
+                title: {
+                  contains: query?.q,
+                  mode: 'insensitive',
+                },
+              },
+              {
+                description: {
+                  contains: query?.q,
+                  mode: 'insensitive',
+                },
+              },
+            ],
+          },
+        },
+        include: {
+          book: {
+            include: {
+              authors: {
+                select: {
+                  author: {
+                    select: { name: true },
+                  },
+                },
+              },
+              publisher: {
+                select: {
+                  name: true,
+                },
+              },
+              categories: {
+                select: {
+                  category: {
+                    select: { name: true },
+                  },
+                },
+              },
+            },
+          },
+        },
+        skip: offset,
+        take: limit,
+      });
+
+      total = await prisma.userBook.count({
+        where: {
+          userId: userId,
+          status: query?.status as ReadingStatus,
+          book: {
+            OR: [
+              {
+                authors: {
+                  some: {
+                    author: {
+                      name: {
+                        contains: query?.q,
+                        mode: 'insensitive',
+                      },
+                    },
+                  },
+                },
+              },
+              {
+                publisher: {
+                  name: {
+                    contains: query?.q,
+                    mode: 'insensitive',
+                  },
+                },
+              },
+              {
+                categories: {
+                  some: {
+                    category: {
+                      name: {
+                        contains: query?.q,
+                        mode: 'insensitive',
+                      },
+                    },
+                  },
+                },
+              },
+              {
+                title: {
+                  contains: query?.q,
+                  mode: 'insensitive',
+                },
+              },
+              {
+                description: {
+                  contains: query?.q,
+                  mode: 'insensitive',
+                },
+              },
+            ],
+          },
+        },
+      });
+    } else {
+      userBooks = await prisma.userBook.findMany({
+        where: {
+          userId: userId,
+          book: {
+            OR: [
+              {
+                authors: {
+                  some: {
+                    author: {
+                      name: {
+                        contains: query?.q,
+                        mode: 'insensitive',
+                      },
+                    },
+                  },
+                },
+              },
+              {
+                publisher: {
+                  name: {
+                    contains: query?.q,
+                    mode: 'insensitive',
+                  },
+                },
+              },
+              {
+                categories: {
+                  some: {
+                    category: {
+                      name: {
+                        contains: query?.q,
+                        mode: 'insensitive',
+                      },
+                    },
+                  },
+                },
+              },
+              {
+                title: {
+                  contains: query?.q,
+                  mode: 'insensitive',
+                },
+              },
+              {
+                description: {
+                  contains: query?.q,
+                  mode: 'insensitive',
+                },
+              },
+            ],
+          },
+        },
+        include: {
+          book: {
+            include: {
+              authors: {
+                select: {
+                  author: {
+                    select: { name: true },
+                  },
+                },
+              },
+              publisher: {
+                select: {
+                  name: true,
+                },
+              },
+              categories: {
+                select: {
+                  category: {
+                    select: { name: true },
+                  },
+                },
+              },
+            },
+          },
+        },
+        skip: offset,
+        take: limit,
+      });
+
+      total = await prisma.userBook.count({
+        where: {
+          userId: userId,
+          book: {
+            OR: [
+              {
+                authors: {
+                  some: {
+                    author: {
+                      name: {
+                        contains: query?.q,
+                        mode: 'insensitive',
+                      },
+                    },
+                  },
+                },
+              },
+              {
+                publisher: {
+                  name: {
+                    contains: query?.q,
+                    mode: 'insensitive',
+                  },
+                },
+              },
+              {
+                categories: {
+                  some: {
+                    category: {
+                      name: {
+                        contains: query?.q,
+                        mode: 'insensitive',
+                      },
+                    },
+                  },
+                },
+              },
+              {
+                title: {
+                  contains: query?.q,
+                  mode: 'insensitive',
+                },
+              },
+              {
+                description: {
+                  contains: query?.q,
+                  mode: 'insensitive',
+                },
+              },
+            ],
+          },
         },
       });
     }

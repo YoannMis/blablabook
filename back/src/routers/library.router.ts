@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getUserLibrary } from '../controllers/library.controller';
+import { getUserLibrary, searchInLibrary } from '../controllers/library.controller';
 import { authenticateToken } from '../middlewares/auth.middleware';
 
 const router = Router();
@@ -11,5 +11,6 @@ const router = Router();
  * that only authenticated users can access their library.
  */
 router.get('/', authenticateToken, getUserLibrary);
+router.get('/search', authenticateToken, searchInLibrary);
 
 export default router;
