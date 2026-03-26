@@ -9,6 +9,8 @@ import Account from './components/Account';
 import PublicRoute from './components/PublicRoute';
 import Terms from './components/Terms';
 import LibraryPage from './components/LibraryPage';
+import LibraryAllBooks from './components/LibraryAllBooks';
+import LibraryCollections from './components/LibraryCollections';
 
 const App = () => {
   return (
@@ -41,14 +43,13 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/library"
-            element={
-              <ProtectedRoute>
-                <LibraryPage />
-              </ProtectedRoute>
-            }
-          />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/library" element={<LibraryPage />}>
+              <Route index element={<LibraryAllBooks />} />
+              <Route path="collections" element={<LibraryCollections />} />
+              {/* <Route path="collections/:type" element={<LibraryCollectionDetails />} /> */}
+            </Route>
+          </Route>
           <Route path="/terms" element={<Terms />} />
         </Routes>
       </BrowserRouter>

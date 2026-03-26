@@ -1,35 +1,44 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
-import { Stack, HStack, Text, Link as ChakraLink, Tabs } from '@chakra-ui/react';
-import { Link } from 'react-router';
+import { Outlet, useNavigate } from 'react-router';
+import { Box, useBreakpointValue } from '@chakra-ui/react';
+import { Stack, Tabs, HStack, Heading } from '@chakra-ui/react';
 import { GiBookshelf } from 'react-icons/gi';
 import { BsCollectionFill } from 'react-icons/bs';
-import axios from 'axios';
+// import axios from 'axios';
 
 import { PageLayout } from './layouts/PageLayout';
 import MobileMenu from './MobileMenu';
 import SearchBar from './SearchBar';
-import CollectionList from './CollectionList';
 
 import homeImage from '../assets/homePageImage.jpg';
-import { booksMock } from '../mocks/mockData';
+import { useTranslation } from 'react-i18next';
 
 const LibraryPage = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation('book');
   const [searchValue, setSearchValue] = useState('');
-  const [myBooks, setMyBooks] = useState<Book[]>([]);
+  // const [userBooks, setUserBooks] = useState<Book[]>([]);
+
+  const tabRoutes: Record<string, string> = {
+    'all-books': '/library',
+    collections: '/library/collections',
+  };
+
+  const tabsData = [
+    { value: 'all-books', icon: GiBookshelf, label: t('library.allBooks') },
+    { value: 'collections', icon: BsCollectionFill, label: t('library.collections') },
+  ];
 
   useEffect(() => {
-    const fetchMyBooks = async () => {
-      try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/library`);
-        setMyBooks(res.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchMyBooks();
+    // const fetchUserBooks = async () => {
+    //   try {
+    //     const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/library`);
+    //     setUserBooks(res.data);
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // };
+    // fetchUserBooks();
   }, []);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +63,7 @@ const LibraryPage = () => {
 
   return (
     <>
-      <PageLayout imageSrc={homeImage}>
+      <PageLayout imageSrc={homeImage} imageSize={25}>
         <Stack gap={6} pb={{ base: 20, md: 2 }}>
           <SearchBar
             searchValue={searchValue}
@@ -62,29 +71,35 @@ const LibraryPage = () => {
             onSubmit={handleSubmit}
             onClear={handleClear}
           />
+
           <Tabs.Root
             defaultValue="all-books"
-            justify="center"
-            navigate={({ value }) => navigate(`/${value}`)}
+            variant="line"
+            onValueChange={({ value }) => navigate(tabRoutes[value])}
           >
-            <Tabs.List justifySelf="center">
-              <Tabs.Trigger value="all-books" asChild>
-                <ChakraLink unstyled>
-                  <GiBookshelf />
-                  <Link to={'/library'}>Tous les livres</Link>
-                </ChakraLink>
-              </Tabs.Trigger>
-              <Tabs.Trigger value="collections" asChild>
-                <ChakraLink unstyled>
-                  <BsCollectionFill />
-                  <Link to={'/library/collections'}>Collections</Link>
-                </ChakraLink>
-              </Tabs.Trigger>
+            <Tabs.List mb={4} justifyContent="space-around">
+              {tabsData.map(({ value, icon: Icon, label }) => (
+                <Tabs.Trigger
+                  key={value}
+                  value={value}
+                  asChild
+                  flex={1}
+                  _selected={{
+                    color: { _light: 'gray.700', _dark: 'light.50' },
+                  }}
+                  color={{ _light: 'gray.500', _dark: 'light.200' }}
+                >
+                  <Box display="flex" justifyContent="center" alignItems="center" w="100%">
+                    <HStack gap={2}>
+                      <Icon />
+                      <Heading size="md">{label}</Heading>
+                    </HStack>
+                  </Box>
+                </Tabs.Trigger>
+              ))}
             </Tabs.List>
-            <Tabs.Content value="all-books">
-              <CollectionList books={booksMock} />
-            </Tabs.Content>
-            <Tabs.Content value="collections">Manage your collections</Tabs.Content>
+
+            <Outlet />
           </Tabs.Root>
         </Stack>
         <MobileMenu />

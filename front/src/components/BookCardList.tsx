@@ -1,46 +1,57 @@
-import { Box, Heading, SimpleGrid } from '@chakra-ui/react';
+import { Box, Heading, Separator, SimpleGrid } from '@chakra-ui/react';
 import BookCard from './BookCard';
 import BookCardSkeleton from './BookCardSkeleton';
 
 interface BookCardListProps {
-  title: string;
+  title?: string;
   books: Book[];
   wrap?: boolean;
   isLoading?: boolean;
+  singleColumnMobile?: boolean;
 }
 
-const BookCardList = ({ title, books, wrap = true, isLoading = false }: BookCardListProps) => {
+const BookCardList = ({
+  title,
+  books,
+  wrap = true,
+  isLoading = false,
+  singleColumnMobile = false,
+}: BookCardListProps) => {
   const skeletonCount = 6;
+
+  const minChildWidth = { base: singleColumnMobile ? '100%' : '140px', md: '150px' };
+  const boxWidth = { base: singleColumnMobile ? '100%' : '150px', md: 'auto' };
+
+  const renderSkeletons = () =>
+    Array.from({ length: skeletonCount }).map((_, index) => (
+      <BookCardSkeleton key={index} wrap={wrap} />
+    ));
+
+  const renderBooks = () =>
+    books.map((book) => (
+      <Box key={book.id} w={boxWidth}>
+        <Separator display={{ base: 'block', md: 'none' }} my={4} />
+        <BookCard book={book} />
+      </Box>
+    ));
+
+  const content = isLoading ? renderSkeletons() : renderBooks();
 
   return (
     <Box overflowX={wrap ? 'visible' : 'auto'} mb={6}>
-      <Heading size="xl" fontWeight="bold" mb={4}>
-        {title}
-      </Heading>
+      {title && (
+        <Heading size="xl" fontWeight="bold" mb={4}>
+          {title}
+        </Heading>
+      )}
 
       {wrap ? (
-        <SimpleGrid minChildWidth={{ base: '140px', md: '150px' }} gap={6}>
-          {isLoading
-            ? Array.from({ length: skeletonCount }).map((_, index) => (
-                <BookCardSkeleton key={index} wrap={wrap} />
-              ))
-            : books.map((book) => (
-                <Box key={book.id} w={{ base: '150px', md: 'auto' }}>
-                  <BookCard book={book} />
-                </Box>
-              ))}
+        <SimpleGrid minChildWidth={minChildWidth} gap={6}>
+          {content}
         </SimpleGrid>
       ) : (
         <Box display="flex" gap={6} py={2}>
-          {isLoading
-            ? Array.from({ length: skeletonCount }).map((_, index) => (
-                <BookCardSkeleton key={index} wrap={wrap} />
-              ))
-            : books.map((book) => (
-                <Box key={book.id} flex="0 0 auto" w={{ base: '140px', md: '170px' }}>
-                  <BookCard book={book} />
-                </Box>
-              ))}
+          {content}
         </Box>
       )}
     </Box>

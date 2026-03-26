@@ -19,5 +19,9 @@
     "travel": "Envie de voyager ✈️",
     "tech": "Les nouvelles technologies 💻",
     "animals": "Compagnons poilus 🐾"
+  },
+  "library": {
+    "allBooks": "Tous les livres",
+    "collections": "Collections"
   }
 }

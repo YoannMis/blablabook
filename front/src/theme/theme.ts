@@ -28,13 +28,17 @@ const colors = defineTokens.colors({
     300: { value: '#5D6E7D' },
     400: { value: '#4A5568' },
     500: { value: '#7D8B7A' },
+    600: { value: '#5A5954' },
+    700: { value: '#3F3E3B' },
+    800: { value: '#2A2927' },
+    900: { value: '#1A1918' },
   },
 });
 
 const config = defineConfig({
   globalCss: {
-    html: { minHeight: '100%' },
-    '#root': { minHeight: '100%' },
+    html: { height: '100%' },
+    '#root': { height: '100%' },
     body: {
       minHeight: '100%',
       margin: 0,

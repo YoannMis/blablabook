@@ -31,20 +31,15 @@ const BookCard = ({ book }: BookCardProps) => {
       direction={pathname === '/library' ? { base: 'row', md: 'column' } : 'column'}
       gapX={6}
       gapY={3}
-      align="center"
+      align={{ base: 'center', md: 'start' }}
       minW={{ base: '140px', md: '160px' }}
       cursor="pointer"
-      borderTop={pathname === '/library' ? { base: 'solid', md: 'none' } : 'none'}
-      borderTopWidth="1px"
-      py={pathname === '/library' ? { base: '3', md: '0' } : '0'}
     >
       <Box
         position="relative"
-        w="100%"
         h={{ base: '220px', md: '260px' }}
         borderRadius="xl"
         overflow="hidden"
-        bg="gray.50"
         borderWidth="1px"
         borderColor="gray.100"
         transition="all 0.2s"
@@ -57,11 +52,8 @@ const BookCard = ({ book }: BookCardProps) => {
           src={imageLinks?.thumbnail || noBookCover}
           alt={title}
           objectFit="fill"
-          // w="100%"
-          w={{ base: '140px', md: '100%' }}
+          w="100%"
           h="100%"
-          transition="transform 0.3s ease"
-          _groupHover={{ transform: 'scale(1.05)' }}
           onClick={handleClick}
         />
 

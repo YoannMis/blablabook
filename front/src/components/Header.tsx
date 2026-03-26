@@ -1,4 +1,4 @@
-import { Show, Box, Flex, HStack, IconButton, Text } from '@chakra-ui/react';
+import { Show, Box, Flex, HStack, Text } from '@chakra-ui/react';
 import { LiaCompass } from 'react-icons/lia';
 import { TbBookFilled } from 'react-icons/tb';
 import { BsPersonCircle } from 'react-icons/bs';
@@ -38,13 +38,8 @@ const Header = () => {
               {t('nav.library')}
             </NavLink>
             {isLoggedIn ? (
-              <NavLink to="/account">
-                <Text whiteSpace="nowrap">
-                  <IconButton>
-                    <BsPersonCircle />
-                  </IconButton>
-                  {user?.username}
-                </Text>
+              <NavLink to="/account" icon={BsPersonCircle}>
+                <Text whiteSpace="nowrap">{user?.username}</Text>
               </NavLink>
             ) : (
               <NavLink to="/login" icon={BsPersonCircle}>

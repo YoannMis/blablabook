@@ -19,5 +19,9 @@
     "travel": "Travel mood ✈️",
     "tech": "New technologies 💻",
     "animals": "Furry companions 🐾"
+  },
+  "library": {
+    "allBooks": "All books",
+    "collections": "Collections"
   }
 }
