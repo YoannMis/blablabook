@@ -7,13 +7,13 @@ import {
   deleteUser,
   getCurrentUser,
   login,
+  patchUser,
   refreshUserToken,
   registerUser,
   type UserError,
 } from '../services/auth.service';
 import { AuthRequest } from '../middlewares/auth.middleware';
 import { clearCookiesUser } from '../utils/clearAuthCookies';
-import { ref } from 'node:process';
 
 //Typage Typescript
 type AuthFormValues = z.infer<typeof AuthSchema>;
@@ -33,7 +33,7 @@ export const registerUserController = async (req: Request, res: Response) => {
     }
 
     // appelle auth service pour enregistrer l'utilisateur
-    const user = await registerUser({ username, email, password, confirmPassword });
+    const user = await registerUser(req.body);
 
     // creation d'une constante newuser contenant les information de user sans le password
     const newUser = {
@@ -179,6 +179,50 @@ export const logoutUserController = async (req: AuthRequest, res: Response) => {
     return res.status(200).json({ success: true, message: 'Logout successful' });
   } catch (error) {
     console.error('logoutUserController error', error);
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+export const patchUserController = async (req: AuthRequest, res: Response) => {
+  const userId = req.params.id;
+
+  if (!userId) {
+    return res.status(401).json({ success: false, message: 'Not authenticated' });
+  }
+  try {
+    // validation du body de la requête
+    const { username, email, password, confirmPassword }: AuthFormValues = AuthSchema.parse(
+      req.body
+    );
+    // validation des mots de passe
+    if (password !== confirmPassword) {
+      return res.status(400).json({ success: false, message: 'Passwords do not match' });
+    }
+    // appelle auth service pour modifier l'utilisateur
+    const user = await patchUser(Number(userId), req.body);
+    // creation d'une constante newuser contenant les information de user sans le password
+    const newUser = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+    };
+    return res
+      .status(200)
+      .json({ success: true, message: 'User updated successfully', data: newUser });
+  } catch (error) {
+    if (error) {
+      const userError = error as UserError;
+      if (userError.field === 'username') {
+        return res
+          .status(userError.status || 409)
+          .json({ success: false, message: userError.message || 'Username already taken' });
+      } else if (userError?.field === 'generic') {
+        return res
+          .status(userError.status || 409)
+          .json({ success: false, message: userError.message || 'Invalid credentials' });
+      }
+    }
+    console.error('patchUserController error', error);
     return res.status(500).json({ success: false, message: 'Server error' });
   }
 };

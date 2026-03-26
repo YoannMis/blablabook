@@ -24,6 +24,8 @@ import z from 'zod';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { axiosAuth } from '../utils/axiosAuth';
+import type { RegisterErrorResponse } from '@/types/api.type';
+import axios from 'axios';
 
 const AccountPage = () => {
   const { t } = useTranslation('auth');
@@ -55,9 +57,64 @@ const AccountPage = () => {
     setIsEditing(true);
   };
 
-  const handleSaveClick = () => {
-    setIsEditing(false);
+  const handleSaveClick = async () => {
+    setIsEditing(true);
+    if (!user?.id) {
+      toaster.create({
+        title: 'Erreur',
+        description: 'Impossible de modifier le compte : identifiant utilisateur manquant.',
+        type: 'error',
+        duration: 3000,
+        closable: true,
+      });
+      return;
+    }
     // Enregistrer les modifications
+    try {
+      const response = await axiosAuth.patch(`/api/auth/users/${user.id}`, formData);
+
+      if (response.data.success && response.data.data) {
+        toaster.create({
+          title: 'Modifications enregistrées',
+          description: 'Vos modifications ont bien été enregistrées.',
+          type: 'success',
+          duration: 3000,
+          closable: true,
+        });
+      } else {
+        console.error('Error updating user:', response.data.message);
+      }
+    } catch (error) {
+      if (axios.isAxiosError<RegisterErrorResponse>(error)) {
+        const backEndMessage = error.response?.data.message || 'GENERIC';
+        const messageKey =
+          {
+            USERNAME_TAKEN: 'auth:register.errorUsername',
+            GENERIC: 'auth:register.defaultError',
+          }[backEndMessage] ?? 'auth:register.defaultError';
+
+        const translatedMessage = t(messageKey);
+
+        // if (registerError) {
+        toaster.create({
+          title: t('register.errorTitle'),
+          description: translatedMessage,
+          type: 'error',
+          duration: 6000,
+          closable: true,
+        });
+      } else {
+        toaster.create({
+          title: t('register.serverErrorTitle'),
+          description: t('register.serverErrorDescription'),
+          type: 'error',
+          duration: 6000,
+          closable: true,
+        });
+      }
+    } finally {
+      setIsEditing(false);
+    }
   };
 
   const handleCancelClick = () => {

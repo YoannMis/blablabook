@@ -99,7 +99,6 @@ const Register = () => {
       console.log('error', error);
       // Traitement des erreurs
       if (axios.isAxiosError<RegisterErrorResponse>(error)) {
-        // const registerError = error.response?.data.message || error.message;
         const backEndMessage = error.response?.data.message || 'GENERIC';
         const messageKey =
           {
