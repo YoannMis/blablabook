@@ -20,7 +20,7 @@ import { Toaster, toaster } from './ui/toaster';
 import { useNavigate } from 'react-router';
 import RegisterSchema from '../schema/register.schema';
 import type { RegisterFormValues } from '../types/user';
-import z from 'zod';
+import z, { set } from 'zod';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { axiosAuth } from '../utils/axiosAuth';
@@ -29,7 +29,7 @@ import axios from 'axios';
 
 const AccountPage = () => {
   const { t } = useTranslation('auth');
-  const { user } = useCurrentUser();
+  const { user, setUser } = useCurrentUser();
   const { logout } = useCurrentUser();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<RegisterFormValues>({
@@ -49,9 +49,20 @@ const AccountPage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
 
-  const isFormValid =
-    Object.values(errors).every((error) => error.length === 0) &&
-    Object.values(formData).every((value) => !!value.trim());
+  const isFormValid = () => {
+    const hasNoErrors = Object.values(errors).every((error) => !error);
+    if (!hasNoErrors) return false;
+
+    if (formData.password) {
+      if (!formData.password.trim() || formData.password.length < 6) return false;
+      if (formData.password !== formData.confirmPassword) return false;
+    }
+
+    if (formData.username !== user?.username && !formData.username.trim()) return false;
+    if (formData.email !== user?.email && !formData.email.trim()) return false;
+
+    return true;
+  };
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -71,7 +82,28 @@ const AccountPage = () => {
     }
     // Enregistrer les modifications
     try {
-      const response = await axiosAuth.patch(`/api/auth/users/${user.id}`, formData);
+      const updatedData: Partial<RegisterFormValues> = {};
+      if (formData.username !== user.username) {
+        updatedData.username = formData.username;
+      }
+      if (formData.email !== user.email) {
+        updatedData.email = formData.email;
+      }
+      if (formData.password) {
+        updatedData.password = formData.password;
+      }
+
+      if (Object.keys(updatedData).length === 0) {
+        toaster.create({
+          title: 'Aucune modification',
+          description: "Aucune modification n'a été effectuée.",
+          type: 'info',
+          duration: 3000,
+          closable: true,
+        });
+        return;
+      }
+      const response = await axiosAuth.patch(`/api/auth/users/${user.id}`, updatedData);
 
       if (response.data.success && response.data.data) {
         toaster.create({
@@ -80,6 +112,13 @@ const AccountPage = () => {
           type: 'success',
           duration: 3000,
           closable: true,
+        });
+        setUser(response.data.data);
+        setFormData({
+          username: response.data.data.username,
+          email: response.data.data.email,
+          password: '',
+          confirmPassword: '',
         });
       } else {
         console.error('Error updating user:', response.data.message);
@@ -134,45 +173,40 @@ const AccountPage = () => {
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newFormData = {
-      ...formData,
-      [event.target.name]: event.target.value,
-    };
-
+    const newFormData = { ...formData, [event.target.name]: event.target.value };
     setFormData(newFormData);
-    setErrors((prev) => ({
-      ...prev,
-      confirmPassword: getPasswordError(newFormData.password, newFormData.confirmPassword),
-    }));
+
+    if (event.target.name === 'password' || event.target.name === 'confirmPassword') {
+      setErrors((prev) => ({
+        ...prev,
+        confirmPassword: getPasswordError(newFormData.password, newFormData.confirmPassword),
+      }));
+    }
   };
 
   const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
+    const isModifiedOrFilled =
+      (name === 'username' && value !== user?.username) ||
+      (name === 'email' && value !== user?.email) ||
+      (name === 'password' && value) ||
+      (name === 'confirmPassword' && value);
 
-    // Sert à créer une validation pour un champ individuel
-    const miniSchema = z.object({
-      [name]: RegisterSchema.shape[name as keyof RegisterFormValues],
-    });
+    if (isModifiedOrFilled) {
+      const miniSchema = z.object({ [name]: RegisterSchema.shape[name] });
+      const result = miniSchema.safeParse({ [name]: value });
 
-    const result = miniSchema.safeParse({ [name]: value });
-
-    setErrors((prev) => {
-      if (!result.success) {
-        const flattened = z.flattenError(result.error);
-        return {
-          ...prev,
-          [name]: flattened.fieldErrors[name as keyof RegisterFormValues]?.[0] ?? '',
-        };
-      }
-      // Vérification en temps réel pour confirmPassword
-      if (name === 'confirmPassword') {
-        return {
-          ...prev,
-          confirmPassword: getPasswordError(formData.password, value),
-        };
-      }
-      return { ...prev, [name]: '' };
-    });
+      setErrors((prev) => {
+        if (!result.success) {
+          const error = z.flattenError(result.error).fieldErrors[name]?.[0] || '';
+          return { ...prev, [name]: error };
+        }
+        if (name === 'confirmPassword') {
+          return { ...prev, confirmPassword: getPasswordError(formData.password, value) };
+        }
+        return { ...prev, [name]: '' };
+      });
+    }
   };
 
   const handleDeleteClick = async () => {
@@ -399,7 +433,7 @@ const AccountPage = () => {
                   variant={'solid'}
                   width={'100%'}
                   onClick={handleSaveClick}
-                  disabled={!isFormValid}
+                  disabled={!isFormValid()}
                 >
                   Valider les changements
                 </Button>

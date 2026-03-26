@@ -1,5 +1,5 @@
 import type z from 'zod';
-import { AuthSchema, LoginSchema } from '../schema/auth.schema';
+import { AuthSchema, LoginSchema, PatchSchema } from '../schema/auth.schema';
 import type { Request, Response } from 'express';
 import { convertInMs } from '../utils/time.utils';
 import {
@@ -18,6 +18,7 @@ import { clearCookiesUser } from '../utils/clearAuthCookies';
 //Typage Typescript
 type AuthFormValues = z.infer<typeof AuthSchema>;
 type LoginFormValues = z.infer<typeof LoginSchema>;
+type PatchFormValues = z.infer<typeof PatchSchema>;
 
 //function d'enregistrement d'un utilisateur dans la base de données avec les informations fournie par le frontend
 export const registerUserController = async (req: Request, res: Response) => {
@@ -191,13 +192,14 @@ export const patchUserController = async (req: AuthRequest, res: Response) => {
   }
   try {
     // validation du body de la requête
-    const { username, email, password, confirmPassword }: AuthFormValues = AuthSchema.parse(
+    const { username, email, password, confirmPassword }: PatchFormValues = PatchSchema.parse(
       req.body
     );
     // validation des mots de passe
     if (password !== confirmPassword) {
       return res.status(400).json({ success: false, message: 'Passwords do not match' });
     }
+    //
     // appelle auth service pour modifier l'utilisateur
     const user = await patchUser(Number(userId), req.body);
     // creation d'une constante newuser contenant les information de user sans le password

@@ -208,9 +208,18 @@ export const deleteRefreshToken = async (userId: number) => {
 
 export const patchUser = async (userId: number, data: any) => {
   const { username, email, password } = data;
-  const hashedPassword = await argon2.hash(password);
+  // Vérification de l'existence de l'utilisateur
+  await checkUserExists(email, username);
+
+  if (password) {
+    const hashedPassword = await argon2.hash(password);
+    return prisma.user.update({
+      where: { id: userId },
+      data: { username, email, password: hashedPassword },
+    });
+  }
   return prisma.user.update({
     where: { id: userId },
-    data: { username, email, password: hashedPassword },
+    data: { username, email },
   });
 };
