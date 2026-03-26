@@ -7,7 +7,7 @@ import {
   deleteUser,
   getCurrentUser,
   login,
-  patchUser,
+  updateUser,
   refreshUserToken,
   registerUser,
   type UserError,
@@ -192,6 +192,7 @@ export const patchUserController = async (req: AuthRequest, res: Response) => {
   }
   try {
     // validation du body de la requête
+    console.log('back', req.body);
     const { username, email, password, confirmPassword }: PatchFormValues = PatchSchema.parse(
       req.body
     );
@@ -201,7 +202,7 @@ export const patchUserController = async (req: AuthRequest, res: Response) => {
     }
     //
     // appelle auth service pour modifier l'utilisateur
-    const user = await patchUser(Number(userId), req.body);
+    const user = await updateUser(Number(userId), req.body);
     // creation d'une constante newuser contenant les information de user sans le password
     const newUser = {
       id: user.id,

@@ -19,8 +19,8 @@ export const LoginSchema = z.object({
 });
 
 export const PatchSchema = z.object({
-  username: z.string().min(1).optional(),
-  email: z.email().min(1).optional(),
+  username: z.string().min(1).catch('').optional(),
+  email: z.email().min(1).catch('').optional(),
   password: z
     .string()
     .min(12)

@@ -1,6 +1,6 @@
 // src/services/auth.service.ts
 import { AuthSchema } from '../schema/auth.schema';
-import { prisma } from '../utils/prisma.utils';
+import { prisma, User } from '../utils/prisma.utils';
 import * as argon2 from 'argon2';
 import { convertInMs } from '../utils/time.utils';
 import crypto from 'crypto';
@@ -206,20 +206,25 @@ export const deleteRefreshToken = async (userId: number) => {
   return prisma.refreshToken.deleteMany({ where: { userId: userId } });
 };
 
-export const patchUser = async (userId: number, data: any) => {
-  const { username, email, password } = data;
-  // Vérification de l'existence de l'utilisateur
-  await checkUserExists(email, username);
+export const updateUser = async (userId: number, { username, email, password }: Partial<User>) => {
+  const updates: Partial<User> = {};
+
+  if (username) {
+    updates.username = username;
+  }
+
+  if (email) {
+    updates.email = email;
+  }
 
   if (password) {
     const hashedPassword = await argon2.hash(password);
-    return prisma.user.update({
-      where: { id: userId },
-      data: { username, email, password: hashedPassword },
-    });
+    updates.password = hashedPassword;
   }
-  return prisma.user.update({
-    where: { id: userId },
-    data: { username, email },
-  });
+
+  if (Object.keys(updates).length === 0) {
+    throw new Error('No updates provided');
+  }
+
+  return prisma.user.update({ where: { id: userId }, data: updates });
 };

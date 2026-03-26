@@ -20,7 +20,7 @@ import { Toaster, toaster } from './ui/toaster';
 import { useNavigate } from 'react-router';
 import RegisterSchema from '../schema/register.schema';
 import type { RegisterFormValues } from '../types/user';
-import z, { set } from 'zod';
+import z from 'zod';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { axiosAuth } from '../utils/axiosAuth';
@@ -33,6 +33,13 @@ const AccountPage = () => {
   const { logout } = useCurrentUser();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<RegisterFormValues>({
+    username: user?.username || '',
+    email: user?.email || '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  const [initialFormData, setInitialFormData] = useState<RegisterFormValues>({
     username: user?.username || '',
     email: user?.email || '',
     password: '',
@@ -52,24 +59,28 @@ const AccountPage = () => {
   const isFormValid = () => {
     const hasNoErrors = Object.values(errors).every((error) => !error);
     if (!hasNoErrors) return false;
-
-    if (formData.password) {
-      if (!formData.password.trim() || formData.password.length < 6) return false;
-      if (formData.password !== formData.confirmPassword) return false;
-    }
-
-    if (formData.username !== user?.username && !formData.username.trim()) return false;
-    if (formData.email !== user?.email && !formData.email.trim()) return false;
-
     return true;
   };
 
   const handleEditClick = () => {
     setIsEditing(true);
+    setInitialFormData({
+      username: user?.username || '',
+      email: user?.email || '',
+      password: '',
+      confirmPassword: '',
+    });
+    setFormData({
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    });
   };
 
   const handleSaveClick = async () => {
     setIsEditing(true);
+
     if (!user?.id) {
       toaster.create({
         title: 'Erreur',
@@ -91,6 +102,9 @@ const AccountPage = () => {
       }
       if (formData.password) {
         updatedData.password = formData.password;
+      }
+      if (formData.confirmPassword) {
+        updatedData.confirmPassword = formData.confirmPassword;
       }
 
       if (Object.keys(updatedData).length === 0) {
@@ -159,8 +173,8 @@ const AccountPage = () => {
   const handleCancelClick = () => {
     setIsEditing(false);
     setFormData({
-      username: user?.username || '',
-      email: user?.email || '',
+      username: initialFormData.username || '',
+      email: initialFormData.email || '',
       password: '',
       confirmPassword: '',
     });
