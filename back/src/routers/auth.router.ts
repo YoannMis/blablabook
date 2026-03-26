@@ -14,7 +14,7 @@ authRouter.post('/register', registerUserController);
 authRouter.post('/login', loginUserController);
 authRouter.get('/me', authenticateToken, getCurrentUserController);
 authRouter.post('/refresh', refreshTokenController);
-authRouter.delete('/users/:id', deleteUserController);
+authRouter.delete('/users/:id', authenticateToken, deleteUserController);
 // authRouter.post('/logout');
 
 export default authRouter;

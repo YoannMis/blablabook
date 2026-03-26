@@ -144,7 +144,6 @@ const AccountPage = () => {
           closable: true,
         });
 
-        //redirect to / after 3 seconds
         setTimeout(() => {
           navigate('/');
         }, 4000);
