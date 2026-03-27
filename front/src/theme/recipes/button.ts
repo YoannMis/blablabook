@@ -17,13 +17,12 @@ export const buttonRecipe = defineRecipe({
     variant: {
       primary: {
         borderRadius: 'xl',
-        bg: { _light: 'light.200', _dark: 'brown.700' },
-        color: { _light: 'brown.800', _dark: 'light.100' },
+        bg: { _light: 'light.800', _dark: 'brown.700' },
+        color: { _light: 'light.50', _dark: 'light.100' },
         fontWeight: 'semibold',
         boxShadow: { _light: '0 2px 6px rgba(0,0,0,0.1)', _dark: '0 2px 6px rgba(0,0,0,0.4)' },
         _hover: {
           transform: 'translateY(-2px)',
-          bg: { _light: 'light.300', _dark: 'brown.600' },
           boxShadow: { _light: '0 4px 10px rgba(0,0,0,0.15)', _dark: '0 4px 10px rgba(0,0,0,0.5)' },
         },
       },

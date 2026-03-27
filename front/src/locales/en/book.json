@@ -22,6 +22,11 @@
   },
   "library": {
     "allBooks": "All books",
-    "collections": "Collections"
+    "collections": {
+      "label": "Collections",
+      "read": "Read",
+      "wishlist": "Wishlist"
+    },
+    "empty": "You don’t have any books in your library yet"
   }
 }

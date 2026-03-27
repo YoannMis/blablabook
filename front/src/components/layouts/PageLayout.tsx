@@ -36,6 +36,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
         position="relative"
       >
         <Image src={imageSrc} alt="Page image" objectFit="cover" width="100%" height="100%" />
+        <Box position="absolute" inset={0} bg="blackAlpha.500" pointerEvents="none" />
       </Box>
 
       <Box flex="1" padding={{ base: 4, md: 8 }}>

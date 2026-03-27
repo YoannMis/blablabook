@@ -31,7 +31,7 @@ const BookCardList = ({
   const renderBooks = () =>
     books.map((book) => (
       <Box key={book.id} w={boxWidth}>
-        <Separator display={{ base: 'block', md: 'none' }} my={4} />
+        {singleColumnMobile && <Separator display={{ base: 'block', md: 'none' }} my={4} />}
         <BookCard book={book} />
       </Box>
     ));

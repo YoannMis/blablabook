@@ -137,7 +137,7 @@ const Login = () => {
   };
 
   return (
-    <PageLayout imageSrc={homeImage} imagePosition="left" imageSize={20}>
+    <PageLayout imageSrc={homeImage} imagePosition="left" imageSize={25}>
       <Flex justify="center" align="center" mt={{ md: '15%' }}>
         <Box
           as="form"
@@ -203,7 +203,7 @@ const Login = () => {
               >
                 <Checkbox.HiddenInput name="rememberMe" />
                 <Checkbox.Control />
-                <Checkbox.Label>Remember me</Checkbox.Label>
+                <Checkbox.Label>{t('login.rememberMe')}</Checkbox.Label>
               </Checkbox.Root>
 
               <Button

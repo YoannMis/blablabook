@@ -1,4 +1,4 @@
-import { Show, Box, Flex, HStack, Text } from '@chakra-ui/react';
+import { Show, Box, Flex, HStack, Text, Heading, Separator } from '@chakra-ui/react';
 import { LiaCompass } from 'react-icons/lia';
 import { TbBookFilled } from 'react-icons/tb';
 import { BsPersonCircle } from 'react-icons/bs';
@@ -9,6 +9,10 @@ import { useLocation } from 'react-router';
 import NavLink from './NavLink';
 import ThemeToggle from './ThemeToggle';
 
+const NavSeparator = () => (
+  <Separator orientation="vertical" height="5" borderColor="light.200" borderWidth="1.5px" />
+);
+
 const Header = () => {
   const { t } = useTranslation('common');
   const { user, isLoggedIn } = useCurrentUser();
@@ -16,27 +20,32 @@ const Header = () => {
 
   return (
     <>
-      <Flex align="center" p={4}>
+      <Flex p={4} align="center">
         <Box flex="1" display={{ base: 'none', md: 'block' }} />
 
-        <Box flex="1" textAlign="center">
-          <Text fontSize={{ base: '2xl', md: '4xl', lg: '5xl' }} color="white">
+        <Box flex="1" display="flex" justifyContent="center" ml={{ base: 0, md: 0 }}>
+          <Heading
+            fontFamily="Marcellus SC"
+            fontSize={{ base: '3xl', md: '4xl', lg: '5xl' }}
+            color="white"
+            letterSpacing={2}
+          >
             BlablaBook
-          </Text>
+          </Heading>
         </Box>
 
-        <HStack>
-          <Box display={{ base: 'block', md: 'block' }} ml={{ base: 2, md: 0 }}>
-            <ThemeToggle />
-          </Box>
+        <HStack flex="1" justify="flex-end" gap={4}>
+          <ThemeToggle />
 
-          <HStack flex="1" justify="flex-end" gap={6} display={{ base: 'none', md: 'flex' }}>
+          <HStack gap={6} display={{ base: 'none', md: 'flex' }}>
             <NavLink to="/" icon={LiaCompass}>
               {t('nav.discover')}
             </NavLink>
+           <NavSeparator />
             <NavLink to="/library" icon={TbBookFilled}>
               {t('nav.library')}
             </NavLink>
+            <NavSeparator />
             {isLoggedIn ? (
               <NavLink to="/account" icon={BsPersonCircle}>
                 <Text whiteSpace="nowrap">{user?.username}</Text>
@@ -49,11 +58,11 @@ const Header = () => {
           </HStack>
         </HStack>
       </Flex>
-      <Box textAlign="center">
+      <Box textAlign="center" mt={10}>
         <Show when={pathname === '/library'}>
-          <Text fontSize={{ base: '3xl', md: '4xl', lg: '5xl' }} color="white">
+          <Heading fontSize={{ base: '2xl', md: '3xl', lg: '4xl' }} color="white">
             Ma bibliothèque
-          </Text>
+          </Heading>
         </Show>
       </Box>
     </>

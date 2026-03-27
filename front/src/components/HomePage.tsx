@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 
 import type { Book } from '../types/book';
-import { Button, Stack } from '@chakra-ui/react';
+import { Button, Stack, Separator } from '@chakra-ui/react';
 import { PageLayout } from '../components/layouts/PageLayout';
 import MobileMenu from '../components/MobileMenu';
 import SearchBar from './SearchBar';
@@ -16,10 +16,12 @@ import { genresMock } from '../mocks/mockData';
 import { slugify } from '../utils/stringUtils';
 import { getThemeLabel } from '../utils/themeUtils';
 import { useBookSearch } from '../hooks/useBookSearch';
+import { useColorModeValue } from './ui/color-mode';
 
 const HomePage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
+  const separatorColor = useColorModeValue('light.300', 'brown.600');
 
   const isInitialRender = useRef(true);
 
@@ -94,12 +96,15 @@ const HomePage = () => {
           </>
         ) : (
           Object.entries(featuredBooks).map(([themeKey, books]) => (
-            <BookCardList
-              key={themeKey}
-              title={getThemeLabel(themeKey)}
-              books={books}
-              wrap={false}
-            />
+            <>
+              <BookCardList
+                key={themeKey}
+                title={getThemeLabel(themeKey)}
+                books={books}
+                wrap={false}
+              />
+              <Separator borderColor={separatorColor} borderWidth="1.5px" opacity={0.6} />
+            </>
           ))
         )}
       </Stack>

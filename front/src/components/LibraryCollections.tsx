@@ -1,5 +1,8 @@
 import { Box, HStack, Stack, Circle, Heading } from '@chakra-ui/react';
 import { useColorModeValue } from './ui/color-mode';
+import { useNavigate } from 'react-router';
+import { slugify } from '../utils/stringUtils';
+import { useTranslation } from 'react-i18next';
 
 const LibraryCollections = () => {
   const cardBg = useColorModeValue('light.200', 'gray.800');
@@ -8,33 +11,42 @@ const LibraryCollections = () => {
   const circleBg = useColorModeValue('brown.400', 'brown.600');
   const circleTextColor = useColorModeValue('light.50', 'light.50');
 
+  const navigate = useNavigate();
+  const { t } = useTranslation('book');
+
   const collections = [
-    { label: 'À lire', count: 12 },
-    { label: 'Envie de lire', count: 8 },
+    { key: 'read', count: 12 },
+    { key: 'wishlist', count: 8 },
   ];
 
   return (
     <Stack gap={6} p={4}>
-      {collections.map(({ label, count }) => (
-        <Box
-          key={label}
-          bg={cardBg}
-          _hover={{ bg: cardHover, cursor: 'pointer' }}
-          borderRadius="xl"
-          p={6}
-          shadow="md"
-          transition="background 0.2s"
-        >
-          <HStack justifyContent="space-between">
-            <Heading fontSize="xl" fontWeight="bold" color={textColor}>
-              {label}
-            </Heading>
-            <Circle size="40px" bg={circleBg} color={circleTextColor} fontWeight="bold">
-              {count}
-            </Circle>
-          </HStack>
-        </Box>
-      ))}
+      {collections.map(({ key, count }) => {
+        const label = t(`library.collections.${key}`);
+        const slug = slugify(label);
+
+        return (
+          <Box
+            key={key}
+            onClick={() => navigate(`/library/collections/${slug}`)}
+            bg={cardBg}
+            _hover={{ bg: cardHover, cursor: 'pointer' }}
+            borderRadius="xl"
+            p={6}
+            shadow="md"
+            transition="background 0.2s"
+          >
+            <HStack justifyContent="space-between">
+              <Heading fontSize="xl" fontWeight="bold" color={textColor}>
+                {t(`library.collections.${key}`)}
+              </Heading>
+              <Circle size="40px" bg={circleBg} color={circleTextColor} fontWeight="bold">
+                {count}
+              </Circle>
+            </HStack>
+          </Box>
+        );
+      })}
     </Stack>
   );
 };

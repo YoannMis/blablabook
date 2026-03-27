@@ -23,14 +23,12 @@ const LibraryPage = () => {
     collections: '/library/collections',
   };
 
-  const routeToTab = Object.fromEntries(
-    Object.entries(tabRoutes).map(([tab, route]) => [route, tab])
-  );
-  const activeTab = routeToTab[location.pathname] || 'all-books';
+  const pathname = location.pathname;
+  const activeTab = pathname.startsWith('/library/collections') ? 'collections' : 'all-books';
 
   const tabsData = [
     { value: 'all-books', icon: GiBookshelf, label: t('library.allBooks') },
-    { value: 'collections', icon: BsCollectionFill, label: t('library.collections') },
+    { value: 'collections', icon: BsCollectionFill, label: t('library.collections.label') },
   ];
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {

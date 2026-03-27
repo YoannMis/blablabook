@@ -181,7 +181,7 @@ const Register = () => {
   };
 
   return (
-    <PageLayout imageSrc={homeImage} imagePosition="left" imageSize={20}>
+    <PageLayout imageSrc={homeImage} imagePosition="left" imageSize={25}>
       <Flex justify="center" align="center" mt={{ md: '15%' }}>
         <Box
           as="form"

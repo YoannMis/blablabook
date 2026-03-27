@@ -20,6 +20,7 @@ const BookCard = ({ book }: BookCardProps) => {
 
   const firstCategory = categories?.[0] ?? 'uncategorized';
   const slugCategory = slugify(firstCategory);
+  const isLibraryPage = pathname.startsWith('/library');
 
   const handleClick = () => {
     navigate(`/books/${slugCategory}/${book.id}`);
@@ -29,7 +30,7 @@ const BookCard = ({ book }: BookCardProps) => {
     <Flex
       role="group"
       position="relative"
-      direction={pathname === '/library' ? { base: 'row', md: 'column' } : 'column'}
+      direction={isLibraryPage ? { base: 'row', md: 'column' } : 'column'}
       gapX={6}
       gapY={3}
       align={{ base: 'center', md: 'start' }}
@@ -76,7 +77,7 @@ const BookCard = ({ book }: BookCardProps) => {
           </Box>
         )}
 
-        {pathname === '/library' ? (
+        {isLibraryPage ? (
           <Box
             aria-label={'Voir les actions disponibles pour ce livre'}
             display={{ base: 'none', md: 'block' }}
@@ -112,11 +113,11 @@ const BookCard = ({ book }: BookCardProps) => {
         <Heading size={{ base: 'md', md: 'sm' }} fontWeight="medium" lineClamp={2}>
           {title}
         </Heading>
-        <Show when={pathname === '/library'}>
+        <Show when={isLibraryPage}>
           <Text fontSize={{ base: 'md', md: 'sm' }}>{authors?.join(', ')}</Text>
         </Show>
       </Box>
-      {pathname === '/library' && (
+      {isLibraryPage && (
         <Box display={{ base: 'block', md: 'none' }} position="absolute" top={3} right={2}>
           <BookDotsMenu />
         </Box>
