@@ -8,6 +8,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Account from './components/Account';
 import PublicRoute from './components/PublicRoute';
 import Terms from './components/Terms';
+import './i18n';
 
 const App = () => {
   return (

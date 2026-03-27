@@ -6,6 +6,9 @@ const ChangeLanguages = () => {
 
   const changeLanguage = (lang: string) => {
     i18n.changeLanguage(lang);
+
+    // Enregistrer la langue choisie dans le localStorage
+    localStorage.setItem('userLanguage', lang);
   };
 
   return (

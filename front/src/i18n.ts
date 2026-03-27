@@ -32,6 +32,7 @@ i18n
         terms: termsEn,
       },
     },
+    lng: localStorage.getItem('userLanguage') || 'fr',
     fallbackLng: 'fr',
     defaultNS: 'common',
     ns: ['common', 'auth', 'book'],
