@@ -22,7 +22,6 @@ type LibraryCollectionState = {
 type LibraryContextType = {
   getCollection: (key: string) => LibraryCollectionState;
   fetchNextPage: (key: string, status?: string) => Promise<void>;
-  getTotal: (key: string) => number;
 };
 
 const LibraryContext = createContext<LibraryContextType | undefined>(undefined);
@@ -41,18 +40,18 @@ export const LibraryProvider = ({ children }: { children: React.ReactNode }) => 
   const [collections, setCollections] = useState<Record<string, LibraryCollectionState>>({});
 
   const getCollection = (key: string) => {
-    return collections[key] || DEFAULT_COLLECTION_STATE;
+    return collections[key] ?? { ...DEFAULT_COLLECTION_STATE };
   };
 
   const fetchNextPage = async (key: string, status?: string) => {
-    const current = collections[key] || DEFAULT_COLLECTION_STATE;
-    if (current.loading || !current.hasNext) return;
-    const nextPage = current.page + 1;
+    const currentState = getCollection(key);
+    if (currentState.loading || !currentState.hasNext) return;
+    const nextPage = currentState.page + 1;
 
     //  Loading ON
     setCollections((prev) => ({
       ...prev,
-      [key]: { ...current, loading: true },
+      [key]: { ...currentState, loading: true },
     }));
 
     try {
@@ -63,10 +62,14 @@ export const LibraryProvider = ({ children }: { children: React.ReactNode }) => 
       setCollections((prev) => {
         const existing = prev[key] || DEFAULT_COLLECTION_STATE;
 
+        const existingIds = new Set(existing.items.map((item) => item.book.id));
+
+        const newItems = data.data.filter((item) => !existingIds.has(item.book.id));
+
         return {
           ...prev,
           [key]: {
-            items: [...existing.items, ...data.data],
+            items: [...existing.items, ...newItems],
             page: nextPage,
             hasNext: data.pagination.hasNext,
             total: data.pagination.total,
@@ -79,17 +82,13 @@ export const LibraryProvider = ({ children }: { children: React.ReactNode }) => 
       //  Loading OFF
       setCollections((prev) => ({
         ...prev,
-        [key]: { ...current, loading: false },
+        [key]: { ...currentState, loading: false },
       }));
     }
   };
 
-  const getTotal = (key: string) => {
-    return collections[key]?.total ?? 0;
-  };
-
   return (
-    <LibraryContext.Provider value={{ getCollection, fetchNextPage, getTotal }}>
+    <LibraryContext.Provider value={{ getCollection, fetchNextPage }}>
       {children}
     </LibraryContext.Provider>
   );

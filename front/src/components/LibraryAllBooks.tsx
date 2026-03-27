@@ -29,7 +29,11 @@ const LibraryAllBooks = () => {
         <p>{t('library.empty')}</p>
       ) : (
         <>
-          <BookCardList books={books} singleColumnMobile isLoading={collectionBooks.loading} />
+          <BookCardList
+            books={books}
+            singleColumnMobile
+            isLoading={collectionBooks.items.length === 0 && collectionBooks.loading}
+          />
           <div ref={sentinelRef} />
         </>
       )}

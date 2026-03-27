@@ -18,7 +18,8 @@ const LibraryPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('book');
   const [searchValue, setSearchValue] = useState('');
-  const { getTotal } = useLibrary();
+  const { getCollection } = useLibrary();
+  const allBooks = getCollection('all');
 
   const tabRoutes: Record<string, string> = {
     'all-books': '/library',
@@ -34,7 +35,7 @@ const LibraryPage = () => {
       value: 'all-books',
       icon: GiBookshelf,
       label: t('library.allBooks'),
-      count: getTotal('all'),
+      count: allBooks.total,
     },
     {
       value: 'collections',

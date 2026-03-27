@@ -24,12 +24,12 @@ const LibraryCollectionDetails = () => {
 
   const status = slug ? getStatusFromSlug(slug, t) : undefined;
   const collectionKey = status ? `collections:${status}` : null;
-  const booksCollection = collectionKey ? getCollection(collectionKey) : null;
+  const collectionBooks = collectionKey ? getCollection(collectionKey) : null;
 
   useEffect(() => {
-    if (!booksCollection || !collectionKey || !status) return;
+    if (!collectionBooks || !collectionKey || !status) return;
 
-    if (booksCollection.items.length === 0 && booksCollection.hasNext && !booksCollection.loading) {
+    if (collectionBooks.items.length === 0 && collectionBooks.hasNext && !collectionBooks.loading) {
       fetchNextPage(collectionKey, status);
     }
   }, [collectionKey, status, i18n.language]);
@@ -39,28 +39,31 @@ const LibraryCollectionDetails = () => {
       if (!collectionKey || !status) return;
       fetchNextPage(collectionKey, status);
     },
-    hasNext: booksCollection?.hasNext ?? false,
-    loading: booksCollection?.loading ?? false,
+    hasNext: collectionBooks?.hasNext ?? false,
+    loading: collectionBooks?.loading ?? false,
   });
 
-  const books = booksCollection ? booksCollection.items.map((collection) => collection.book) : [];
+  if (!collectionBooks) {
+    return <p>{t('library.empty')}</p>;
+  }
 
-  if (!booksCollection) {
+  const isEmpty = collectionBooks.items.length === 0;
+  const isInitialLoading = isEmpty && collectionBooks.loading;
+
+  const books = collectionBooks.items.map((item) => item.book);
+
+  if (isInitialLoading) {
+    return <BookCardList books={[]} singleColumnMobile isLoading />;
+  }
+
+  if (isEmpty) {
     return <p>{t('library.empty')}</p>;
   }
 
   return (
     <Box w="100%">
-      {booksCollection.loading && booksCollection.items.length === 0 ? (
-        <BookCardList books={[]} singleColumnMobile isLoading />
-      ) : booksCollection.items.length === 0 ? (
-        <p>{t('library.empty')}</p>
-      ) : (
-        <>
-          <BookCardList books={books} singleColumnMobile isLoading={booksCollection.loading} />
-          <div ref={sentinelRef} />
-        </>
-      )}
+      <BookCardList books={books} singleColumnMobile isLoading={false} />
+      <div ref={sentinelRef} />
     </Box>
   );
 };

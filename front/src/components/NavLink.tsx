@@ -27,7 +27,7 @@ const NavLink: React.FC<NavLinkProps> = ({ to, icon, vertical = false, children 
         gap={{ base: 1, md: 2 }}
         color={color}
         fontWeight={isActive ? 'bold' : 'medium'}
-        textDecoration={isActive ? 'wavy underline' : 'none'}
+        textDecoration={isActive ? 'underline' : 'none'}
         transition="all 0.2s"
         _hover={{
           transform: 'translateY(-1px)',
