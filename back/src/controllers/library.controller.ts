@@ -1,10 +1,8 @@
 import { z } from 'zod';
 import type { Response } from 'express';
 
-import { prisma, type ReadingStatus } from '../utils/prisma.utils';
 import type { AuthRequest } from '../middlewares/auth.middleware';
-import { UserBookWithDetails } from '../types/userBook.types';
-import { getUserBooksByQuery, formatBooks } from '../services/library.service';
+import { getUserBooksByQuery, getUserLibraryBooks, formatBooks } from '../services/library.service';
 import {
   getUserLibraryQuerySchema,
   searchQuerySchema,
@@ -42,122 +40,20 @@ export const getUserLibrary = async (req: AuthRequest, res: Response): Promise<v
     }
 
     // Pagination settings
-    const limit = 20; // Default limit of 20 books per page
-    const offset = query?.offset ? query.offset : 0; // Default offset starting at 0
+    const limit = query?.limit ? query?.limit : 20; // Default limit of 20 books per page
+    const offset = query?.page ? (query.page - 1) * limit : 0; // Default offset starting at 0
+    const page = query.page;
 
-    let userBooks: UserBookWithDetails[];
-    let total: number; // the total count of books for the user
-
-    // Query the database for books associated with the user with pagination
-    if (query?.status && query.status !== 'all') {
-      userBooks = await prisma.userBook.findMany({
-        where: {
-          userId: userId,
-          status: query.status as ReadingStatus,
-        },
-        include: {
-          book: {
-            include: {
-              authors: {
-                select: {
-                  author: {
-                    select: { name: true },
-                  },
-                },
-              },
-              publisher: {
-                select: { name: true },
-              },
-              categories: {
-                select: {
-                  category: {
-                    select: { name: true },
-                  },
-                },
-              },
-            },
-          },
-        },
-        skip: offset,
-        take: limit,
-      });
-
-      total = await prisma.userBook.count({
-        where: {
-          userId: userId,
-          status: query.status as ReadingStatus,
-        },
-      });
-    } else {
-      userBooks = await prisma.userBook.findMany({
-        where: {
-          userId: userId,
-        },
-        include: {
-          book: {
-            include: {
-              authors: {
-                select: {
-                  author: {
-                    select: { name: true },
-                  },
-                },
-              },
-              publisher: {
-                select: { name: true },
-              },
-              categories: {
-                select: {
-                  category: {
-                    select: { name: true },
-                  },
-                },
-              },
-            },
-          },
-        },
-        skip: offset,
-        take: limit,
-      });
-
-      total = await prisma.userBook.count({
-        where: {
-          userId: userId,
-        },
-      });
-    }
+    const { userBooks, total } = await getUserLibraryBooks(userId, query?.status, limit, offset);
 
     // Calculate pagination metadata
     const hasNext = offset + limit < total;
     const hasPrevious = offset > 0;
 
-    const formattedBooks = userBooks.map((userBook) => {
-      const bookData = userBook.book;
-
-      let imageLinks = null;
-      if (bookData.imageLinks && typeof bookData.imageLinks === 'object') {
-        imageLinks = {
-          thumbnail: (bookData.imageLinks as any).thumbnail || '',
-          small: (bookData.imageLinks as any).small,
-          medium: (bookData.imageLinks as any).medium,
-          large: (bookData.imageLinks as any).large,
-        };
-      }
-
-      return {
-        ...userBook,
-        book: {
-          ...bookData,
-          imageLinks,
-          authors: bookData.authors?.map((author) => author.author.name) || [],
-          publisher: bookData.publisher?.name || null,
-          categories: bookData.categories?.map((category) => category.category.name) || [],
-        },
-      };
-    });
+    const formattedBooks = formatBooks(userBooks);
 
     res.json({
-      pagination: { total, hasNext, hasPrevious },
+      pagination: { total, page, hasNext, hasPrevious },
       data: formattedBooks,
     });
   } catch (error) {
@@ -194,8 +90,9 @@ export const searchInLibrary = async (req: AuthRequest, res: Response): Promise<
     }
 
     // Pagination settings
-    const limit = 20; // Default limit of 20 books per page
-    const offset = query?.offset ? query.offset : 0; // Default offset starting at 0
+    const limit = query?.limit ? query?.limit : 20; // Default limit of 20 books per page
+    const offset = query?.page ? (query.page - 1) * limit : 0; // Default offset starting at 0
+    const page = query.page;
 
     const { userBooks, total } = await getUserBooksByQuery(
       userId,
@@ -212,7 +109,7 @@ export const searchInLibrary = async (req: AuthRequest, res: Response): Promise<
     const formattedBooks = formatBooks(userBooks);
 
     res.json({
-      pagination: { total, hasNext, hasPrevious },
+      pagination: { total, page, hasNext, hasPrevious },
       data: formattedBooks,
     });
   } catch (error) {

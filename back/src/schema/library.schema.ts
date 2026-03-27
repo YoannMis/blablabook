@@ -8,14 +8,8 @@ export const getUserLibraryQuerySchema = z.object({
     })
     .optional()
     .default('all'),
-  offset: z.coerce
-    .number()
-    .refine((value) => value % 20 === 0, {
-      message: 'Number must be a multiple of 20',
-    })
-    .min(0)
-    .optional()
-    .default(0),
+  page: z.coerce.number().min(1).optional().default(1),
+  limit: z.coerce.number().min(1).optional().default(20),
 });
 
 export type LibraryQuerySchema = z.infer<typeof getUserLibraryQuerySchema>;
@@ -29,14 +23,8 @@ export const searchQuerySchema = z.object({
     })
     .optional()
     .default('all'),
-  offset: z.coerce
-    .number()
-    .refine((value) => value % 20 === 0, {
-      message: 'Number must be a multiple of 20',
-    })
-    .min(0)
-    .optional()
-    .default(0),
+  page: z.coerce.number().min(1).optional().default(1),
+  limit: z.coerce.number().min(1).optional().default(20),
 });
 
 export type SearchQuerySchema = z.infer<typeof searchQuerySchema>;
