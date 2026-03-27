@@ -20,6 +20,12 @@ type AuthFormValues = z.infer<typeof AuthSchema>;
 type LoginFormValues = z.infer<typeof LoginSchema>;
 type PatchFormValues = z.infer<typeof PatchSchema>;
 
+interface CustomError {
+  status: number;
+  message: string;
+  code?: string;
+}
+
 //function d'enregistrement d'un utilisateur dans la base de données avec les informations fournie par le frontend
 export const registerUserController = async (req: Request, res: Response) => {
   try {
@@ -192,7 +198,7 @@ export const patchUserController = async (req: AuthRequest, res: Response) => {
   }
   try {
     // validation du body de la requête
-    console.log('back', req.body);
+
     const { username, email, password, confirmPassword }: PatchFormValues = PatchSchema.parse(
       req.body
     );
@@ -213,19 +219,13 @@ export const patchUserController = async (req: AuthRequest, res: Response) => {
       .status(200)
       .json({ success: true, message: 'User updated successfully', data: newUser });
   } catch (error) {
-    if (error) {
-      const userError = error as UserError;
-      if (userError.field === 'username') {
-        return res
-          .status(userError.status || 409)
-          .json({ success: false, message: userError.message || 'Username already taken' });
-      } else if (userError?.field === 'generic') {
-        return res
-          .status(userError.status || 409)
-          .json({ success: false, message: userError.message || 'Invalid credentials' });
-      }
+    if (error instanceof Error) {
+      res.status(500).json({ success: false, message: error.message });
+    } else if (error && typeof error === 'object' && 'status' in error && 'message' in error) {
+      const customError = error as CustomError;
+      res.status(customError.status).json({ success: false, message: customError.message });
     }
     console.error('patchUserController error', error);
-    return res.status(500).json({ success: false, message: 'Server error' });
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 };

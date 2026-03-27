@@ -162,17 +162,10 @@ const AccountPage = () => {
           duration: 6000,
           closable: true,
         });
-      } else {
-        toaster.create({
-          title: t('register.serverErrorTitle'),
-          description: t('register.serverErrorDescription'),
-          type: 'error',
-          duration: 6000,
-          closable: true,
-        });
       }
     } finally {
       setIsEditing(false);
+      setFormData(initialFormData);
     }
   };
 
