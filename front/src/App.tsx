@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router';
 import { UserProvider } from './context/UserContext';
+import { LibraryProvider } from './context/LibraryContext';
+
 import Register from './components/Register';
 import HomePage from './components/HomePage';
 import BookDetails from './components/BookDetails';
@@ -45,7 +47,14 @@ const App = () => {
             }
           />
           <Route element={<ProtectedRoute />}>
-            <Route path="/library" element={<LibraryPage />}>
+            <Route
+              path="/library"
+              element={
+                <LibraryProvider>
+                  <LibraryPage />
+                </LibraryProvider>
+              }
+            >
               <Route index element={<LibraryAllBooks />} />
               <Route path="collections" element={<LibraryCollections />} />
               <Route path="collections/:collection" element={<LibraryCollectionDetails />} />

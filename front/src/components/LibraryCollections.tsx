@@ -1,8 +1,11 @@
-import { Box, HStack, Stack, Circle, Heading } from '@chakra-ui/react';
-import { useColorModeValue } from './ui/color-mode';
-import { useNavigate } from 'react-router';
-import { slugify } from '../utils/stringUtils';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
+import { useLibrary } from '../context/LibraryContext';
+
+import { useColorModeValue } from './ui/color-mode';
+import { Box, HStack, Stack, Circle, Heading } from '@chakra-ui/react';
+import { slugify } from '../utils/stringUtils';
 
 const LibraryCollections = () => {
   const cardBg = useColorModeValue('light.200', 'gray.800');
@@ -13,17 +16,43 @@ const LibraryCollections = () => {
 
   const navigate = useNavigate();
   const { t } = useTranslation('book');
+  const { getCollection, fetchNextPage } = useLibrary();
 
   const collections = [
-    { key: 'read', count: 12 },
-    { key: 'wishlist', count: 8 },
+    {
+      key: 'read',
+      collectionKey: 'collections:read',
+      status: 'read',
+    },
+    {
+      key: 'wishlist',
+      collectionKey: 'collections:wishlist',
+      status: 'wishlist',
+    },
   ];
+
+  useEffect(() => {
+    collections.forEach((c) => {
+      const collectionBooks = getCollection(c.collectionKey);
+
+      if (
+        collectionBooks.items.length === 0 &&
+        collectionBooks.hasNext &&
+        !collectionBooks.loading
+      ) {
+        fetchNextPage(c.collectionKey, c.status);
+      }
+    });
+  }, []);
 
   return (
     <Stack gap={6} p={4}>
-      {collections.map(({ key, count }) => {
+      {collections.map(({ key, collectionKey }) => {
         const label = t(`library.collections.${key}`);
         const slug = slugify(label);
+
+        const collectionBooks = getCollection(collectionKey);
+        const count = collectionBooks.total;
 
         return (
           <Box

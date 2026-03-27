@@ -1,60 +1,66 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useParams } from 'react-router';
-import type { UserBook } from '../types/book';
 import { useTranslation } from 'react-i18next';
-import { slugify } from '../utils/stringUtils';
-import { axiosAuth } from '../utils/axiosAuth';
-import BookCardList from './BookCardList';
+import { useLibrary } from '../context/LibraryContext';
+import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
+
 import { Box } from '@chakra-ui/react';
+import BookCardList from './BookCardList';
+import { slugify } from '../utils/stringUtils';
 
-const LibraryCollectionDetails = () => {
-  const { t, i18n } = useTranslation('book');
-  const { collection } = useParams<{ collection: string }>();
-  const [collectionBooks, setCollectionBooks] = useState<UserBook[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const slugToStatus: Record<string, string> = {
+const getStatusFromSlug = (slug: string, t: any) => {
+  const map: Record<string, string> = {
     [slugify(t('library.collections.read'))]: 'read',
     [slugify(t('library.collections.wishlist'))]: 'wishlist',
   };
+
+  return Object.entries(map).find(([key]) => key === slug)?.[1];
+};
+
+const LibraryCollectionDetails = () => {
+  const { t, i18n } = useTranslation('book');
+  const { collection: slug } = useParams<{ collection: string }>();
+  const { getCollection, fetchNextPage } = useLibrary();
+
+  const status = slug ? getStatusFromSlug(slug, t) : undefined;
+  const collectionKey = status ? `collections:${status}` : null;
+  const booksCollection = collectionKey ? getCollection(collectionKey) : null;
+
   useEffect(() => {
-    const fetchCollection = async () => {
-      if (!collection) return;
+    if (!booksCollection || !collectionKey || !status) return;
 
-      const status = slugToStatus[collection];
+    if (booksCollection.items.length === 0 && booksCollection.hasNext && !booksCollection.loading) {
+      fetchNextPage(collectionKey, status);
+    }
+  }, [collectionKey, status, i18n.language]);
 
-      if (!status) {
-        setError('Collection not found');
-        return;
-      }
+  const sentinelRef = useInfiniteScroll({
+    onLoadMore: () => {
+      if (!collectionKey || !status) return;
+      fetchNextPage(collectionKey, status);
+    },
+    hasNext: booksCollection?.hasNext ?? false,
+    loading: booksCollection?.loading ?? false,
+  });
 
-      try {
-        setLoading(true);
-        const { data } = await axiosAuth.get('/api/library', { params: { status } });
-        setCollectionBooks(data.data);
-      } catch (err: any) {
-        console.error(err);
-        setError(err.message || 'Unknown error');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const books = booksCollection ? booksCollection.items.map((collection) => collection.book) : [];
 
-    fetchCollection();
-  }, [name, i18n.language]);
-
-  const books = collectionBooks.map((collectionBook) => collectionBook.book);
+  if (!booksCollection) {
+    return <p>{t('library.empty')}</p>;
+  }
 
   return (
     <Box w="100%">
-      {!loading &&
-        !error &&
-        (collectionBooks.length === 0 ? (
-          <p>{t('library.empty')}</p>
-        ) : (
-          <BookCardList books={books} singleColumnMobile isLoading={loading} />
-        ))}
+      {booksCollection.loading && booksCollection.items.length === 0 ? (
+        <BookCardList books={[]} singleColumnMobile isLoading />
+      ) : booksCollection.items.length === 0 ? (
+        <p>{t('library.empty')}</p>
+      ) : (
+        <>
+          <BookCardList books={books} singleColumnMobile isLoading={booksCollection.loading} />
+          <div ref={sentinelRef} />
+        </>
+      )}
     </Box>
   );
 };

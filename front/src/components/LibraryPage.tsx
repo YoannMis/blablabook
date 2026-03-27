@@ -1,34 +1,47 @@
 import { useState } from 'react';
-import { Outlet, useNavigate } from 'react-router';
+import { Outlet, useLocation, useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
+import { useLibrary } from '../context/LibraryContext';
+
 import { Box } from '@chakra-ui/react';
 import { Stack, Tabs, HStack, Heading } from '@chakra-ui/react';
 import { GiBookshelf } from 'react-icons/gi';
 import { BsCollectionFill } from 'react-icons/bs';
-// import axios from 'axios';
 
 import { PageLayout } from './layouts/PageLayout';
 import MobileMenu from './MobileMenu';
 import SearchBar from './SearchBar';
 
 import homeImage from '../assets/homePageImage.jpg';
-import { useTranslation } from 'react-i18next';
 
 const LibraryPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('book');
   const [searchValue, setSearchValue] = useState('');
+  const { getTotal } = useLibrary();
 
   const tabRoutes: Record<string, string> = {
     'all-books': '/library',
     collections: '/library/collections',
   };
 
+  const location = useLocation();
   const pathname = location.pathname;
   const activeTab = pathname.startsWith('/library/collections') ? 'collections' : 'all-books';
 
   const tabsData = [
-    { value: 'all-books', icon: GiBookshelf, label: t('library.allBooks') },
-    { value: 'collections', icon: BsCollectionFill, label: t('library.collections.label') },
+    {
+      value: 'all-books',
+      icon: GiBookshelf,
+      label: t('library.allBooks'),
+      count: getTotal('all'),
+    },
+    {
+      value: 'collections',
+      icon: BsCollectionFill,
+      label: t('library.collections.label'),
+      count: 2,
+    },
   ];
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,7 +81,7 @@ const LibraryPage = () => {
             onValueChange={({ value }) => navigate(tabRoutes[value])}
           >
             <Tabs.List mb={4} justifyContent="space-around">
-              {tabsData.map(({ value, icon: Icon, label }) => (
+              {tabsData.map(({ value, icon: Icon, label, count }) => (
                 <Tabs.Trigger
                   key={value}
                   value={value}
@@ -82,7 +95,9 @@ const LibraryPage = () => {
                   <Box display="flex" justifyContent="center" alignItems="center" w="100%">
                     <HStack gap={2}>
                       <Icon />
-                      <Heading size="md">{label}</Heading>
+                      <Heading size="md">
+                        {label} ({count})
+                      </Heading>
                     </HStack>
                   </Box>
                 </Tabs.Trigger>

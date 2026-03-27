@@ -1,39 +1,37 @@
-import BookCardList from './BookCardList';
-import { useEffect, useState } from 'react';
-import { axiosAuth } from '../utils/axiosAuth';
-import type { UserBook } from '../types/book';
+import { useEffect } from 'react';
 import { Box } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 
+import BookCardList from './BookCardList';
+import { useLibrary } from '../context/LibraryContext';
+import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
+
 const LibraryAllBooks = () => {
   const { t } = useTranslation('book');
-  const [loading, setLoading] = useState(false);
-  const [userBooks, setUserBooks] = useState<UserBook[]>([]);
+  const { getCollection, fetchNextPage } = useLibrary();
+  const collectionBooks = getCollection('all');
+
+  const sentinelRef = useInfiniteScroll({
+    onLoadMore: () => fetchNextPage('all'),
+    hasNext: collectionBooks.hasNext,
+    loading: collectionBooks.loading,
+  });
+
+  const books = collectionBooks.items.map((collectionBooks) => collectionBooks.book);
 
   useEffect(() => {
-    const fetchUserBooks = async () => {
-      setLoading(true);
-      try {
-        const { data } = await axiosAuth.get('/api/library');
-        setUserBooks(data.data);
-      } catch (error) {
-        console.error('Failed to fetch user library:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserBooks();
+    fetchNextPage('all');
   }, []);
-
-  const books = userBooks.map((userBook) => userBook.book);
 
   return (
     <Box w="100%">
-      {userBooks.length === 0 && !loading ? (
-        <p>{t('library.empty', "Vous n'avez pas encore de livres dans votre blibliothèque !")}</p>
+      {collectionBooks.items.length === 0 && !collectionBooks.loading ? (
+        <p>{t('library.empty')}</p>
       ) : (
-        <BookCardList books={books} singleColumnMobile isLoading={loading} />
+        <>
+          <BookCardList books={books} singleColumnMobile isLoading={collectionBooks.loading} />
+          <div ref={sentinelRef} />
+        </>
       )}
     </Box>
   );
