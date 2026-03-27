@@ -1,0 +1,22 @@
+{
+  "errors": {
+    "title": "Error",
+    "userNotFound": "Unable to update account: missing user ID.",
+    "noModification": "No changes made.",
+    "noModificationDescription": "No changes were made to your account.",
+    "errorUsername": "This username is already taken.",
+    "errorEmail": "This email is already in use.",
+    "defaultError": "An error occurred while updating your account.",
+    "errorsDeleteAccount": "An error occurred while deleting your account."
+  },
+  "success": {
+    "modificationSuccess": "Changes saved.",
+    "modificationSuccessDescription": "Your account has been successfully updated.",
+    "deleteSuccess": "Account deleted.",
+    "deleteSuccessDescription": "Your account has been successfully deleted."
+  },
+  "disconnect": {
+    "title": "Disconnection",
+    "description": "You have been successfully logged out."
+  }
+}

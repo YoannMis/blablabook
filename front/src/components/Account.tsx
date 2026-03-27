@@ -89,8 +89,8 @@ const AccountPage = () => {
 
     if (!user?.id) {
       toaster.create({
-        title: 'Erreur',
-        description: 'Impossible de modifier le compte : identifiant utilisateur manquant.',
+        title: t('errors.title'),
+        description: t('errors.userNotFound'),
         type: 'error',
         duration: 3000,
         closable: true,
@@ -115,8 +115,8 @@ const AccountPage = () => {
 
       if (Object.keys(updatedData).length === 0) {
         toaster.create({
-          title: 'Aucune modification',
-          description: "Aucune modification n'a été effectuée.",
+          title: t('errors.noModifications'),
+          description: t('errors.noModificationsDescription'),
           type: 'info',
           duration: 3000,
           closable: true,
@@ -127,8 +127,8 @@ const AccountPage = () => {
 
       if (response.data.success && response.data.data) {
         toaster.create({
-          title: 'Modifications enregistrées',
-          description: 'Vos modifications ont bien été enregistrées.',
+          title: t('sucess.modificationSuccess'),
+          description: t('sucess.modificationSuccessDescription'),
           type: 'success',
           duration: 3000,
           closable: true,
@@ -148,15 +148,15 @@ const AccountPage = () => {
         const backEndMessage = error.response?.data.message || 'GENERIC';
         const messageKey =
           {
-            USERNAME_TAKEN: 'auth:register.errorUsername',
-            GENERIC: 'auth:register.defaultError',
-          }[backEndMessage] ?? 'auth:register.defaultError';
+            USERNAME_TAKEN: 'account:errors.errorsUsername',
+            GENERIC: 'account:errors.errorsEmail',
+          }[backEndMessage] ?? 'account:errors.defaultError';
 
         const translatedMessage = t(messageKey);
 
         // if (registerError) {
         toaster.create({
-          title: t('register.errorTitle'),
+          title: t('errors.errorTitle'),
           description: translatedMessage,
           type: 'error',
           duration: 6000,
@@ -228,8 +228,8 @@ const AccountPage = () => {
   const handleDeleteClick = async () => {
     if (!user?.id) {
       toaster.create({
-        title: 'Erreur',
-        description: 'Impossible de supprimer le compte : identifiant utilisateur manquant.',
+        title: t('errors.title'),
+        description: t('errors.userNotFound'),
         type: 'error',
         duration: 5000,
         closable: true,
@@ -244,8 +244,8 @@ const AccountPage = () => {
       if (response.data.success) {
         logout();
         toaster.create({
-          title: 'Compte supprimé',
-          description: 'Votre compte a été supprimé avec succès.',
+          title: t('success.deleteSuccess'),
+          description: t('success.deleteSuccessDescription'),
           type: 'success',
           duration: 3000,
           closable: true,
@@ -259,8 +259,8 @@ const AccountPage = () => {
       }
     } catch (error) {
       toaster.create({
-        title: 'Erreur',
-        description: 'Une erreur est survenue lors de la suppression du compte.',
+        title: t('errors.title'),
+        description: t('errors.errorsDeleteAccount'),
         type: 'error',
         duration: 3000,
         closable: true,
@@ -279,8 +279,8 @@ const AccountPage = () => {
       }
       logout();
       toaster.create({
-        title: 'Deconnexion',
-        description: 'Vous avez bien vous deconnecté.',
+        title: t('deconnect.title'),
+        description: t('deconnect.description'),
         type: 'success',
         duration: 3000,
         closable: true,
