@@ -319,6 +319,7 @@ const AccountPage = () => {
                 disabled={!isEditing}
                 name="username"
                 value={formData.username}
+                placeholder={initialFormData.username}
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
@@ -341,6 +342,7 @@ const AccountPage = () => {
                 disabled={!isEditing}
                 name="email"
                 value={formData.email}
+                placeholder={initialFormData.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
@@ -365,6 +367,7 @@ const AccountPage = () => {
                 value={formData.password}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                placeholder={!isEditing ? '********' : 'Nouveau mot de passe'}
               />
               {isEditing && (
                 <Box minH={6}>
@@ -387,6 +390,7 @@ const AccountPage = () => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  placeholder={!isEditing ? '********' : 'Nouveau mot de passe'}
                 />
                 {isEditing && (
                   <Box minH={6}>
