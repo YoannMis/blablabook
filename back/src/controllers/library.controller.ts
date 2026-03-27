@@ -5,18 +5,12 @@ import { prisma, type ReadingStatus } from '../utils/prisma.utils';
 import type { AuthRequest } from '../middlewares/auth.middleware';
 import { UserBookWithDetails } from '../types/userBook.types';
 import { getUserBooksByQuery, formatBooks } from '../services/library.service';
-
-const getUserLibraryQuerySchema = z.object({
-  status: z.string().optional().default('all'),
-  offset: z.coerce
-    .number()
-    .refine((value) => value % 20 === 0, {
-      message: 'Number must be a multiple of 20',
-    })
-    .min(0)
-    .optional()
-    .default(0),
-});
+import {
+  getUserLibraryQuerySchema,
+  searchQuerySchema,
+  type LibraryQuerySchema,
+  type SearchQuerySchema,
+} from '../schema/library.schema';
 
 /**
  * Retrieves all books belonging to a connected user with pagination support.
@@ -29,7 +23,9 @@ const getUserLibraryQuerySchema = z.object({
  * @returns A Promise that resolves when the response is sent.
  */
 export const getUserLibrary = async (req: AuthRequest, res: Response): Promise<void> => {
-  const parsed = getUserLibraryQuerySchema.safeParse(req.query);
+  const parsed: z.ZodSafeParseResult<LibraryQuerySchema> = getUserLibraryQuerySchema.safeParse(
+    req.query
+  );
 
   if (!parsed.success) {
     res.status(400).json({ error: z.flattenError(parsed.error).fieldErrors });
@@ -173,19 +169,6 @@ export const getUserLibrary = async (req: AuthRequest, res: Response): Promise<v
   }
 };
 
-const searchQuerySchema = z.object({
-  q: z.string().min(1, 'q param is required'),
-  status: z.string().optional().default('all'),
-  offset: z.coerce
-    .number()
-    .refine((value) => value % 20 === 0, {
-      message: 'Number must be a multiple of 20',
-    })
-    .min(0)
-    .optional()
-    .default(0),
-});
-
 /**
  * Searches for books in a user's library with optional query filtering and pagination.
  *
@@ -194,7 +177,7 @@ const searchQuerySchema = z.object({
  * @returns A Promise that resolves when the response is sent.
  */
 export const searchInLibrary = async (req: AuthRequest, res: Response): Promise<void> => {
-  const parsed = searchQuerySchema.safeParse(req.query);
+  const parsed: z.ZodSafeParseResult<SearchQuerySchema> = searchQuerySchema.safeParse(req.query);
 
   if (!parsed.success) {
     res.status(400).json({ error: z.flattenError(parsed.error).fieldErrors });
@@ -227,7 +210,6 @@ export const searchInLibrary = async (req: AuthRequest, res: Response): Promise<
     const hasPrevious = offset > 0;
 
     const formattedBooks = formatBooks(userBooks);
-    console.log(formattedBooks);
 
     res.json({
       pagination: { total, hasNext, hasPrevious },
