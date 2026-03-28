@@ -162,17 +162,11 @@ const BookDetails = () => {
                     </GridItem>
                     <GridItem>
                       <Text fontWeight="bold">ISBN-13 :</Text>
-                      <Text>
-                        {book?.industryIdentifiers?.find((id) => id.type === 'ISBN_13')
-                          ?.identifier ?? '–'}
-                      </Text>
+                      <Text>{book?.isbn10 ?? '–'}</Text>
                     </GridItem>
                     <GridItem>
                       <Text fontWeight="bold">ISBN-10 :</Text>
-                      <Text>
-                        {book?.industryIdentifiers?.find((id) => id.type === 'ISBN_10')
-                          ?.identifier ?? '–'}
-                      </Text>
+                      <Text>{book?.isbn13 ?? '–'}</Text>
                     </GridItem>
                   </Grid>
                 </Collapsible.Content>

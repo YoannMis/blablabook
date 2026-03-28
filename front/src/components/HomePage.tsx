@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 
 import type { Book } from '../types/book';
-import { Button, Stack, Separator } from '@chakra-ui/react';
+import { Button, Stack, Separator, Box } from '@chakra-ui/react';
 import { PageLayout } from '../components/layouts/PageLayout';
 import MobileMenu from '../components/MobileMenu';
 import SearchBar from './SearchBar';
@@ -39,6 +39,7 @@ const HomePage = () => {
   } = useBookSearch();
 
   const [featuredBooks, setFeaturedBooks] = useState<Record<string, Book[]>>({});
+  const hasFeaturedBooks = Object.keys(featuredBooks).length > 0;
 
   useEffect(() => {
     if (isInitialRender.current) {
@@ -50,7 +51,8 @@ const HomePage = () => {
       const fetchFeatured = async () => {
         try {
           const res = await axios.get(
-            `${import.meta.env.VITE_API_URL}/api/books/topFeaturedThemes`
+            `${import.meta.env.VITE_API_URL}/api/books/topFeaturedThemes`,
+            { params: { lang: 'fr' } }
           );
           setFeaturedBooks(res.data);
         } catch (error) {
@@ -94,17 +96,18 @@ const HomePage = () => {
               </Button>
             )}
           </>
+        ) : !hasFeaturedBooks ? (
+          <>
+            <BookCardList books={[]} isLoading wrap={false} />
+            <BookCardList books={[]} isLoading wrap={false} />
+            <BookCardList books={[]} isLoading wrap={false} />
+          </>
         ) : (
           Object.entries(featuredBooks).map(([themeKey, books]) => (
-            <>
-              <BookCardList
-                key={themeKey}
-                title={getThemeLabel(themeKey)}
-                books={books}
-                wrap={false}
-              />
+            <Box key={themeKey}>
+              <BookCardList title={getThemeLabel(themeKey)} books={books} wrap={false} />
               <Separator borderColor={separatorColor} borderWidth="1.5px" opacity={0.6} />
-            </>
+            </Box>
           ))
         )}
       </Stack>

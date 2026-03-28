@@ -16,10 +16,8 @@ export interface Book {
   language?: string;
   pageCount?: number;
   publisher?: string;
-  industryIdentifiers?: {
-    type: 'ISBN_10' | 'ISBN_13';
-    identifier: string;
-  }[];
+  isbn13?: string;
+  isbn10?: string;
 }
 
 export interface UserBook {
