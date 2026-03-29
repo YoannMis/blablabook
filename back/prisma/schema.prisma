@@ -46,7 +46,7 @@ model Book {
   imageLinks    Json?          @map("image_links")
   language      String?
   description   String?
-  googleBookId  String?        @map("google_book_id")
+  googleBookId  String         @map("google_book_id") @unique
   publishedDate DateTime?      @map("published_date") @db.Date // corresponding date format in ProstgreSQL: YYYY-MM-DD
   isbn10        String?        @unique @map("isbn_10")
   isbn13        String?        @unique @map("isbn_13")
