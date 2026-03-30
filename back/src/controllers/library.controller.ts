@@ -9,8 +9,14 @@ import {
   findBookInLibrary,
   updateUserBook,
   deleteUserBook,
+  checkIsExistsBook,
+  addBookToLibrary,
+  createBook,
 } from '../services/library.service';
 import {
+  BookSchema,
+  bookSchema,
+  createBookSchema,
   getUserLibraryQuerySchema,
   searchQuerySchema,
   statusSchema,
@@ -18,6 +24,7 @@ import {
   type SearchQuerySchema,
 } from '../schema/library.schema';
 import { checkIdFromParams } from '../lib/validators';
+import { ReadingStatus } from '../utils/prisma.utils';
 
 /**
  * Retrieves all books belonging to a connected user with pagination support.
@@ -195,6 +202,55 @@ export const deleteBookFromLibrary = async (req: AuthRequest, res: Response): Pr
     res.status(500).json({
       success: false,
       message: 'Internal server error.',
+    });
+  }
+};
+
+export const createAndAddBookToLibrary = async (req: AuthRequest, res: Response): Promise<void> => {
+  const userId = req.userId as number;
+
+  try {
+    const { book, status } = createBookSchema.parse(req.body);
+
+    const parsedStatus = statusSchema.safeParse(status);
+    const parsedBook = bookSchema.safeParse(book);
+
+    const foundBook = await checkIsExistsBook(parsedBook.data?.googleId as string);
+
+    if (foundBook) {
+      const userBookId = {
+        userId: userId,
+        bookId: foundBook.id,
+      };
+
+      const userBook = await findBookInLibrary(userBookId);
+      if (userBook) {
+        res.status(400).json({
+          success: false,
+          error: 'BOOK_ALREADY_IN_LIBRARY',
+        });
+      }
+
+      const data = {
+        ...userBookId,
+        status: parsedStatus.data?.status as ReadingStatus,
+      };
+
+      await addBookToLibrary(data);
+    } else {
+      await createBook(
+        userId,
+        parsedStatus.data?.status as ReadingStatus,
+        parsedBook.data as BookSchema
+      );
+    }
+
+    res.status(201).json({ sucess: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'INTERNAL_SERVER_ERROR',
     });
   }
 };

@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  createAndAddBookToLibrary,
   deleteBookFromLibrary,
   getUserLibrary,
   searchInLibrary,
@@ -24,6 +25,8 @@ router.get('/', authenticateToken, getUserLibrary);
  * that only authenticated users can search their library.
  */
 router.get('/search', authenticateToken, searchInLibrary);
+
+router.post('/', authenticateToken, createAndAddBookToLibrary);
 
 /**
  * PATCH /api/library/:id

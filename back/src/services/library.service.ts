@@ -1,5 +1,6 @@
 import { prisma, type ReadingStatus, type UserBook } from '../utils/prisma.utils';
 import type { UserBookWithDetails, UserBookPk } from '../types/userBook.types';
+import { BookSchema } from '../schema/library.schema';
 
 /**
  * Formats an array of user books by extracting and transforming book details.
@@ -585,6 +586,83 @@ export const getUserLibraryBooks = async (
 
 export const findBookInLibrary = async (userIdBookId: UserBookPk) =>
   await prisma.userBook.findUnique({ where: { userId_bookId: userIdBookId } });
+
+export const checkIsExistsBook = async (gooleBookId: string) =>
+  await prisma.book.findUnique({ where: { googleBookId: gooleBookId } });
+
+export const addBookToLibrary = async (data: UserBook) => await prisma.userBook.create({ data });
+
+const createAuthors = async (authors: string[]) =>
+  prisma.author.createManyAndReturn({
+    data: authors.map((author) => ({
+      name: author,
+    })),
+    skipDuplicates: true,
+  });
+
+const createCategories = async (categories: string[]) =>
+  await prisma.category.createManyAndReturn({
+    data: categories.map((category) => ({
+      name: category,
+    })),
+    skipDuplicates: true,
+  });
+
+export const createBook = async (
+  userId: number,
+  status: ReadingStatus,
+  googleBookData: BookSchema
+) => {
+  const authors = await createAuthors(googleBookData.authors);
+  const categories = await createCategories(googleBookData.categories);
+
+  const createdBook = await prisma.book.create({
+    include: {
+      publisher: true,
+      authors: true,
+      categories: true,
+    },
+    data: {
+      title: googleBookData.title,
+      averageRating: googleBookData.averageRating,
+      ratingCount: googleBookData.ratingCount,
+      imageLinks: googleBookData.imageLinks,
+      language: googleBookData.language,
+      description: googleBookData.description,
+      googleBookId: googleBookData.googleId,
+      publishedDate: googleBookData.publishedDate,
+      isbn10: googleBookData.isbn10,
+      isbn13: googleBookData.isbn13,
+      pageCount: googleBookData.pageCount,
+      publisher: {
+        connectOrCreate: {
+          create: {
+            name: googleBookData.publisher,
+          },
+          where: {
+            name: googleBookData.publisher,
+          },
+        },
+      },
+    },
+  });
+
+  await prisma.bookAuthor.createMany({
+    data: authors.map((author) => ({
+      bookId: createdBook.id,
+      authorId: author.id,
+    })),
+  });
+
+  await prisma.bookCategory.createMany({
+    data: categories.map((category) => ({
+      bookId: createdBook.id,
+      categoryId: category.id,
+    })),
+  });
+
+  await addBookToLibrary({ userId, bookId: createdBook.id, status });
+};
 
 /**
  * Updates the reading status of a book in the user's library.
