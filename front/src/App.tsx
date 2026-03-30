@@ -14,11 +14,13 @@ import LibraryPage from './components/LibraryPage';
 import LibraryAllBooks from './components/LibraryAllBooks';
 import LibraryCollections from './components/LibraryCollections';
 import LibraryCollectionDetails from './components/LibraryCollectionDetails';
+import { Toaster } from './components/ui/toaster';
 
 const App = () => {
   return (
     <UserProvider>
       <BrowserRouter>
+        <Toaster />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/books/:category/:id" element={<BookDetails />} />

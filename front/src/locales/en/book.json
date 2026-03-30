@@ -31,7 +31,10 @@
       "read": "Read",
       "wishlist": "Wishlist"
     },
-    "empty": "You don’t have any books in your library yet"
+    "empty": "You don’t have any books in your library yet",
+    "addToLibrary": "Add to your library",
+    "chooseCollection": "Choose a collection",
+    "addSuccess": "The book \"{{title}}\" has been successfully added to your \"{{status}}\" collection"
   },
   "categories": {
     "subtitle": "Step into worlds that inspire you"

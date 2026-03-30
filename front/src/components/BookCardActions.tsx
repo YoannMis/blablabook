@@ -1,29 +1,19 @@
-import { Box, IconButton } from '@chakra-ui/react';
-import { TiPlus } from 'react-icons/ti';
+import { Box } from '@chakra-ui/react';
+
+import type { Book } from '../types/book';
 import BookDotsMenu from './BookDotsMenu';
-import { useTranslation } from 'react-i18next';
+import AddBookActions from './AddBookActions';
 
 type Mode = 'default' | 'libraryDesktop' | 'libraryMobile';
 
 interface BookCardActionsProps {
   mode: Mode;
+  book: Book;
 }
 
-const BookCardActions = ({ mode }: BookCardActionsProps) => {
-  const { t } = useTranslation('common');
+const BookCardActions = ({ mode, book }: BookCardActionsProps) => {
   if (mode === 'default') {
-    return (
-      <IconButton
-        aria-label={t('bookCard.addBook')}
-        size="xs"
-        position="absolute"
-        top={2}
-        right={2}
-        variant="glass"
-      >
-        <TiPlus />
-      </IconButton>
-    );
+    return <AddBookActions book={book} />;
   }
 
   if (mode === 'libraryDesktop') {

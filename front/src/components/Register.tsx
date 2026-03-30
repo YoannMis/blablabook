@@ -16,7 +16,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { RiArrowRightLine } from 'react-icons/ri';
 import type { RegisterErrorResponse, RegisterResponse } from '@/types/api.type';
-import { Toaster, toaster } from './ui/toaster';
+import { toaster } from './ui/toaster';
 import { PageLayout } from './layouts/PageLayout';
 import homeImage from '../assets/homePageImage.jpg';
 import { Link as RouterLink, useNavigate } from 'react-router';
@@ -320,7 +320,6 @@ const Register = () => {
             </VStack>
           </VStack>
         </Box>
-        <Toaster />
       </Flex>
       <MobileMenu />
     </PageLayout>
