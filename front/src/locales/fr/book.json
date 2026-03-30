@@ -33,7 +33,11 @@
     "empty": "Vous n'avez pas encore de livres dans votre blibliothèque",
     "addToLibrary": "Ajouter à votre bibliothèque",
     "chooseCollection": "Choisir une collection",
-    "addSuccess": "Le livre \"{{title}}\" a bien été ajouté à votre collection \"{{status}}\""
+    "addSuccess": "Le livre \"{{title}}\" a bien été ajouté à votre collection \"{{status}}\"",
+    "errors": {
+      "internalServerError": "Une erreur inattendue est survenue. Veuillez réessayer.",
+      "bookAlreadyInLibrary": "Ce livre est déjà dans votre bibliothèque."
+    }
   },
   "categories": {
     "subtitle": "Plongez dans des univers qui vous inspirent"

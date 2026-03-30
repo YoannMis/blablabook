@@ -20,6 +20,17 @@ interface Props {
   book: Book;
 }
 
+const getErrorKey = (errorCode?: string) => {
+  switch (errorCode) {
+    case 'BOOK_ALREADY_IN_LIBRARY':
+      return 'book:library.errors.bookAlreadyInLibrary';
+
+    case 'INTERNAL_SERVER_ERROR':
+    default:
+      return 'book:library.errors.internalServerError';
+  }
+};
+
 const AddBookActions = ({ book }: Props) => {
   const { t } = useTranslation(['common', 'book']);
   const { addBook } = useLibraryActions();
@@ -52,9 +63,10 @@ const AddBookActions = ({ book }: Props) => {
       }
 
       setIsOpen(false);
-    } catch {
+    } catch (err: any) {
+      const errorCode = err?.response?.data?.error;
       toaster.create({
-        title: 'Erreur',
+        title: t(getErrorKey(errorCode)),
         type: 'error',
       });
     } finally {
@@ -74,7 +86,7 @@ const AddBookActions = ({ book }: Props) => {
           justifyContent="flex-start"
           fontWeight="semibold"
           fontSize="md"
-          bg={{ _light: 'light.200', _dark: 'rgba(255,255,255,0.03)' }}
+          bg={{ _light: 'light.200', _dark: 'gray.800' }}
           color={{ _light: 'brown.800', _dark: 'light.200' }}
           onClick={() => handleAddBook(option.type)}
           disabled={isSubmitting}
@@ -155,21 +167,36 @@ const AddBookActions = ({ book }: Props) => {
   }
 
   return (
-    <Popover.Root>
+    <Popover.Root positioning={{ placement: 'right-start' }}>
       <Popover.Trigger asChild>{Trigger}</Popover.Trigger>
       <Portal>
         <Popover.Positioner>
-          <Popover.Content>
-            <Box minW="220px">
-              <Box px={3} py={2} fontWeight="semibold">
+          <Popover.Content
+            bg={{ _light: 'light.50', _dark: 'gray.900' }}
+            borderWidth="1px"
+            borderColor={{ _light: 'light.300', _dark: 'rgba(255,255,255,0.10)' }}
+            borderRadius="2xl"
+            boxShadow={{
+              _light: '0 16px 40px rgba(0,0,0,0.12)',
+              _dark: '0 16px 40px rgba(0,0,0,1)',
+            }}
+          >
+            <Box px={4} pt={4} pb={3}>
+              <Box
+                fontWeight="semibold"
+                fontSize="md"
+                fontFamily="heading"
+                color={{ _dark: 'light.100' }}
+              >
                 {t('book:library.addToLibrary')}
               </Box>
-              <Box px={3} py={1} fontSize="xs" opacity={0.6}>
+
+              <Box fontSize="sm" mt={1} color={{ _light: 'brown.600', _dark: 'light.500' }}>
                 {t('book:library.chooseCollection')}
               </Box>
-              <Box p={2}>
-                <Content />
-              </Box>
+            </Box>
+            <Box px={4} pb={4}>
+              <Content />
             </Box>
           </Popover.Content>
         </Popover.Positioner>

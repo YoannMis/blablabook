@@ -229,6 +229,7 @@ export const createAndAddBookToLibrary = async (req: AuthRequest, res: Response)
           success: false,
           error: 'BOOK_ALREADY_IN_LIBRARY',
         });
+        return;
       }
 
       const data = {
@@ -252,5 +253,6 @@ export const createAndAddBookToLibrary = async (req: AuthRequest, res: Response)
       success: false,
       message: 'INTERNAL_SERVER_ERROR',
     });
+    return;
   }
 };
