@@ -245,7 +245,7 @@ export const createAndAddBookToLibrary = async (req: AuthRequest, res: Response)
       );
     }
 
-    res.status(201).json({ sucess: true });
+    res.status(201).json({ success: true });
   } catch (error) {
     console.error(error);
     res.status(500).json({
