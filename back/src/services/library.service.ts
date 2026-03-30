@@ -1,6 +1,7 @@
 import { prisma, type ReadingStatus, type UserBook } from '../utils/prisma.utils';
 import type { UserBookWithDetails, UserBookPk } from '../types/userBook.types';
 import { BookSchema } from '../schema/library.schema';
+import { cleanImageLinks } from '../utils/cleanImageLinks.utils';
 
 /**
  * Formats an array of user books by extracting and transforming book details.
@@ -626,7 +627,7 @@ export const createBook = async (
       title: googleBookData.title,
       averageRating: googleBookData.averageRating,
       ratingCount: googleBookData.ratingCount,
-      imageLinks: googleBookData.imageLinks,
+      imageLinks: cleanImageLinks(googleBookData.imageLinks),
       language: googleBookData.language,
       description: googleBookData.description,
       googleBookId: googleBookData.googleId,
