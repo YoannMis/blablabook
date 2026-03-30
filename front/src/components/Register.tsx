@@ -295,6 +295,7 @@ const Register = () => {
                       termsLink: (
                         <RouterLink
                           to="/terms"
+                          target="_blank"
                           style={{ color: ' #00BCD4', textDecoration: 'underline' }}
                         ></RouterLink>
                       ),

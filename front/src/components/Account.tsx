@@ -28,7 +28,7 @@ import type { RegisterErrorResponse } from '@/types/api.type';
 import axios from 'axios';
 
 const AccountPage = () => {
-  const { t } = useTranslation('auth');
+  const { t } = useTranslation('account');
   const { user, setUser } = useCurrentUser();
   const { logout } = useCurrentUser();
   const [isEditing, setIsEditing] = useState(false);
@@ -115,8 +115,8 @@ const AccountPage = () => {
 
       if (Object.keys(updatedData).length === 0) {
         toaster.create({
-          title: t('errors.noModifications'),
-          description: t('errors.noModificationsDescription'),
+          title: t('errors.noModification'),
+          description: t('errors.noModificationDescription'),
           type: 'info',
           duration: 3000,
           closable: true,
@@ -156,7 +156,7 @@ const AccountPage = () => {
 
         // if (registerError) {
         toaster.create({
-          title: t('errors.errorTitle'),
+          title: t('errors.title'),
           description: translatedMessage,
           type: 'error',
           duration: 6000,
@@ -181,7 +181,7 @@ const AccountPage = () => {
 
   const getPasswordError = (password: string, confirmPassword: string) => {
     if (!confirmPassword) return '';
-    if (password != confirmPassword) return t('register.passwordMismatch');
+    if (password != confirmPassword) return t('errors.passwordMismatch');
     return '';
   };
 
@@ -307,11 +307,11 @@ const AccountPage = () => {
               fontWeight={{ base: 'sm', md: 'md' }}
               alignSelf="center"
             >
-              Mon Compte
+              {t('generale.account')}
             </Heading>
             <Field.Root invalid={!!errors.username}>
               <Field.Label>
-                Nom d'utilisateur
+                {t('generale.username')}
                 <Field.RequiredIndicator />
               </Field.Label>
               <Input
@@ -334,7 +334,7 @@ const AccountPage = () => {
             </Field.Root>
             <Field.Root invalid={!!errors.email}>
               <Field.Label>
-                Adresse email
+                {t('generale.email')}
                 <Field.RequiredIndicator />
               </Field.Label>
               <Input
@@ -357,7 +357,7 @@ const AccountPage = () => {
             </Field.Root>
             <Field.Root invalid={!!errors.password}>
               <Field.Label>
-                Mot de passe
+                {t('generale.password')}
                 <Field.RequiredIndicator />
               </Field.Label>
               <PasswordInput
@@ -381,7 +381,7 @@ const AccountPage = () => {
             {isEditing && (
               <Field.Root invalid={!!errors.confirmPassword}>
                 <Field.Label>
-                  Confirmer le mot de passe
+                  {t('generale.confirmPassword')}
                   <Field.RequiredIndicator />
                 </Field.Label>
                 <PasswordInput
@@ -407,15 +407,15 @@ const AccountPage = () => {
             {!isEditing ? (
               <>
                 <Button variant={'solid'} width={'100%'} onClick={handleLogoutClick}>
-                  Se deconnecter
+                  {t('generale.logout')}
                 </Button>
                 <Button variant={'solid'} width={'100%'} onClick={handleEditClick}>
-                  Modifier vos informations
+                  {t('generale.modification')}
                 </Button>
                 <Dialog.Root>
                   <Dialog.Trigger asChild>
                     <Button variant={'solid'} width={'100%'} colorScheme="red">
-                      Supprimer
+                      {t('generale.deleteAccount')}
                     </Button>
                   </Dialog.Trigger>
                   <Portal>
@@ -423,20 +423,17 @@ const AccountPage = () => {
                     <Dialog.Positioner>
                       <Dialog.Content>
                         <Dialog.Header>
-                          <Dialog.Title>Supprimer le compte</Dialog.Title>
+                          <Dialog.Title>{t('generale.deleteAccount')}</Dialog.Title>
                         </Dialog.Header>
                         <Dialog.Body>
-                          <p>
-                            Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est
-                            irréversible.
-                          </p>
+                          <p>{t('generale.deleteConfirme')}</p>
                         </Dialog.Body>
                         <Dialog.Footer>
                           <Dialog.ActionTrigger asChild>
-                            <Button>Non</Button>
+                            <Button>{t('generale.deleteConfirmeNo')}</Button>
                           </Dialog.ActionTrigger>
                           <Button onClick={handleDeleteClick} loading={isDeleting}>
-                            Oui
+                            {t('generale.deleteConfirmeYes')}
                           </Button>
                         </Dialog.Footer>
                         <Dialog.CloseTrigger asChild>
@@ -455,11 +452,11 @@ const AccountPage = () => {
                   onClick={handleSaveClick}
                   disabled={!isFormValid()}
                 >
-                  Valider les changements
+                  {t('generale.modificationConfirme')}
                 </Button>
 
                 <Button variant={'solid'} width={'100%'} onClick={handleCancelClick}>
-                  Annuler tous changements
+                  {t('generale.modificationCancel')}
                 </Button>
               </>
             )}
