@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router';
 import { UserProvider } from './context/UserContext';
+import { LibraryProvider } from './context/LibraryContext';
+
 import Register from './components/Register';
 import HomePage from './components/HomePage';
 import BookDetails from './components/BookDetails';
@@ -8,6 +10,10 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Account from './components/Account';
 import PublicRoute from './components/PublicRoute';
 import Terms from './components/Terms';
+import LibraryPage from './components/LibraryPage';
+import LibraryAllBooks from './components/LibraryAllBooks';
+import LibraryCollections from './components/LibraryCollections';
+import LibraryCollectionDetails from './components/LibraryCollectionDetails';
 
 const App = () => {
   return (
@@ -40,6 +46,20 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route element={<ProtectedRoute />}>
+            <Route
+              path="/library"
+              element={
+                <LibraryProvider>
+                  <LibraryPage />
+                </LibraryProvider>
+              }
+            >
+              <Route index element={<LibraryAllBooks />} />
+              <Route path="collections" element={<LibraryCollections />} />
+              <Route path="collections/:collection" element={<LibraryCollectionDetails />} />
+            </Route>
+          </Route>
           <Route path="/terms" element={<Terms />} />
         </Routes>
       </BrowserRouter>
