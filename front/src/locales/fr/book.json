@@ -12,16 +12,16 @@
     "coverAlt": "Couverture du livre"
   },
   "themes": {
-    "adapted": "🎬 Adaptés au cinéma et en séries",
-    "dystopian": "🌍 Univers dystopiques",
-    "recommended": "📚 Tout le monde en parle",
+    "adapted": "Adaptés au cinéma et en séries",
+    "dystopian": "Univers dystopiques",
+    "recommended": "Tout le monde en parle",
     "harryPotter": "⚡ Harry Potter",
-    "starWars": "🚀 Star Wars",
-    "lotr": "💍 Le Seigneur des Anneaux",
-    "stephenKing": "😱 Stephen King",
-    "sherlockHolmes": "🔍 Sherlock Holmes",
-    "hungerGames": "🏹 Hunger Games",
-    "gameOfThrones": "🐉 Game of Thrones"
+    "starWars": "Star Wars",
+    "lotr": "Le Seigneur des Anneaux",
+    "stephenKing": "Stephen King",
+    "sherlockHolmes": "Sherlock Holmes",
+    "hungerGames": "Hunger Games",
+    "gameOfThrones": "Game of Thrones"
   },
   "library": {
     "allBooks": "Tous les livres",
@@ -31,5 +31,8 @@
       "wishlist": "Envie de lire"
     },
     "empty": "Vous n'avez pas encore de livres dans votre blibliothèque"
+  },
+  "categories": {
+    "subtitle": "Plongez dans des univers qui vous inspirent"
   }
 }

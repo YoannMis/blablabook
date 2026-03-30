@@ -39,22 +39,42 @@ const BookCardList = ({
   const content = isLoading ? renderSkeletons() : renderBooks();
 
   return (
-    <Box overflowX={wrap ? 'visible' : 'auto'} mb={6}>
+    <Box overflowX={wrap ? 'visible' : 'auto'}>
       {title && (
-        <Heading size="xl" fontWeight="bold" mb={4}>
-          {title}
-        </Heading>
-      )}
+        <Box mb={4}>
+          <Heading
+            size="lg"
+            fontWeight="semibold"
+            letterSpacing="-0.02em"
+            color={{ _light: 'brown.800', _dark: 'light.100' }}
+          >
+            {title}
+          </Heading>
 
-      {wrap ? (
-        <SimpleGrid minChildWidth={minChildWidth} gap={6}>
-          {content}
-        </SimpleGrid>
-      ) : (
-        <Box display="flex" gap={6} py={2}>
-          {content}
+          <Box
+            mt={1}
+            w="70px"
+            h="2px"
+            bg={{ _light: 'rgba(168,143,117,0.25)', _dark: 'rgba(255,255,255,0.08)' }}
+          />
         </Box>
       )}
+
+      <Box
+        overflowX={wrap ? 'visible' : 'auto'}
+        css={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        pt={{ md: 1 }}
+      >
+        {wrap ? (
+          <SimpleGrid minChildWidth={minChildWidth} gap={6}>
+            {content}
+          </SimpleGrid>
+        ) : (
+          <Box display="flex" gap={6} pb={{ base: 1, md: 4 }} pl={1} scrollBehavior="smooth">
+            {content}
+          </Box>
+        )}
+      </Box>
     </Box>
   );
 };

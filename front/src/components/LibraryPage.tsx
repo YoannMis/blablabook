@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useLibrary } from '../context/LibraryContext';
 
 import { Box } from '@chakra-ui/react';
-import { Stack, Tabs, HStack, Heading } from '@chakra-ui/react';
+import { Stack, Tabs, Heading } from '@chakra-ui/react';
 import { GiBookshelf } from 'react-icons/gi';
 import { BsCollectionFill } from 'react-icons/bs';
 
@@ -67,7 +67,7 @@ const LibraryPage = () => {
 
   return (
     <>
-      <PageLayout imageSrc={homeImage} imageSize={25}>
+      <PageLayout imageSrc={homeImage}>
         <Stack gap={6} pb={{ base: 20, md: 2 }}>
           <SearchBar
             searchValue={searchValue}
@@ -94,12 +94,17 @@ const LibraryPage = () => {
                   color={{ _light: 'gray.500', _dark: 'light.200' }}
                 >
                   <Box display="flex" justifyContent="center" alignItems="center" w="100%">
-                    <HStack gap={2}>
+                    <Stack
+                      gap={2}
+                      direction={{ base: 'column', md: 'row' }}
+                      alignItems="center"
+                      pb={4}
+                    >
                       <Icon />
                       <Heading size="md">
                         {label} ({count})
                       </Heading>
-                    </HStack>
+                    </Stack>
                   </Box>
                 </Tabs.Trigger>
               ))}

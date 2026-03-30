@@ -12,17 +12,17 @@
     "coverAlt": "Book cover"
   },
   "themes": {
-    "adapted": "🎬 Screen adaptations",
-    "dystopian": "🌍 Dystopian worlds",
-    "recommended": "📚 Everyone’s talking about it",
+    "adapted": "Screen adaptations",
+    "dystopian": "Dystopian worlds",
+    "recommended": "Everyone’s talking about it",
 
     "harryPotter": "⚡ Harry Potter",
-    "starWars": "🚀 Star Wars",
-    "lotr": "💍 The Lord of the Rings",
-    "stephenKing": "😱 Stephen King",
-    "sherlockHolmes": "🔍 Sherlock Holmes",
-    "hungerGames": "🏹 Hunger Games",
-    "gameOfThrones": "🐉 Game of Thrones"
+    "starWars": "Star Wars",
+    "lotr": "The Lord of the Rings",
+    "stephenKing": "Stephen King",
+    "sherlockHolmes": "Sherlock Holmes",
+    "hungerGames": "Hunger Games",
+    "gameOfThrones": "Game of Thrones"
   },
   "library": {
     "allBooks": "All books",
@@ -32,5 +32,8 @@
       "wishlist": "Wishlist"
     },
     "empty": "You don’t have any books in your library yet"
+  },
+  "categories": {
+    "subtitle": "Step into worlds that inspire you"
   }
 }

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 
 import type { Book } from '../types/book';
-import { Button, Stack, Separator, Box } from '@chakra-ui/react';
+import { Button, Stack, Box } from '@chakra-ui/react';
 import { PageLayout } from '../components/layouts/PageLayout';
 import MobileMenu from '../components/MobileMenu';
 import SearchBar from './SearchBar';
@@ -16,12 +16,10 @@ import { genresMock } from '../mocks/mockData';
 import { slugify } from '../utils/stringUtils';
 import { getThemeLabel } from '../utils/themeUtils';
 import { useBookSearch } from '../hooks/useBookSearch';
-import { useColorModeValue } from './ui/color-mode';
 
 const HomePage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
-  const separatorColor = useColorModeValue('light.300', 'brown.600');
 
   const isInitialRender = useRef(true);
 
@@ -72,8 +70,8 @@ const HomePage = () => {
   };
 
   return (
-    <PageLayout imageSrc={homeImage} imagePosition="top" imageSize={25}>
-      <Stack gap={6} pb={{ base: 20, md: 2 }}>
+    <PageLayout imageSrc={homeImage} imagePosition="top">
+      <Stack gap={5} pb={{ base: 20, md: 2 }}>
         <SearchBar
           searchValue={searchValue}
           onChange={handleSearchChange}
@@ -106,7 +104,6 @@ const HomePage = () => {
           Object.entries(featuredBooks).map(([themeKey, books]) => (
             <Box key={themeKey}>
               <BookCardList title={getThemeLabel(themeKey)} books={books} wrap={false} />
-              <Separator borderColor={separatorColor} borderWidth="1.5px" opacity={0.6} />
             </Box>
           ))
         )}

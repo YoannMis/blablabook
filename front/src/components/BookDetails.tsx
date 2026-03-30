@@ -57,7 +57,7 @@ const BookDetails = () => {
   }, [id]);
 
   return (
-    <PageLayout imageSrc={bookDetail} imagePosition="left" imageSize={25}>
+    <PageLayout imageSrc={bookDetail} imagePosition="left">
       <Flex
         direction={{ base: 'column', md: 'row' }}
         align="center"
