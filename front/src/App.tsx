@@ -8,9 +8,10 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Account from './components/Account';
 import PublicRoute from './components/PublicRoute';
 import Terms from './components/Terms';
-import './i18n';
+import { useTranslation } from 'react-i18next';
 
 const App = () => {
+  const { i18n } = useTranslation();
   return (
     <UserProvider>
       <BrowserRouter>
