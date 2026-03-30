@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  deleteBookFromLibrary,
   getUserLibrary,
   searchInLibrary,
   updateBookStatus,
@@ -31,5 +32,13 @@ router.get('/search', authenticateToken, searchInLibrary);
  * that only authenticated users can update their library.
  */
 router.patch('/:id', authenticateToken, updateBookStatus);
+
+/**
+ * DELETE /api/library/:id
+ * Deletes a specific book in the authenticated user's library.
+ * This route is protected by the authenticateToken middleware to ensure
+ * that only authenticated users can delete their books from their library.
+ */
+router.delete('/:id', authenticateToken, deleteBookFromLibrary);
 
 export default router;

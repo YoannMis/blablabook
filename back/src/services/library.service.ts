@@ -607,3 +607,18 @@ export const updateUserBook = async (
     },
   });
 };
+
+/**
+ * Deletes a book in the user's library.
+ * This function deletes a specific book identified by userId and bookId.
+ *
+ * @param userIdBookId - An object containing userId and bookId to identify the book in the library.
+ * @returns Promise resolving to the deleted user book record.
+ */
+export const deleteUserBook = async (userIdBookId: UserBookPk): Promise<void> => {
+  await prisma.userBook.delete({
+    where: {
+      userId_bookId: userIdBookId,
+    },
+  });
+};

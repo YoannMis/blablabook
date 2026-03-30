@@ -8,6 +8,7 @@ import {
   formatBooks,
   findBookInLibrary,
   updateUserBook,
+  deleteUserBook,
 } from '../services/library.service';
 import {
   getUserLibraryQuerySchema,
@@ -159,6 +160,36 @@ export const updateBookStatus = async (req: AuthRequest, res: Response): Promise
       success: true,
       data,
     });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error.',
+    });
+  }
+};
+
+/**
+ * Deletes a book in the user's library.
+ *
+ * @param req - The authenticated request object containing the user's ID and book ID.
+ * @param res - The response object used to send success or an error message.
+ * @returns A Promise that resolves when the response is sent.
+ */
+export const deleteBookFromLibrary = async (req: AuthRequest, res: Response): Promise<void> => {
+  const userId = req.userId as number;
+  const bookId = await checkIdFromParams(req.params.id as string);
+  const userBookId = { userId, bookId };
+
+  const userBook = await findBookInLibrary(userBookId);
+  if (!userBook) {
+    res.status(404).json({ error: "Book doesn't exist in library" });
+  }
+
+  try {
+    await deleteUserBook(userBookId);
+
+    res.status(204).json({ success: true });
   } catch (error) {
     console.error(error);
     res.status(500).json({
