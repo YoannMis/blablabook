@@ -7,9 +7,10 @@ import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 import { Box } from '@chakra-ui/react';
 import BookCardList from './BookCardList';
 import { slugify } from '../utils/stringUtils';
+import type { Status } from '@/types/book';
 
-const getStatusFromSlug = (slug: string, t: any) => {
-  const map: Record<string, string> = {
+const getStatusFromSlug = (slug: string, t: any): Status | undefined => {
+  const map: Record<string, Status> = {
     [slugify(t('library.collections.read'))]: 'read',
     [slugify(t('library.collections.wishlist'))]: 'wishlist',
   };
@@ -23,7 +24,7 @@ const LibraryCollectionDetails = () => {
   const { getCollection, fetchNextPage } = useLibrary();
 
   const status = slug ? getStatusFromSlug(slug, t) : undefined;
-  const collectionKey = status ? `collections:${status}` : null;
+  const collectionKey = status;
   const collectionBooks = collectionKey ? getCollection(collectionKey) : null;
 
   useEffect(() => {

@@ -72,6 +72,7 @@ const AddBookActions = ({ book }: Props) => {
       });
     } finally {
       setIsSubmitting(false);
+      setIsOpen(false);
     }
   };
 
