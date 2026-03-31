@@ -128,7 +128,7 @@ const AccountPage = () => {
       if (response.data.success && response.data.data) {
         toaster.create({
           title: t('sucess.modificationSuccess'),
-          description: t('sucess.modificationSuccessDescription'),
+          description: t('success.modificationSuccessDescription'),
           type: 'success',
           duration: 3000,
           closable: true,
@@ -148,8 +148,8 @@ const AccountPage = () => {
         const backEndMessage = error.response?.data.message || 'GENERIC';
         const messageKey =
           {
-            USERNAME_TAKEN: 'account:errors.errorsUsername',
-            GENERIC: 'account:errors.errorsEmail',
+            USERNAME_TAKEN: 'account:errors.errorUsername',
+            GENERIC: 'account:errors.errorEmail',
           }[backEndMessage] ?? 'account:errors.defaultError';
 
         const translatedMessage = t(messageKey);

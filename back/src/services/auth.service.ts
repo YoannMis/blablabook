@@ -232,13 +232,17 @@ export const updateUser = async (userId: number, { username, email, password }: 
   }
 
   if (updates.email) {
-    findUserByEmail(updates.email);
-    throw { status: 409, message: 'GENERIC' };
+    const existingEmail = await findUserByEmail(updates.email);
+    if (existingEmail) {
+      throw { status: 409, message: 'GENERIC' };
+    }
   }
 
   if (updates.username) {
-    findUserByUsername(updates.username);
-    throw { status: 409, message: 'USERNAME_TAKEN' };
+    const existingUser = await findUserByUsername(updates.username);
+    if (existingUser) {
+      throw { status: 409, message: 'USERNAME_TAKEN' };
+    }
   }
 
   return prisma.user.update({ where: { id: userId }, data: updates });

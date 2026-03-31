@@ -17,9 +17,9 @@ CREATE TABLE "user" (
 CREATE TABLE "refresh_token" (
     "id" SERIAL NOT NULL,
     "token" TEXT NOT NULL,
-    "issued_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "expires_at" TIMESTAMP(3) NOT NULL,
-    "user_id" INTEGER NOT NULL,
+    "issuedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "userId" INTEGER NOT NULL,
 
     CONSTRAINT "refresh_token_pkey" PRIMARY KEY ("id")
 );
@@ -33,7 +33,6 @@ CREATE TABLE "book" (
     "image_links" JSONB,
     "language" TEXT,
     "description" TEXT,
-    "google_book_id" TEXT NOT NULL,
     "published_date" DATE,
     "isbn_10" TEXT,
     "isbn_13" TEXT,
@@ -110,9 +109,6 @@ CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 CREATE UNIQUE INDEX "refresh_token_token_key" ON "refresh_token"("token");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "book_google_book_id_key" ON "book"("google_book_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "book_isbn_10_key" ON "book"("isbn_10");
 
 -- CreateIndex
@@ -122,7 +118,7 @@ CREATE UNIQUE INDEX "book_isbn_13_key" ON "book"("isbn_13");
 CREATE UNIQUE INDEX "category_name_key" ON "category"("name");
 
 -- AddForeignKey
-ALTER TABLE "refresh_token" ADD CONSTRAINT "refresh_token_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "refresh_token" ADD CONSTRAINT "refresh_token_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "book" ADD CONSTRAINT "book_publisher_id_fkey" FOREIGN KEY ("publisher_id") REFERENCES "publisher"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
