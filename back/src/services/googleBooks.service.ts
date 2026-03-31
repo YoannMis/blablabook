@@ -63,21 +63,48 @@ export const searchBooks = async (
   startIndex = 0,
   language = 'fr'
 ): Promise<GoogleBook[]> => {
-  const response = await axios.get(GOOGLE_BOOKS_API_BASE_URL, {
-    params: {
-      q: query,
-      maxResults,
-      startIndex,
-      key: process.env.GOOGLE_BOOKS_API_KEY,
-      printType: 'books',
-      orderBy: 'relevance',
-      langRestrict: language,
-    },
-  });
+  const fetchBooks = async () => {
+    const response = await axios.get(GOOGLE_BOOKS_API_BASE_URL, {
+      params: {
+        q: query,
+        maxResults,
+        startIndex,
+        key: process.env.GOOGLE_BOOKS_API_KEY,
+        printType: 'books',
+        orderBy: 'relevance',
+        langRestrict: language,
+      },
+    });
 
-  // items peut être undefined si aucun résultat, on retourne un tableau vide dans ce cas
-  const items = (response.data.items ?? []) as Record<string, unknown>[];
-  return items.map((item) => mapVolumeToBook(item));
+    const items = (response.data.items ?? []) as Record<string, unknown>[];
+    return items.map((item) => mapVolumeToBook(item));
+  };
+
+  const MAX_RETRIES = 2;
+  let attempt = 0;
+
+  while (attempt < MAX_RETRIES) {
+    try {
+      return await fetchBooks();
+    } catch (err: any) {
+      attempt++;
+
+      const is503 = err.response?.status === 503;
+
+      if (is503 && attempt < MAX_RETRIES) {
+        console.log(`Retrying Google Books API... attempt ${attempt}`);
+
+        await new Promise((resolve) => setTimeout(resolve, 300 * attempt));
+
+        continue;
+      }
+
+      console.log('Google Books failed, returning empty array');
+      return [];
+    }
+  }
+
+  return [];
 };
 
 // Récupère un livre précis via son identifiant Google Books
