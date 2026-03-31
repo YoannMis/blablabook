@@ -29,6 +29,7 @@ export const formatBooks = (userBooks: UserBookWithDetails[]) => {
       ...userBook,
       book: {
         ...bookData,
+        status: userBook.status,
         imageLinks,
         // Extract author names from the nested author relationship
         authors: bookData.authors?.map((author) => author.author.name) || [],
