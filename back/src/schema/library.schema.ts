@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { formatDate } from '../utils/dateFormatter.utils';
+
 export const getUserLibraryQuerySchema = z.object({
   status: z.literal(['read', 'wishlist', 'all']).optional().default('all'),
   page: z.coerce.number().min(1).optional().default(1),
@@ -38,10 +40,13 @@ export const bookSchema = z.object({
     .optional(),
   language: z.string().optional().nullable(),
   description: z.string().optional().nullable(),
-  publishedDate: z.string().min(4).optional().nullable(), // TODO: checker le format date en BDD
+  publishedDate: z.preprocess((value) => {
+    typeof value === 'string' ? (value = formatDate(value)) : null;
+    return value;
+  }, z.date().optional().nullable()),
   isbn10: z.string().optional().nullable(),
   isbn13: z.string().optional().nullable(),
-  pageCount: z.number().min(4).optional().nullable(),
+  pageCount: z.number().optional().nullable(),
   publisher: z.preprocess((value) => value ?? 'independant', z.string().min(1)),
   authors: z.array(z.string().min(1)),
   categories: z.array(z.string().min(1)),
