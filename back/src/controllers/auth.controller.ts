@@ -168,7 +168,7 @@ export const deleteUserController = async (req: AuthRequest, res: Response) => {
 
     clearCookiesUser(res);
 
-    return res.status(204).json({ success: true, message: 'User deleted successfully' });
+    return res.status(200).json({ success: true, message: 'User deleted successfully' });
   } catch (error) {
     console.error('deleteUserController error', error);
     return res.status(500).json({ success: false, message: 'Server error' });

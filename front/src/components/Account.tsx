@@ -127,13 +127,19 @@ const AccountPage = () => {
 
       if (response.data.success && response.data.data) {
         toaster.create({
-          title: t('sucess.modificationSuccess'),
+          title: t('success.modificationSuccess'),
           description: t('success.modificationSuccessDescription'),
           type: 'success',
           duration: 3000,
           closable: true,
         });
         setUser(response.data.data);
+        setInitialFormData({
+          username: response.data.data.username,
+          email: response.data.data.email,
+          password: '',
+          confirmPassword: '',
+        });
         setFormData({
           username: response.data.data.username,
           email: response.data.data.email,
@@ -144,6 +150,7 @@ const AccountPage = () => {
         console.error('Error updating user:', response.data.message);
       }
     } catch (error) {
+      setFormData(initialFormData);
       if (axios.isAxiosError<RegisterErrorResponse>(error)) {
         const backEndMessage = error.response?.data.message || 'GENERIC';
         const messageKey =
@@ -165,7 +172,6 @@ const AccountPage = () => {
       }
     } finally {
       setIsEditing(false);
-      setFormData(initialFormData);
     }
   };
 
@@ -240,7 +246,6 @@ const AccountPage = () => {
     setIsDeleting(true);
     try {
       const response = await axiosAuth.delete(`/api/auth/users/${user.id}`);
-
       if (response.data.success) {
         logout();
         toaster.create({
@@ -292,7 +297,7 @@ const AccountPage = () => {
   };
 
   return (
-    <PageLayout imageSrc={homeImage} imagePosition="left" imageSize={20}>
+    <PageLayout imageSrc={homeImage} imagePosition="left">
       <Flex justify="center" align="center" mt={{ md: '20%' }}>
         <Box
           as="form"

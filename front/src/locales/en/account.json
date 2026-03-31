@@ -5,7 +5,7 @@
     "noModification": "No changes made.",
     "noModificationDescription": "No changes were made.",
     "errorUsername": "The username is already taken.",
-    "errorEmail": "The email is already taken.",
+    "errorEmail": "Email not valid",
     "defaultError": "An error occurred while modifying your account.",
     "errorsDeleteAccount": "An error occurred while deleting your account.",
     "passwordMismatch": "Passwords do not match."
