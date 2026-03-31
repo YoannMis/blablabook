@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Box,
   Button,
   Drawer,
   IconButton,
@@ -15,6 +14,8 @@ import { TiPlus } from 'react-icons/ti';
 import type { Book } from '../types/book';
 import useLibraryActions from '../hooks/useLibraryActions';
 import { toaster } from './ui/toaster';
+import LibraryPopoverShell from './LibraryPopoverShell';
+import LibraryDrawerShell from './LibraryDrawerShell';
 
 interface Props {
   book: Book;
@@ -122,43 +123,11 @@ const AddBookActions = ({ book }: Props) => {
           <Portal>
             <Drawer.Backdrop />
             <Drawer.Positioner>
-              <Drawer.Content
-                py={4}
-                bg={{ _light: 'light.100', _dark: 'rgba(26,22,18,0.92)' }}
-                backdropFilter="blur(12px)"
-                borderTopRadius="2xl"
-                borderWidth="1px"
-                borderColor={{ _light: 'light.300', _dark: 'rgba(255,255,255,0.06)' }}
-              >
-                <Box
-                  w="40px"
-                  h="4px"
-                  borderRadius="full"
-                  mx="auto"
-                  mb={2}
-                  bg={{ _light: 'light.400', _dark: 'rgba(255,255,255,0.10)' }}
-                />
-                <Drawer.Header
-                  letterSpacing="tight"
-                  fontFamily="heading"
-                  fontSize="lg"
-                  fontWeight="semibold"
-                  pb={1}
-                >
-                  {t('book:library.addToLibrary')}
-                </Drawer.Header>
-                <Drawer.Description
-                  px={6}
-                  pb={3}
-                  fontSize="sm"
-                  color={{ _light: 'brown.700', _dark: 'light.400' }}
-                >
-                  {t('book:library.chooseCollection')}
-                </Drawer.Description>
-                <Drawer.Body>
-                  <Content />
-                </Drawer.Body>
-              </Drawer.Content>
+              <LibraryDrawerShell
+                title={t('book:library.addToLibrary')}
+                description={t('book:library.chooseCollection')}
+                children={<Content />}
+              />
             </Drawer.Positioner>
           </Portal>
         </Drawer.Root>
@@ -167,38 +136,15 @@ const AddBookActions = ({ book }: Props) => {
   }
 
   return (
-    <Popover.Root positioning={{ placement: 'right-start' }}>
+    <Popover.Root open={isOpen} positioning={{ placement: 'right-start' }}>
       <Popover.Trigger asChild>{Trigger}</Popover.Trigger>
       <Portal>
         <Popover.Positioner>
-          <Popover.Content
-            bg={{ _light: 'light.50', _dark: 'gray.900' }}
-            borderWidth="1px"
-            borderColor={{ _light: 'light.300', _dark: 'rgba(255,255,255,0.10)' }}
-            borderRadius="2xl"
-            boxShadow={{
-              _light: '0 16px 40px rgba(0,0,0,0.12)',
-              _dark: '0 16px 40px rgba(0,0,0,1)',
-            }}
-          >
-            <Box px={4} pt={4} pb={3}>
-              <Box
-                fontWeight="semibold"
-                fontSize="md"
-                fontFamily="heading"
-                color={{ _dark: 'light.100' }}
-              >
-                {t('book:library.addToLibrary')}
-              </Box>
-
-              <Box fontSize="sm" mt={1} color={{ _light: 'brown.600', _dark: 'light.500' }}>
-                {t('book:library.chooseCollection')}
-              </Box>
-            </Box>
-            <Box px={4} pb={4}>
-              <Content />
-            </Box>
-          </Popover.Content>
+          <LibraryPopoverShell
+            title={t('book:library.addToLibrary')}
+            subtitle={t('book:library.chooseCollection')}
+            children={<Content />}
+          />
         </Popover.Positioner>
       </Portal>
     </Popover.Root>

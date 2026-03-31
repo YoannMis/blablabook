@@ -38,6 +38,11 @@
     "errors": {
       "internalServerError": "An unexpected error occurred. Please try again.",
       "bookAlreadyInLibrary": "This book is already in your library."
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "editCollection": "Move to collection"
     }
   },
   "categories": {

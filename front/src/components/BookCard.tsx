@@ -4,8 +4,8 @@ import { slugify } from '../utils/stringUtils';
 import noBookCover from '../assets/noBookCover.jpg';
 import type { Book } from '../types/book';
 
-import BookDotsMenu from './BookDotsMenu';
 import BookCardActions from './BookCardActions';
+import EditBookActions from './EditBookActions';
 
 interface BookCardProps {
   book: Book;
@@ -118,7 +118,7 @@ const BookCard = ({ book }: BookCardProps) => {
       </Box>
       {isLibraryPage && isMobile && (
         <Box position="absolute" top={0} right={0}>
-          <BookDotsMenu />
+          <EditBookActions book={book} />
         </Box>
       )}
     </Flex>

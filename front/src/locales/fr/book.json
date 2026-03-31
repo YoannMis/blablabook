@@ -37,6 +37,11 @@
     "errors": {
       "internalServerError": "Une erreur inattendue est survenue. Veuillez réessayer.",
       "bookAlreadyInLibrary": "Ce livre est déjà dans votre bibliothèque."
+    },
+    "actions": {
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "editCollection": "Déplacer vers la collection"
     }
   },
   "categories": {
