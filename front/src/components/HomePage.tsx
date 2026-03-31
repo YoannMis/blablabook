@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Button, Stack } from '@chakra-ui/react';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 
+import type { Book } from '../types/book';
+import { Button, Stack, Box } from '@chakra-ui/react';
 import { PageLayout } from '../components/layouts/PageLayout';
 import MobileMenu from '../components/MobileMenu';
 import SearchBar from './SearchBar';
@@ -13,7 +15,6 @@ import homeImage from '../assets/homePageImage.jpg';
 import { genresMock } from '../mocks/mockData';
 import { slugify } from '../utils/stringUtils';
 import { getThemeLabel } from '../utils/themeUtils';
-import { useTranslation } from 'react-i18next';
 import { useBookSearch } from '../hooks/useBookSearch';
 
 const HomePage = () => {
@@ -36,6 +37,7 @@ const HomePage = () => {
   } = useBookSearch();
 
   const [featuredBooks, setFeaturedBooks] = useState<Record<string, Book[]>>({});
+  const hasFeaturedBooks = Object.keys(featuredBooks).length > 0;
 
   useEffect(() => {
     if (isInitialRender.current) {
@@ -47,7 +49,8 @@ const HomePage = () => {
       const fetchFeatured = async () => {
         try {
           const res = await axios.get(
-            `${import.meta.env.VITE_API_URL}/api/books/topFeaturedThemes`
+            `${import.meta.env.VITE_API_URL}/api/books/topFeaturedThemes`,
+            { params: { lang: 'fr' } }
           );
           setFeaturedBooks(res.data);
         } catch (error) {
@@ -67,8 +70,8 @@ const HomePage = () => {
   };
 
   return (
-    <PageLayout imageSrc={homeImage} imagePosition="top" imageSize={25}>
-      <Stack gap={6} pb={{ base: 20, md: 2 }}>
+    <PageLayout imageSrc={homeImage} imagePosition="top">
+      <Stack gap={5} pb={{ base: 20, md: 2 }}>
         <SearchBar
           searchValue={searchValue}
           onChange={handleSearchChange}
@@ -91,14 +94,17 @@ const HomePage = () => {
               </Button>
             )}
           </>
+        ) : !hasFeaturedBooks ? (
+          <>
+            <BookCardList books={[]} isLoading wrap={false} />
+            <BookCardList books={[]} isLoading wrap={false} />
+            <BookCardList books={[]} isLoading wrap={false} />
+          </>
         ) : (
           Object.entries(featuredBooks).map(([themeKey, books]) => (
-            <BookCardList
-              key={themeKey}
-              title={getThemeLabel(themeKey)}
-              books={books}
-              wrap={false}
-            />
+            <Box key={themeKey}>
+              <BookCardList title={getThemeLabel(themeKey)} books={books} wrap={false} />
+            </Box>
           ))
         )}
       </Stack>

@@ -40,7 +40,7 @@ export const registerUserController = async (req: Request, res: Response) => {
     }
 
     // appelle auth service pour enregistrer l'utilisateur
-    const user = await registerUser(req.body);
+    const user = await registerUser(username, email, password);
 
     // creation d'une constante newuser contenant les information de user sans le password
     const newUser = {
@@ -168,7 +168,7 @@ export const deleteUserController = async (req: AuthRequest, res: Response) => {
 
     clearCookiesUser(res);
 
-    return res.status(200).json({ success: true, message: 'User deleted successfully' });
+    return res.status(204).json({ success: true, message: 'User deleted successfully' });
   } catch (error) {
     console.error('deleteUserController error', error);
     return res.status(500).json({ success: false, message: 'Server error' });
@@ -208,7 +208,7 @@ export const patchUserController = async (req: AuthRequest, res: Response) => {
     }
     //
     // appelle auth service pour modifier l'utilisateur
-    const user = await updateUser(Number(userId), req.body);
+    const user = await updateUser(Number(userId), username, email, password);
     // creation d'une constante newuser contenant les information de user sans le password
     const newUser = {
       id: user.id,

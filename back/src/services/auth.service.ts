@@ -41,9 +41,7 @@ export const checkUserExists = async (email: string, username: string) => {
 };
 
 // Crée un nouvel utilisateur
-export const registerUser = async (data: AuthFormValues) => {
-  const { username, email, password } = data;
-
+export const registerUser = async (username: string, email: string, password: string) => {
   // Vérification de l'existence de l'utilisateur
   await checkUserExists(email, username);
 
@@ -195,14 +193,10 @@ export const refreshUserToken = async (refreshToken: string) => {
 };
 
 export const deleteUser = async (userId: number) => {
-  const deletedRefreshTokens = prisma.refreshToken.deleteMany({ where: { userId } });
+  deleteRefreshToken(userId);
   const deletedUser = prisma.user.delete({ where: { id: userId } });
   const deletedUserHasBook = prisma.userBook.deleteMany({ where: { userId: userId } });
-  const transactions = await prisma.$transaction([
-    deletedRefreshTokens,
-    deletedUserHasBook,
-    deletedUser,
-  ]);
+  const transactions = await prisma.$transaction([deletedUserHasBook, deletedUser]);
 
   return transactions;
 };
@@ -211,7 +205,12 @@ export const deleteRefreshToken = async (userId: number) => {
   return prisma.refreshToken.deleteMany({ where: { userId: userId } });
 };
 
-export const updateUser = async (userId: number, { username, email, password }: Partial<User>) => {
+export const updateUser = async (
+  userId: number,
+  username: string | undefined,
+  email: string | undefined,
+  password: string | undefined
+) => {
   const updates: Partial<User> = {};
 
   if (username) {
