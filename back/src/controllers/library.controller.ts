@@ -14,8 +14,6 @@ import {
   createBook,
 } from '../services/library.service';
 import {
-  BookSchema,
-  bookSchema,
   createBookSchema,
   getUserLibraryQuerySchema,
   searchQuerySchema,
@@ -24,7 +22,6 @@ import {
   type SearchQuerySchema,
 } from '../schema/library.schema';
 import { checkIdFromParams } from '../lib/validators';
-import { ReadingStatus } from '../utils/prisma.utils';
 
 /**
  * Retrieves all books belonging to a connected user with pagination support.
@@ -206,16 +203,23 @@ export const deleteBookFromLibrary = async (req: AuthRequest, res: Response): Pr
   }
 };
 
+/**
+ * Creates a new book or adds an existing book to the user's library.
+ * This function first checks if the book already exists in the database.
+ * If it exists, it adds the book to the user's library if not already present.
+ * If the book does not exist, it creates a new book in the database and adds it to the user's library.
+ *
+ * @param req - The authenticated request object containing the user's ID and book details.
+ * @param res - The response object used to send success or an error message.
+ * @returns A Promise that resolves when the response is sent.
+ */
 export const createAndAddBookToLibrary = async (req: AuthRequest, res: Response): Promise<void> => {
   const userId = req.userId as number;
 
   try {
     const { book, status } = createBookSchema.parse(req.body);
 
-    const parsedStatus = statusSchema.safeParse(status);
-    const parsedBook = bookSchema.safeParse(book);
-
-    const foundBook = await checkIsExistsBook(parsedBook.data?.googleId as string);
+    const foundBook = await checkIsExistsBook(book.googleId);
 
     if (foundBook) {
       const userBookId = {
@@ -234,16 +238,12 @@ export const createAndAddBookToLibrary = async (req: AuthRequest, res: Response)
 
       const data = {
         ...userBookId,
-        status: parsedStatus.data?.status as ReadingStatus,
+        status: status,
       };
 
       await addBookToLibrary(data);
     } else {
-      await createBook(
-        userId,
-        parsedStatus.data?.status as ReadingStatus,
-        parsedBook.data as BookSchema
-      );
+      await createBook(userId, status, book);
     }
 
     res.status(201).json({ success: true });

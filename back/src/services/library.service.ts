@@ -585,14 +585,42 @@ export const getUserLibraryBooks = async (
   return { userBooks, total };
 };
 
+/**
+ * Finds a specific book in a user's library.
+ * This function checks if a book exists in the user's library based on userId and bookId.
+ *
+ * @param userIdBookId - An object containing userId and bookId to identify the book in the library.
+ * @returns Promise resolving to the user book record if found, or null if not found.
+ */
 export const findBookInLibrary = async (userIdBookId: UserBookPk) =>
   await prisma.userBook.findUnique({ where: { userId_bookId: userIdBookId } });
 
+/**
+ * Checks if a book exists in the database by its Google Book ID.
+ * This function is used to determine if a book needs to be created or already exists.
+ *
+ * @param gooleBookId - The Google Book ID to search for.
+ * @returns Promise resolving to the book record if found, or null if not found.
+ */
 export const checkIsExistsBook = async (gooleBookId: string) =>
   await prisma.book.findUnique({ where: { googleBookId: gooleBookId } });
 
+/**
+ * Adds a book to a user's library.
+ * This function creates a new entry in the user's library with the specified book and status.
+ *
+ * @param data - An object containing userId, bookId, and status to add to the library.
+ * @returns Promise resolving to the created user book record.
+ */
 export const addBookToLibrary = async (data: UserBook) => await prisma.userBook.create({ data });
 
+/**
+ * Creates authors in the database if they don't already exist.
+ * This function ensures that authors are created with unique names and avoids duplicates.
+ *
+ * @param authors - An array of author names to create.
+ * @returns Promise resolving to the created author records.
+ */
 const createAuthors = async (authors: string[]) =>
   prisma.author.createManyAndReturn({
     data: authors.map((author) => ({
@@ -601,6 +629,13 @@ const createAuthors = async (authors: string[]) =>
     skipDuplicates: true,
   });
 
+/**
+ * Creates categories in the database if they don't already exist.
+ * This function ensures that categories are created with unique names and avoids duplicates.
+ *
+ * @param categories - An array of category names to create.
+ * @returns Promise resolving to the created category records.
+ */
 const createCategories = async (categories: string[]) =>
   await prisma.category.createManyAndReturn({
     data: categories.map((category) => ({
@@ -609,6 +644,16 @@ const createCategories = async (categories: string[]) =>
     skipDuplicates: true,
   });
 
+/**
+ * Creates a new book in the database and adds it to the user's library.
+ * This function handles the creation of the book, its associated authors, categories, and publisher.
+ * It also adds the book to the user's library with the specified reading status.
+ *
+ * @param userId - The ID of the user to whom the book will be added.
+ * @param status - The reading status of the book in the user's library.
+ * @param googleBookData - The book data from Google Books API.
+ * @returns Promise that resolves when the book is created and added to the user's library.
+ */
 export const createBook = async (
   userId: number,
   status: ReadingStatus,
