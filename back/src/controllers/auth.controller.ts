@@ -221,11 +221,26 @@ export const patchUserController = async (req: AuthRequest, res: Response) => {
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).json({ success: false, message: error.message });
-    } else if (error && typeof error === 'object' && 'status' in error && 'message' in error) {
-      const customError = error as CustomError;
-      res.status(customError.status).json({ success: false, message: customError.message });
+    } else if (error && typeof error === 'object') {
+      if ('status' in error && 'message' in error) {
+        const customError = error as CustomError;
+        res.status(customError.status).json({ success: false, message: customError.message });
+      } else if ('status' in error && 'errors' in error) {
+        const customError = error as { status: number; errors: Array<{ message: string }> };
+        res.status(customError.status).json({ success: false, errors: customError.errors });
+      } else {
+        console.error('patchUserController error (unknown object):', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+      }
+    } else {
+      console.error('patchUserController error (unknown type):', error);
+      res.status(500).json({ success: false, message: 'Server error' });
     }
-    console.error('patchUserController error', error);
-    res.status(500).json({ success: false, message: 'Server error' });
+    // } else if (error && typeof error === 'object' && 'status' in error && 'message' in error) {
+    //   const customError = error as CustomError;
+    //   res.status(customError.status).json({ success: false, message: customError.message });
+    // }
+    // console.error('patchUserController error', error);
+    // res.status(500).json({ success: false, message: 'Server error' });
   }
 };

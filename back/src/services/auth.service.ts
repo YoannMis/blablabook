@@ -6,7 +6,6 @@ import { convertInMs } from '../utils/time.utils';
 import crypto from 'crypto';
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { z } from 'zod';
-import { th } from 'zod/v4/locales';
 
 // Typage TypeScript
 type AuthFormValues = z.infer<typeof AuthSchema>;
@@ -230,18 +229,26 @@ export const updateUser = async (
     throw { status: 400, message: 'No fields to update' };
   }
 
+  const errors: { message: string }[] = [];
+
   if (updates.email) {
     const existingEmail = await findUserByEmail(updates.email);
     if (existingEmail) {
-      throw { status: 409, message: 'GENERIC' };
+      // throw { status: 409, message: 'GENERIC' };
+      errors.push({ message: 'GENERIC' });
     }
   }
 
   if (updates.username) {
     const existingUser = await findUserByUsername(updates.username);
     if (existingUser) {
-      throw { status: 409, message: 'USERNAME_TAKEN' };
+      // throw { status: 409, message: 'USERNAME_TAKEN' };
+      errors.push({ message: 'USERNAME_TAKEN' });
     }
+  }
+
+  if (errors.length > 0) {
+    throw { status: 409, errors };
   }
 
   return prisma.user.update({ where: { id: userId }, data: updates });

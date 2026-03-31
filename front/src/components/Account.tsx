@@ -17,14 +17,13 @@ import homeImage from '../assets/homePageImage.jpg';
 import MobileMenu from './MobileMenu';
 import { PasswordInput } from './ui/password-input';
 import { Toaster, toaster } from './ui/toaster';
-import { useNavigate } from 'react-router';
 import RegisterSchema from '../schema/register.schema';
 import type { RegisterFormValues } from '../types/user';
 import z from 'zod';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { axiosAuth } from '../utils/axiosAuth';
-import type { RegisterErrorResponse } from '@/types/api.type';
+import type { BackendError, RegisterErrorResponse } from '@/types/api.type';
 import axios from 'axios';
 
 const AccountPage = () => {
@@ -54,7 +53,6 @@ const AccountPage = () => {
   });
 
   const [isDeleting, setIsDeleting] = useState(false);
-  const navigate = useNavigate();
 
   const isFormValid = () => {
     const hasNoErrors = Object.values(errors).every((error) => !error);
@@ -121,6 +119,7 @@ const AccountPage = () => {
           duration: 3000,
           closable: true,
         });
+        setIsEditing(false);
         return setFormData(initialFormData);
       }
       const response = await axiosAuth.patch(`/api/auth/users/${user.id}`, updatedData);
@@ -146,32 +145,50 @@ const AccountPage = () => {
           password: '',
           confirmPassword: '',
         });
+        setIsEditing(false);
       } else {
         console.error('Error updating user:', response.data.message);
       }
     } catch (error) {
+      // console.error('Error updating user:', error);
       setFormData(initialFormData);
+
       if (axios.isAxiosError<RegisterErrorResponse>(error)) {
-        const backEndMessage = error.response?.data.message || 'GENERIC';
-        const messageKey =
-          {
-            USERNAME_TAKEN: 'account:errors.errorUsername',
-            GENERIC: 'account:errors.errorEmail',
-          }[backEndMessage] ?? 'account:errors.defaultError';
-
-        const translatedMessage = t(messageKey);
-
-        // if (registerError) {
-        toaster.create({
-          title: t('errors.title'),
-          description: translatedMessage,
-          type: 'error',
-          duration: 6000,
-          closable: true,
+        console.log('front', error.response?.data);
+        const backEndMessage = error.response.data.errors;
+        const errorMessageMap: Record<string, string> = {
+          USERNAME_TAKEN: 'account:errors.errorUsername',
+          GENERIC: 'account:errors.errorEmail',
+        };
+        backEndMessage.forEach((error: BackendError) => {
+          const translatedMessagekey = errorMessageMap[error.message];
+          toaster.create({
+            title: t(`errors.title`), // Ex: "Erreur d'email"
+            description: t(`${translatedMessagekey}`), // Ex: "Cet email est déjà utilisé"
+            type: 'error',
+            duration: 6000,
+            closable: true,
+          });
         });
+
+        // const backEndMessage = error.response?.data.message || 'GENERIC';
+        // const messageKey =
+        //   {
+        //     USERNAME_TAKEN: 'account:errors.errorUsername',
+        //     GENERIC: 'account:errors.errorEmail',
+        //   }[backEndMessage] ?? 'account:errors.defaultError';
+
+        // const translatedMessage = t(messageKey);
+
+        // toaster.create({
+        //   title: t('errors.title'),
+        //   description: translatedMessage,
+        //   type: 'error',
+        //   duration: 6000,
+        //   closable: true,
+        // });
       }
-    } finally {
-      setIsEditing(false);
+      setIsEditing(true);
     }
   };
 
@@ -255,10 +272,6 @@ const AccountPage = () => {
           duration: 3000,
           closable: true,
         });
-
-        setTimeout(() => {
-          navigate('/');
-        }, 4000);
       } else {
         console.error('Error deleting account:', response.data.message);
       }
@@ -290,9 +303,6 @@ const AccountPage = () => {
         duration: 3000,
         closable: true,
       });
-      setTimeout(() => {
-        navigate('/');
-      }, 4000);
     } catch (error) {}
   };
 
