@@ -17,7 +17,7 @@ RUN pnpm install --frozen-lockfile --prod --dangerously-allow-all-builds
 COPY . .
 
 # Generate Prisma client
-RUN pnpm prisma:generate
+RUN pnpm exec prisma generate --schema=./prisma/schema.prisma
 
 # Build TypeScript
 RUN pnpm exec tsc
