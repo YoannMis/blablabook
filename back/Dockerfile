@@ -17,7 +17,7 @@ RUN pnpm install --frozen-lockfile --prod
 COPY . .
 
 # Generate Prisma client
-RUN pnpm prisma generate
+RUN pnpm prisma:generate
 
 # Build TypeScript
 RUN pnpm exec tsc
@@ -38,7 +38,7 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/dist ./dist
 
 # Run database migrations
-RUN pnpm prisma migrate deploy
+RUN pnpm prisma:migrate:deploy
 
 # Environment variables
 ENV NODE_ENV=production
