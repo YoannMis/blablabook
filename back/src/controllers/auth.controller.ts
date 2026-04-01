@@ -236,11 +236,5 @@ export const patchUserController = async (req: AuthRequest, res: Response) => {
       console.error('patchUserController error (unknown type):', error);
       res.status(500).json({ success: false, message: 'Server error' });
     }
-    // } else if (error && typeof error === 'object' && 'status' in error && 'message' in error) {
-    //   const customError = error as CustomError;
-    //   res.status(customError.status).json({ success: false, message: customError.message });
-    // }
-    // console.error('patchUserController error', error);
-    // res.status(500).json({ success: false, message: 'Server error' });
   }
 };

@@ -154,8 +154,7 @@ const AccountPage = () => {
       setFormData(initialFormData);
 
       if (axios.isAxiosError<RegisterErrorResponse>(error)) {
-        console.log('front', error.response?.data);
-        const backEndMessage = error.response.data.errors;
+        const backEndMessage = error.response?.data.errors;
         const errorMessageMap: Record<string, string> = {
           USERNAME_TAKEN: 'account:errors.errorUsername',
           GENERIC: 'account:errors.errorEmail',
@@ -170,23 +169,6 @@ const AccountPage = () => {
             closable: true,
           });
         });
-
-        // const backEndMessage = error.response?.data.message || 'GENERIC';
-        // const messageKey =
-        //   {
-        //     USERNAME_TAKEN: 'account:errors.errorUsername',
-        //     GENERIC: 'account:errors.errorEmail',
-        //   }[backEndMessage] ?? 'account:errors.defaultError';
-
-        // const translatedMessage = t(messageKey);
-
-        // toaster.create({
-        //   title: t('errors.title'),
-        //   description: translatedMessage,
-        //   type: 'error',
-        //   duration: 6000,
-        //   closable: true,
-        // });
       }
       setIsEditing(true);
     }

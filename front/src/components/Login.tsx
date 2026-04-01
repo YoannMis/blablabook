@@ -81,7 +81,7 @@ const Login = () => {
         console.error('Logging in failed', response.data.message);
       }
     } catch (error) {
-      console.log('Error :', error);
+      console.error('Error :', error);
       // Gestion des erreurs (y compris les erreurs lancées par le backend)
       if (axios.isAxiosError(error)) {
         // Erreur HTTP (ex: 401, 500)
