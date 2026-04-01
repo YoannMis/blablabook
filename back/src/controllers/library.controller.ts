@@ -22,6 +22,7 @@ import {
   type SearchQuerySchema,
 } from '../schema/library.schema';
 import { checkIdFromParams } from '../lib/validators';
+import { getBookById } from '../services/googleBooks.service';
 
 /**
  * Retrieves all books belonging to a connected user with pagination support.
@@ -243,6 +244,8 @@ export const createAndAddBookToLibrary = async (req: AuthRequest, res: Response)
 
       await addBookToLibrary(data);
     } else {
+      const googleBook = await getBookById(book.googleId);
+      book.categories = googleBook.categories ? googleBook.categories : [];
       await createBook(userId, status, book);
     }
 
