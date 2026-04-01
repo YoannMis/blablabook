@@ -18,6 +18,7 @@ import LibraryDrawerShell from './LibraryDrawerShell';
 import useLibraryActions from '../hooks/useLibraryActions';
 import { HiCheck } from 'react-icons/hi';
 import { HiPencil, HiTrash } from 'react-icons/hi';
+import { toaster } from './ui/toaster';
 
 type Status = 'wishlist' | 'read';
 
@@ -28,10 +29,12 @@ interface EditBookActionsProps {
 const EditBookActions = ({ book }: EditBookActionsProps) => {
   const { t } = useTranslation('book');
   const isMobile = useBreakpointValue({ base: true, md: false });
-  const { updateBookStatus } = useLibraryActions();
+  const { updateBookStatus, removeBook } = useLibraryActions();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const options: { type: Status; label: string }[] = [
     { type: 'wishlist', label: t('book:library.collections.wishlist') },
@@ -51,6 +54,28 @@ const EditBookActions = ({ book }: EditBookActionsProps) => {
       setIsMenuOpen(false);
     } catch (err) {
       console.error('Failed to update book status', err);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (isDeleting) return;
+    setIsDeleting(true);
+    try {
+      await removeBook(book.id, book.status);
+      toaster.create({
+        title: t('library.deleteSuccess', { title: book.title }),
+        type: 'success',
+      });
+    } catch (err) {
+      console.error('Failed to delete book', err);
+
+      toaster.create({
+        title: t('library.deleteError'),
+        type: 'error',
+      });
+    } finally {
+      setIsDeleting(false);
+      setIsMenuOpen(false);
     }
   };
 
@@ -89,10 +114,6 @@ const EditBookActions = ({ book }: EditBookActionsProps) => {
       })}
     </VStack>
   );
-  const handleDelete = () => {
-    //! Todo
-    setIsMenuOpen(false);
-  };
 
   const Trigger = (
     <IconButton
@@ -136,7 +157,12 @@ const EditBookActions = ({ book }: EditBookActionsProps) => {
                     {t('library.actions.edit')}
                   </Button>
 
-                  <Button variant="libraryAction" color="red.400" onClick={handleDelete}>
+                  <Button
+                    variant="libraryAction"
+                    color="red.400"
+                    disabled={isDeleting}
+                    onClick={() => handleDelete()}
+                  >
                     <HiTrash />
                     {t('library.actions.delete')}
                   </Button>
@@ -148,7 +174,7 @@ const EditBookActions = ({ book }: EditBookActionsProps) => {
       </Popover.Root>
 
       {isEditOpen && isMobile && (
-        <Drawer.Root open placement="bottom" onOpenChange={() => setIsEditOpen(false)}>
+        <Drawer.Root open placement="bottom" onOpenChange={(e) => setIsEditOpen(e.open)}>
           <Portal>
             <Drawer.Backdrop />
             <Drawer.Positioner>

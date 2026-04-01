@@ -29,6 +29,7 @@ type LibraryContextType = {
     toKey: string,
     newStatus: Status
   ) => void;
+  removeBookFromCollections: (bookId: string, fromKey: string) => void;
 };
 
 const LibraryContext = createContext<LibraryContextType | undefined>(undefined);
@@ -172,6 +173,29 @@ export const LibraryProvider = ({ children }: { children: React.ReactNode }) => 
     });
   };
 
+  const removeBookFromCollections = (bookId: string, fromKey: string) => {
+    setCollections((prev) => {
+      const from = prev[fromKey] ?? DEFAULT_COLLECTION_STATE;
+      const all = prev.all ?? DEFAULT_COLLECTION_STATE;
+
+      return {
+        ...prev,
+
+        [fromKey]: {
+          ...from,
+          items: from.items.filter((collectionEntry) => collectionEntry.book.id !== bookId),
+          total: Math.max(0, from.total - 1),
+        },
+
+        all: {
+          ...all,
+          items: all.items.filter((collectionEntry) => collectionEntry.book.id !== bookId),
+          total: Math.max(0, all.total - 1),
+        },
+      };
+    });
+  };
+
   return (
     <LibraryContext.Provider
       value={{
@@ -179,6 +203,7 @@ export const LibraryProvider = ({ children }: { children: React.ReactNode }) => 
         fetchFirstPage,
         fetchNextPage,
         updateBookInCollections,
+        removeBookFromCollections,
       }}
     >
       {children}

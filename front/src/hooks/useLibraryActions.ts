@@ -5,7 +5,7 @@ import { useLibrary } from '../context/LibraryContext';
 type Status = 'wishlist' | 'read';
 
 const useLibraryActions = () => {
-  const { updateBookInCollections } = useLibrary();
+  const { updateBookInCollections, removeBookFromCollections } = useLibrary();
 
   const addBook = async (book: AddBookPayload) => {
     const { id, ...rest } = book;
@@ -35,10 +35,14 @@ const useLibraryActions = () => {
     return res.data;
   };
 
-  const removeBook = async (bookId: string) => {
-    console.log('DELETE BOOK');
-    // const res = await axiosAuth.delete(`/api/library/${bookId}`);
-    // return res.data;
+  const removeBook = async (bookId: string, fromKey: string) => {
+    try {
+      await axiosAuth.delete(`/api/library/${bookId}`);
+      removeBookFromCollections(bookId, fromKey);
+    } catch (error) {
+      console.error('Delete failed', error);
+      throw error;
+    }
   };
 
   return {
