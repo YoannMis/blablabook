@@ -1,4 +1,4 @@
-import { prisma, type ReadingStatus, type UserBook } from '../utils/prisma.utils';
+import { Author, Category, prisma, type ReadingStatus, type UserBook } from '../utils/prisma.utils';
 import type { UserBookWithDetails, UserBookPk } from '../types/userBook.types';
 import { BookSchema } from '../schema/library.schema';
 import { cleanImageLinks, cleanOtherBookData } from '../utils/cleanSanitizedData.utils';
@@ -616,34 +616,66 @@ export const checkIsExistsBook = async (gooleBookId: string) =>
 export const addBookToLibrary = async (data: UserBook) => await prisma.userBook.create({ data });
 
 /**
- * Creates authors in the database if they don't already exist.
+ * Creates authors in the database if they don't already exist and returns all authors (existing + newly created).
  * This function ensures that authors are created with unique names and avoids duplicates.
+ * All operations are executed in a single transaction for atomicity.
  *
  * @param authors - An array of author names to create.
- * @returns Promise resolving to the created author records.
+ * @returns Promise resolving to all author records (existing + newly created).
  */
-const createAuthors = async (authors: string[]) =>
-  prisma.author.createManyAndReturn({
-    data: authors.map((author) => ({
-      name: author,
-    })),
-    skipDuplicates: true,
-  });
+const createAndGetAuthors = async (authors: string[]): Promise<Author[]> => {
+  return await prisma
+    .$transaction([
+      // Step 1: Create new authors (skip duplicates)
+      prisma.author.createMany({
+        data: authors.map((author) => ({
+          name: author,
+        })),
+        skipDuplicates: true,
+      }),
+
+      // Step 2: Retrieve all authors (existing + newly created)
+      prisma.author.findMany({
+        where: {
+          name: {
+            in: authors,
+          },
+        },
+      }),
+    ])
+    .then((results) => results[1]); // Return only the findMany result
+};
 
 /**
- * Creates categories in the database if they don't already exist.
+ * Creates categories in the database if they don't already exist and returns all categories (existing + newly created).
  * This function ensures that categories are created with unique names and avoids duplicates.
+ * All operations are executed in a single transaction for atomicity.
  *
  * @param categories - An array of category names to create.
- * @returns Promise resolving to the created category records.
+ * @returns Promise resolving to all category records (existing + newly created).
  */
-const createCategories = async (categories: string[]) =>
-  await prisma.category.createManyAndReturn({
-    data: categories.map((category) => ({
-      name: category,
-    })),
-    skipDuplicates: true,
-  });
+const createAndGetCategories = async (categories: string[]): Promise<Category[]> => {
+  return await prisma
+    .$transaction([
+      // Step 1: Create new categories (skip duplicates)
+      prisma.category.createMany({
+        data: categories.map((category) => ({
+          name: category,
+        })),
+        skipDuplicates: true,
+      }),
+
+      // Step 2: Retrieve all categories (existing + newly created)
+      prisma.category.findMany({
+        where: {
+          name: {
+            in: categories,
+          },
+        },
+      }),
+    ])
+    .then((results) => results[1]); // Return only the findMany result
+};
 
 /**
  * Creates a new book in the database and adds it to the user's library.
@@ -692,25 +724,23 @@ export const createBook = async (
   });
 
   if (googleBookData.authors) {
-    const authors = await createAuthors(cleanOtherBookData(googleBookData.authors));
+    const authors = await createAndGetAuthors(cleanOtherBookData(googleBookData.authors));
     await prisma.bookAuthor.createMany({
       data: authors.map((author) => ({
         bookId: createdBook.id,
         authorId: author.id,
       })),
     });
-    console.log(authors);
   }
 
   if (googleBookData.categories) {
-    const categories = await createCategories(cleanOtherBookData(googleBookData.categories));
+    const categories = await createAndGetCategories(cleanOtherBookData(googleBookData.categories));
     await prisma.bookCategory.createMany({
       data: categories.map((category) => ({
         bookId: createdBook.id,
         categoryId: category.id,
       })),
     });
-    console.log(categories);
   }
 
   await addBookToLibrary({ userId, bookId: createdBook.id, status });
