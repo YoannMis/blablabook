@@ -126,7 +126,7 @@ const AddBookActions = ({ book }: Props) => {
             <Drawer.Positioner>
               <LibraryDrawerShell
                 title={t('book:library.addToLibrary')}
-                description={t('book:library.chooseCollection')}
+                subtitle={t('book:library.chooseCollection')}
                 children={<Content />}
               />
             </Drawer.Positioner>

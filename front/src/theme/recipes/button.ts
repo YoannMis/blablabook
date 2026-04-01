@@ -64,7 +64,7 @@ export const buttonRecipe = defineRecipe({
         fontWeight: 'semibold',
         textAlign: 'center',
         fontSize: 'md',
-        minW: '160px',
+        minW: '150px',
         justifyContent: 'flex-start',
         py: 6,
         px: 5,

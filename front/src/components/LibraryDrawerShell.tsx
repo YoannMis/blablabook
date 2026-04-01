@@ -2,11 +2,11 @@ import { Box, Drawer } from '@chakra-ui/react';
 
 interface LibraryDrawerShellProps {
   title: string;
-  description?: string;
+  subtitle?: string;
   children: React.ReactNode;
 }
 
-const LibraryDrawerShell = ({ title, description, children }: LibraryDrawerShellProps) => (
+const LibraryDrawerShell = ({ title, subtitle, children }: LibraryDrawerShellProps) => (
   <Drawer.Content
     py={4}
     bg={{ _light: 'light.100', _dark: 'rgba(26,22,18,0.92)' }}
@@ -34,14 +34,14 @@ const LibraryDrawerShell = ({ title, description, children }: LibraryDrawerShell
       {title}
     </Drawer.Header>
 
-    {description && (
+    {subtitle && (
       <Drawer.Description
         px={6}
         pb={3}
         fontSize="sm"
         color={{ _light: 'brown.700', _dark: 'light.400' }}
       >
-        {description}
+        {subtitle}
       </Drawer.Description>
     )}
 

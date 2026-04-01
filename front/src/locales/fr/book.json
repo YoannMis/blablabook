@@ -34,8 +34,12 @@
     "addToLibrary": "Ajouter à votre bibliothèque",
     "chooseCollection": "Choisir une collection",
     "addSuccess": "Le livre \"{{title}}\" a bien été ajouté à votre collection \"{{status}}\"",
-    "deleteSuccess": "\"{{title}}\" a été supprimé de votre bibliothèque.",
+    "deleteSuccess": "Le livre a bien été supprimé de votre bibliothèque",
     "deleteError": "Impossible de supprimer le livre. Veuillez réessayer.",
+    "deleteConfirm": {
+      "title": "Confirmer la suppression",
+      "subtitle": "Voulez-vous vraiment retirer « {{title}} » de votre bibliothèque ?"
+    },
     "errors": {
       "internalServerError": "Une erreur inattendue est survenue. Veuillez réessayer.",
       "bookAlreadyInLibrary": "Ce livre est déjà dans votre bibliothèque."

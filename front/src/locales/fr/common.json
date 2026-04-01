@@ -20,5 +20,8 @@
     "addBook": "Ajouter le livre"
   },
   "noDescription": "Aucune description disponible.",
-  "bookCoverAlt": "Couverture du livre"
+  "bookCoverAlt": "Couverture du livre",
+  "confirm": "Confirmer",
+  "delete": "Supprimer",
+  "cancel": "Annuler"
 }

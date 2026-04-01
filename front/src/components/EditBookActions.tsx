@@ -27,13 +27,14 @@ interface EditBookActionsProps {
 }
 
 const EditBookActions = ({ book }: EditBookActionsProps) => {
-  const { t } = useTranslation('book');
+  const { t } = useTranslation(['book', 'common']);
   const isMobile = useBreakpointValue({ base: true, md: false });
   const { updateBookStatus, removeBook } = useLibraryActions();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
 
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const options: { type: Status; label: string }[] = [
@@ -60,15 +61,17 @@ const EditBookActions = ({ book }: EditBookActionsProps) => {
   const handleDelete = async () => {
     if (isDeleting) return;
     setIsDeleting(true);
+
     try {
       await removeBook(book.id, book.status);
+
       toaster.create({
-        title: t('library.deleteSuccess', { title: book.title }),
+        title: t('library.deleteSuccess'),
         type: 'success',
       });
-    } catch (err) {
-      console.error('Failed to delete book', err);
 
+      setIsDeleteOpen(false);
+    } catch (err) {
       toaster.create({
         title: t('library.deleteError'),
         type: 'error',
@@ -112,6 +115,35 @@ const EditBookActions = ({ book }: EditBookActionsProps) => {
           </Button>
         );
       })}
+    </VStack>
+  );
+
+  const DeleteContent = (
+    <VStack gap={4} p={2}>
+      <HStack w="100%" gap={3}>
+        <Button
+          flex={1}
+          minW="auto"
+          justifyContent="center"
+          variant="libraryAction"
+          onClick={() => setIsDeleteOpen(false)}
+          disabled={isDeleting}
+        >
+          {t('common:cancel')}
+        </Button>
+
+        <Button
+          flex={1}
+          minW="auto"
+          color="red.400"
+          justifyContent="center"
+          variant="libraryAction"
+          onClick={handleDelete}
+          disabled={isDeleting}
+        >
+          {t('common:delete')}
+        </Button>
+      </HStack>
     </VStack>
   );
 
@@ -161,7 +193,10 @@ const EditBookActions = ({ book }: EditBookActionsProps) => {
                     variant="libraryAction"
                     color="red.400"
                     disabled={isDeleting}
-                    onClick={() => handleDelete()}
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      setIsDeleteOpen(true);
+                    }}
                   >
                     <HiTrash />
                     {t('library.actions.delete')}
@@ -197,6 +232,45 @@ const EditBookActions = ({ book }: EditBookActionsProps) => {
           <Portal>
             <Popover.Positioner>
               <LibraryPopoverShell title={t('library.actions.editCollection')} children={Content} />
+            </Popover.Positioner>
+          </Portal>
+        </Popover.Root>
+      )}
+
+      {isDeleteOpen && isMobile && (
+        <Drawer.Root open placement="bottom" onOpenChange={(e) => setIsDeleteOpen(e.open)}>
+          <Portal>
+            <Drawer.Backdrop />
+            <Drawer.Positioner>
+              <LibraryDrawerShell
+                title={t('library.deleteConfirm.title')}
+                subtitle={t('library.deleteConfirm.subtitle', { title: book.title })}
+              >
+                {DeleteContent}
+              </LibraryDrawerShell>
+            </Drawer.Positioner>
+          </Portal>
+        </Drawer.Root>
+      )}
+
+      {isDeleteOpen && !isMobile && (
+        <Popover.Root
+          open
+          onOpenChange={(e) => setIsDeleteOpen(e.open)}
+          positioning={{ placement: 'right' }}
+        >
+          <Popover.Trigger asChild>
+            <Box />
+          </Popover.Trigger>
+
+          <Portal>
+            <Popover.Positioner>
+              <LibraryPopoverShell
+                title={t('library.deleteConfirm.title')}
+                subtitle={t('library.deleteConfirm.subtitle', { title: book.title })}
+              >
+                {DeleteContent}
+              </LibraryPopoverShell>
             </Popover.Positioner>
           </Portal>
         </Popover.Root>
