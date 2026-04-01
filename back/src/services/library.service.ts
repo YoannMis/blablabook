@@ -1,7 +1,7 @@
 import { prisma, type ReadingStatus, type UserBook } from '../utils/prisma.utils';
 import type { UserBookWithDetails, UserBookPk } from '../types/userBook.types';
 import { BookSchema } from '../schema/library.schema';
-import { cleanImageLinks } from '../utils/cleanImageLinks.utils';
+import { cleanImageLinks, cleanOtherBookData } from '../utils/cleanSanitizedData.utils';
 
 /**
  * Formats an array of user books by extracting and transforming book details.
@@ -660,9 +660,6 @@ export const createBook = async (
   status: ReadingStatus,
   googleBookData: BookSchema
 ) => {
-  const authors = await createAuthors(googleBookData.authors);
-  const categories = await createCategories(googleBookData.categories);
-
   const createdBook = await prisma.book.create({
     include: {
       publisher: true,
@@ -684,29 +681,37 @@ export const createBook = async (
       publisher: {
         connectOrCreate: {
           create: {
-            name: googleBookData.publisher,
+            name: cleanOtherBookData(googleBookData.publisher),
           },
           where: {
-            name: googleBookData.publisher,
+            name: cleanOtherBookData(googleBookData.publisher),
           },
         },
       },
     },
   });
 
-  await prisma.bookAuthor.createMany({
-    data: authors.map((author) => ({
-      bookId: createdBook.id,
-      authorId: author.id,
-    })),
-  });
+  if (googleBookData.authors) {
+    const authors = await createAuthors(cleanOtherBookData(googleBookData.authors));
+    await prisma.bookAuthor.createMany({
+      data: authors.map((author) => ({
+        bookId: createdBook.id,
+        authorId: author.id,
+      })),
+    });
+    console.log(authors);
+  }
 
-  await prisma.bookCategory.createMany({
-    data: categories.map((category) => ({
-      bookId: createdBook.id,
-      categoryId: category.id,
-    })),
-  });
+  if (googleBookData.categories) {
+    const categories = await createCategories(cleanOtherBookData(googleBookData.categories));
+    await prisma.bookCategory.createMany({
+      data: categories.map((category) => ({
+        bookId: createdBook.id,
+        categoryId: category.id,
+      })),
+    });
+    console.log(categories);
+  }
 
   await addBookToLibrary({ userId, bookId: createdBook.id, status });
 };
