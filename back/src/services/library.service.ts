@@ -1,5 +1,5 @@
 import { Author, Category, prisma, type ReadingStatus, type UserBook } from '../utils/prisma.utils';
-import type { UserBookWithDetails, UserBookPk } from '../types/userBook.types';
+import type { UserBookWithDetails, UserBookPk, BookWithRelations } from '../types/userBook.types';
 import { BookSchema } from '../schema/library.schema';
 import { cleanImageLinks, cleanOtherBookData } from '../utils/cleanSanitizedData.utils';
 
@@ -40,6 +40,30 @@ export const formatBooks = (userBooks: UserBookWithDetails[]) => {
       },
     };
   });
+};
+
+export const formatBook = (book: BookWithRelations) => {
+  // Normalize image links structure, handling potential undefined or non-object values
+  let imageLinks = null;
+  if (book.imageLinks && typeof book.imageLinks === 'object') {
+    imageLinks = {
+      thumbnail: (book.imageLinks as any).thumbnail || '',
+      small: (book.imageLinks as any).small,
+      medium: (book.imageLinks as any).medium,
+      large: (book.imageLinks as any).large,
+    };
+  }
+
+  return {
+    ...book,
+    imageLinks,
+    // Extract author names from the nested author relationship
+    authors: book.authors?.map((author) => author.author.name) || [],
+    // Extract publisher name from the nested publisher relationship
+    publisher: book.publisher?.name || null,
+    // Extract category names from the nested category relationship
+    categories: book.categories?.map((category) => category.category.name) || [],
+  };
 };
 
 /**

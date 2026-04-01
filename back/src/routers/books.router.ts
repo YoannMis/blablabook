@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { getById, search } from '../controllers/books.controller';
 import { getTopFeaturedThemes } from '../controllers/themes.controller';
+import { checkSelf } from '../middlewares/checkSelf.middleware';
 
 const booksRouter = Router();
 
@@ -10,6 +11,6 @@ booksRouter.get('/topFeaturedThemes', getTopFeaturedThemes);
 booksRouter.get('/search', search);
 
 // GET /api/books/:id
-booksRouter.get('/:id', getById);
+booksRouter.get('/:id', checkSelf(), getById);
 
 export default booksRouter;

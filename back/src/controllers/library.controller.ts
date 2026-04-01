@@ -153,7 +153,7 @@ export const updateBookStatus = async (req: AuthRequest, res: Response): Promise
   }
 
   const parsed = statusSchema.safeParse(req.body);
-  console.log(parsed.data);
+
   if (parsed.error) {
     res.status(400).json({ success: false, error: z.flattenError(parsed.error).fieldErrors });
   }
