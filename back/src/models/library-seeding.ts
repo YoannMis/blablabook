@@ -4,11 +4,6 @@ import livresPopulaires from './books_dataset.json';
 
 const prisma = new PrismaClient();
 
-const ReadingStatus = {
-  read: 'read',
-  wishlist: 'wishlist',
-};
-
 async function seed() {
   try {
     // Supprimer les données existantes pour éviter les doublons
@@ -90,6 +85,7 @@ async function seed() {
 
     // Créer les livres
     const books = [];
+    let googleBookId = 1;
     for (const bookData of livresPopulaires) {
       const publisher = publishers.find((p) => p.name === bookData.publisher);
       if (!publisher) {
@@ -102,6 +98,7 @@ async function seed() {
       const book = await prisma.book.create({
         data: {
           title: bookData.title,
+          googleBookId: String(googleBookId),
           averageRating: bookData.averageRating,
           ratingCount: bookData.ratingCount,
           imageLinks: bookData.imageLinks,
@@ -156,15 +153,16 @@ async function seed() {
       const selectedBooks = shuffledBooks.slice(0, numberOfBooks);
 
       for (const book of selectedBooks) {
-        const status = Math.random() < 0.5 ? ReadingStatus.read : ReadingStatus.wishlist;
+        const status = Math.random() < 0.5 ? 'read' : 'wishlist';
         await prisma.userBook.create({
           data: {
             userId: user.id,
             bookId: book.id,
-            status,
+            status: status,
           },
         });
       }
+      googleBookId++;
     }
 
     console.log('Association des livres aux utilisateurs terminée');
