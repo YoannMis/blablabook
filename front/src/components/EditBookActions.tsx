@@ -192,7 +192,10 @@ const EditBookActions = ({ book, variant = 'icon', onStatusChange }: EditBookAct
     <>
       <Popover.Root
         open={isMenuOpen}
-        onOpenChange={(e) => setIsMenuOpen(e.open)}
+        onOpenChange={(e) => {
+          setIsMenuOpen(false);
+          setIsEditOpen(false);
+        }}
         positioning={{ placement: 'right-start' }}
         size="xs"
       >
