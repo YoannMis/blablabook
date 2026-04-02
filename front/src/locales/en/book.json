@@ -31,7 +31,8 @@
       "read": "Read",
       "wishlist": "Wishlist"
     },
-    "empty": "You don’t have any books in your library yet",
+    "emptyLibrary": "You don’t have any books in your library yet",
+    "emptyCollection": "You don’t have any books in this collection yet",
     "addToLibrary": "Add to your library",
     "chooseCollection": "Choose a collection",
     "addSuccess": "The book \"{{title}}\" has been successfully added to your \"{{status}}\" collection",
@@ -48,7 +49,8 @@
     "actions": {
       "edit": "Edit",
       "delete": "Delete",
-      "editCollection": "Move to collection"
+      "editCollection": "Move to collection",
+      "backToCollections": "Back to your collections"
     }
   },
   "categories": {

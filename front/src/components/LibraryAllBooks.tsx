@@ -26,7 +26,7 @@ const LibraryAllBooks = () => {
   return (
     <Box w="100%">
       {collectionBooks.items.length === 0 && !collectionBooks.loading ? (
-        <p>{t('library.empty')}</p>
+        <p>{t('library.emptyLibrary')}</p>
       ) : (
         <>
           <BookCardList

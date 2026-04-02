@@ -134,6 +134,7 @@ export const LibraryProvider = ({ children }: { children: React.ReactNode }) => 
     setCollections((prev) => {
       const from = prev[fromKey] ?? DEFAULT_COLLECTION_STATE;
       const to = prev[toKey] ?? DEFAULT_COLLECTION_STATE;
+      const all = prev['all'] ?? DEFAULT_COLLECTION_STATE;
 
       const bookEntryToMove = from.items.find(
         (collectionEntry) => collectionEntry.book.id === bookId
@@ -164,8 +165,8 @@ export const LibraryProvider = ({ children }: { children: React.ReactNode }) => 
         },
 
         all: {
-          ...prev.all,
-          items: prev.all.items.map((collectionEntry) =>
+          ...all,
+          items: all.items.map((collectionEntry) =>
             collectionEntry.book.id === bookId ? updatedBookEntry : collectionEntry
           ),
         },

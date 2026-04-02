@@ -30,7 +30,8 @@
       "read": "Lus",
       "wishlist": "Envie de lire"
     },
-    "empty": "Vous n'avez pas encore de livres dans votre blibliothèque",
+    "emptyLibrary": "Vous n'avez pas encore de livres dans votre blibliothèque",
+    "emptyCollection": "Vous n'avez pas encore de livres dans cette collection",
     "addToLibrary": "Ajouter à votre bibliothèque",
     "chooseCollection": "Choisir une collection",
     "addSuccess": "Le livre \"{{title}}\" a bien été ajouté à votre collection \"{{status}}\"",
@@ -47,7 +48,8 @@
     "actions": {
       "edit": "Modifier",
       "delete": "Supprimer",
-      "editCollection": "Déplacer vers la collection"
+      "editCollection": "Déplacer vers la collection",
+      "backToCollections": "Retour aux collections"
     }
   },
   "categories": {

@@ -14,7 +14,6 @@ import {
   Stack,
   Tag,
   Text,
-  VStack,
 } from '@chakra-ui/react';
 import { PageLayout } from './layouts/PageLayout';
 import MobileMenu from './MobileMenu';
@@ -119,15 +118,13 @@ const BookDetails = () => {
               </Text>
             </HStack>
 
-            <VStack align="start" gap={4} mt={2}>
-              <HStack>
-                {book?.categories?.map((category) => (
-                  <Tag.Root key={category} variant="solid" rounded="full" px={3} py={1}>
-                    <Tag.Label>{category}</Tag.Label>
-                  </Tag.Root>
-                ))}
-              </HStack>
-            </VStack>
+            <HStack mt={2} flexWrap="wrap">
+              {book?.categories?.map((category) => (
+                <Tag.Root key={category} variant="solid" rounded="full" px={3} py={1}>
+                  <Tag.Label>{category}</Tag.Label>
+                </Tag.Root>
+              ))}
+            </HStack>
             <Stack mt={4}>
               <Text fontWeight="bold">{t('details.description')}</Text>
               <Text>{renderDescription(book?.description)}</Text>

@@ -44,6 +44,7 @@ const BookCard = ({ book }: BookCardProps) => {
       <Box
         position="relative"
         h={{ base: '220px', md: '260px' }}
+        width={isMobile ? '140px' : '170px'}
         borderRadius="xl"
         overflow="hidden"
         borderWidth="1px"
@@ -63,7 +64,7 @@ const BookCard = ({ book }: BookCardProps) => {
         <Image
           src={imageLinks?.thumbnail || noBookCover}
           alt={title}
-          objectFit="cover"
+          objectFit="fill"
           w="100%"
           h="100%"
           onClick={handleClick}
@@ -82,7 +83,7 @@ const BookCard = ({ book }: BookCardProps) => {
           }}
         />
 
-        {averageRating !== undefined && (
+        {averageRating && (
           <Box
             position="absolute"
             top={2}

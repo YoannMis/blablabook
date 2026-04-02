@@ -1,4 +1,4 @@
-import { Box, Heading, Separator, SimpleGrid } from '@chakra-ui/react';
+import { Box, Heading, Separator, SimpleGrid, useBreakpointValue } from '@chakra-ui/react';
 import BookCard from './BookCard';
 import BookCardSkeleton from './BookCardSkeleton';
 import type { Book } from '../types/book';
@@ -18,10 +18,11 @@ const BookCardList = ({
   isLoading = false,
   singleColumnMobile = false,
 }: BookCardListProps) => {
-  const skeletonCount = 6;
+  const isMobile = useBreakpointValue({ base: true, md: false });
+  const skeletonCount = isMobile ? 2 : 6;
 
   const minChildWidth = { base: singleColumnMobile ? '100%' : '140px', md: '150px' };
-  const boxWidth = { base: singleColumnMobile ? '100%' : '150px', md: 'auto' };
+  const boxWidth = { base: singleColumnMobile ? '100%' : '150px', md: '200px' };
 
   const renderSkeletons = () =>
     Array.from({ length: skeletonCount }).map((_, index) => (
@@ -66,7 +67,13 @@ const BookCardList = ({
         pt={{ md: 1 }}
       >
         {wrap ? (
-          <SimpleGrid minChildWidth={minChildWidth} gap={6}>
+          <SimpleGrid
+            display={singleColumnMobile && isMobile ? 'grid' : 'flex'}
+            flexFlow="wrap"
+            minChildWidth={minChildWidth}
+            gap={6}
+            mt={4}
+          >
             {content}
           </SimpleGrid>
         ) : (
