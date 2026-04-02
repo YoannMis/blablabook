@@ -31,6 +31,8 @@
       "read": "Read",
       "wishlist": "Wishlist"
     },
+    "addBook": "Add a book",
+    "loginRequired": "Want to add it to your library? Log in to continue!",
     "emptyLibrary": "You don’t have any books in your library yet",
     "emptyCollection": "You don’t have any books in this collection yet",
     "addToLibrary": "Add to your library",

@@ -8,6 +8,7 @@ import {
   Portal,
   useBreakpointValue,
   VStack,
+  Text,
 } from '@chakra-ui/react';
 import { TiPlus } from 'react-icons/ti';
 
@@ -16,6 +17,8 @@ import useLibraryActions from '../hooks/useLibraryActions';
 import { toaster } from './ui/toaster';
 import LibraryPopoverShell from './LibraryPopoverShell';
 import LibraryDrawerShell from './LibraryDrawerShell';
+import { useCurrentUser } from '../context/UserContext';
+import { useNavigate } from 'react-router';
 
 interface Props {
   book: Book;
@@ -35,10 +38,12 @@ const getErrorKey = (errorCode?: string) => {
 const AddBookActions = ({ book }: Props) => {
   const { t } = useTranslation(['common', 'book']);
   const { addBook } = useLibraryActions();
+  const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const { isLoggedIn } = useCurrentUser();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   const addBookOptions = [
@@ -76,28 +81,44 @@ const AddBookActions = ({ book }: Props) => {
     }
   };
 
-  const Content = () => (
-    <VStack gap={4}>
-      {addBookOptions.map((option) => (
-        <Button
-          key={option.type}
-          w="100%"
-          py={6}
-          px={5}
-          borderRadius="xl"
-          justifyContent="flex-start"
-          fontWeight="semibold"
-          fontSize="md"
-          bg={{ _light: 'light.200', _dark: 'gray.800' }}
-          color={{ _light: 'brown.800', _dark: 'light.200' }}
-          onClick={() => handleAddBook(option.type)}
-          disabled={isSubmitting}
-        >
-          {option.label}
-        </Button>
-      ))}
-    </VStack>
-  );
+  const Content = () => {
+    if (!isLoggedIn) {
+      return (
+        <VStack gap={4} align="stretch">
+          <Text fontSize="sm" color={{ _light: 'brown.600', _dark: 'light.400' }}>
+            {t('book:library.loginRequired')}
+          </Text>
+
+          <Button w="100%" onClick={() => navigate('/login')}>
+            {t('common:nav.login')}
+          </Button>
+        </VStack>
+      );
+    }
+
+    return (
+      <VStack gap={4}>
+        {addBookOptions.map((option) => (
+          <Button
+            key={option.type}
+            w="100%"
+            py={6}
+            px={5}
+            borderRadius="xl"
+            justifyContent="flex-start"
+            fontWeight="semibold"
+            fontSize="md"
+            bg={{ _light: 'light.200', _dark: 'gray.800' }}
+            color={{ _light: 'brown.800', _dark: 'light.200' }}
+            onClick={() => handleAddBook(option.type)}
+            disabled={isSubmitting}
+          >
+            {option.label}
+          </Button>
+        ))}
+      </VStack>
+    );
+  };
 
   const Trigger = (
     <IconButton
@@ -125,8 +146,8 @@ const AddBookActions = ({ book }: Props) => {
             <Drawer.Backdrop />
             <Drawer.Positioner>
               <LibraryDrawerShell
-                title={t('book:library.addToLibrary')}
-                subtitle={t('book:library.chooseCollection')}
+                title={isLoggedIn ? t('book:library.addToLibrary') : t('book:library.addBook')}
+                subtitle={isLoggedIn ? t('book:library.chooseCollection') : undefined}
                 children={<Content />}
               />
             </Drawer.Positioner>
@@ -142,8 +163,8 @@ const AddBookActions = ({ book }: Props) => {
       <Portal>
         <Popover.Positioner>
           <LibraryPopoverShell
-            title={t('book:library.addToLibrary')}
-            subtitle={t('book:library.chooseCollection')}
+            title={isLoggedIn ? t('book:library.addToLibrary') : t('book:library.addBook')}
+            subtitle={isLoggedIn ? t('book:library.chooseCollection') : undefined}
             children={<Content />}
           />
         </Popover.Positioner>

@@ -30,6 +30,8 @@
       "read": "Lus",
       "wishlist": "Envie de lire"
     },
+    "addBook": "Ajouter un livre",
+    "loginRequired": "Envie de l’ajouter à votre bibliothèque ? Connectez-vous pour continuer !",
     "emptyLibrary": "Vous n'avez pas encore de livres dans votre blibliothèque",
     "emptyCollection": "Vous n'avez pas encore de livres dans cette collection",
     "addToLibrary": "Ajouter à votre bibliothèque",

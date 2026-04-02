@@ -61,7 +61,6 @@ const LibraryCollectionDetails = () => {
       cursor="pointer"
       onClick={() => navigate('/library/collections')}
       gap={2}
-      // color={{ _light: 'pink', _dark: 'rgb(232, 223, 214)' }}
       opacity={0.85}
       _hover={{ opacity: 1 }}
     >
