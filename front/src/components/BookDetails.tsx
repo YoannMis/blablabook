@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useParams } from 'react-router';
 import {
   Box,
@@ -25,7 +24,11 @@ import { getBookImageByScreen } from '../utils/bookUtils';
 import { useTruncatedTitle } from '../utils/stringUtils';
 import { useTranslation } from 'react-i18next';
 import noBookCover from '../assets/noBookCover.jpg';
-import type { Book } from '../types/book';
+import type { Book, Status } from '../types/book';
+import { axiosAuth } from '../utils/axiosAuth';
+import AddBookActions from './AddBookActions';
+import EditBookActions from './EditBookActions';
+import { useCurrentUser } from '../context/UserContext';
 
 const BookDetails = () => {
   const { id } = useParams();
@@ -34,6 +37,7 @@ const BookDetails = () => {
   const [bookLoading, setBookLoading] = useState(true);
   const [imageLoaded, setImageLoaded] = useState(false);
   const { t } = useTranslation('book');
+  const { isLoggedIn } = useCurrentUser();
 
   const imageSrc = book ? getBookImageByScreen(book.imageLinks) : null;
   const hasRealImage = !!imageSrc;
@@ -44,7 +48,7 @@ const BookDetails = () => {
 
     const fetchBook = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/books/${id}`);
+        const res = await axiosAuth.get(`${import.meta.env.VITE_API_URL}/api/books/${id}`);
         setBook(res.data);
       } catch (error) {
         console.error('Error fetching book:', error);
@@ -54,6 +58,10 @@ const BookDetails = () => {
     };
     fetchBook();
   }, [id]);
+
+  const updateBookStatusLocally = (status: Status) => {
+    setBook((prev) => (prev ? { ...prev, status } : prev));
+  };
 
   return (
     <PageLayout imageSrc={bookDetail} imagePosition="left">
@@ -113,10 +121,28 @@ const BookDetails = () => {
               {book?.title}
             </Text>
             <HStack>
-              <Text fontSize="xl" color="gray.500">
+              <Text fontSize="xl" color={{ _light: 'brown.800', _dark: 'light.500' }}>
                 {book?.authors?.join(', ')}
               </Text>
             </HStack>
+
+            {book && !isLoggedIn && <AddBookActions book={book} variant="button" />}
+
+            {book && isLoggedIn && !book.status && (
+              <AddBookActions
+                book={book}
+                variant="button"
+                onStatusChange={updateBookStatusLocally}
+              />
+            )}
+
+            {book && isLoggedIn && book.status && (
+              <EditBookActions
+                book={book}
+                variant="button"
+                onStatusChange={updateBookStatusLocally}
+              />
+            )}
 
             <HStack mt={2} flexWrap="wrap">
               {book?.categories?.map((category) => (

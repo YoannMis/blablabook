@@ -11,8 +11,9 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { TiPlus } from 'react-icons/ti';
+import { GoPlusCircle } from 'react-icons/go';
 
-import type { Book } from '../types/book';
+import type { Book, Status } from '../types/book';
 import useLibraryActions from '../hooks/useLibraryActions';
 import { toaster } from './ui/toaster';
 import LibraryPopoverShell from './LibraryPopoverShell';
@@ -20,8 +21,10 @@ import LibraryDrawerShell from './LibraryDrawerShell';
 import { useCurrentUser } from '../context/UserContext';
 import { useNavigate } from 'react-router';
 
-interface Props {
+interface AddBookActionsProps {
   book: Book;
+  variant?: 'icon' | 'button';
+  onStatusChange?: (status: Status) => void;
 }
 
 const getErrorKey = (errorCode?: string) => {
@@ -35,7 +38,7 @@ const getErrorKey = (errorCode?: string) => {
   }
 };
 
-const AddBookActions = ({ book }: Props) => {
+const AddBookActions = ({ book, variant = 'icon', onStatusChange }: AddBookActionsProps) => {
   const { t } = useTranslation(['common', 'book']);
   const { addBook } = useLibraryActions();
   const navigate = useNavigate();
@@ -56,7 +59,7 @@ const AddBookActions = ({ book }: Props) => {
 
     try {
       setIsSubmitting(true);
-      const res = await addBook({ ...book, status });
+      const res = await addBook({ ...book, id: book.googleBookId, status });
 
       if (res?.success) {
         toaster.create({
@@ -66,6 +69,7 @@ const AddBookActions = ({ book }: Props) => {
           }),
           type: 'success',
         });
+        onStatusChange?.(status);
       }
 
       setIsOpen(false);
@@ -78,6 +82,50 @@ const AddBookActions = ({ book }: Props) => {
     } finally {
       setIsSubmitting(false);
       setIsOpen(false);
+    }
+  };
+
+  const renderButtonVariant = () => {
+    if (!isLoggedIn) {
+      return (
+        <Button
+          variant="plain"
+          paddingLeft={0}
+          color={{ _light: 'brown.800', _dark: 'light.200' }}
+          bg={{ _light: 'light.100', _dark: 'brown.900' }}
+          _hover={{ textDecoration: 'underline' }}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsOpen(true);
+          }}
+        >
+          <GoPlusCircle />
+          {t('book:library.addBookToLibrary')}
+        </Button>
+      );
+    }
+
+    if (!book?.status) {
+      return (
+        <VStack align="start">
+          <Text fontSize="sm">{t('book:library.addBookCTA')}</Text>
+
+          <Button
+            variant="plain"
+            paddingLeft={0}
+            color={{ _light: 'brown.800', _dark: 'light.200' }}
+            bg={{ _light: 'light.100', _dark: 'brown.900' }}
+            _hover={{ textDecoration: 'underline' }}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsOpen(true);
+            }}
+          >
+            <GoPlusCircle />
+            {t('book:library.addBookAction')}
+          </Button>
+        </VStack>
+      );
     }
   };
 
@@ -120,22 +168,25 @@ const AddBookActions = ({ book }: Props) => {
     );
   };
 
-  const Trigger = (
-    <IconButton
-      aria-label={t('bookCard.addBook')}
-      size="xs"
-      position="absolute"
-      top={2}
-      right={2}
-      variant="glass"
-      onClick={(e) => {
-        e.stopPropagation();
-        setIsOpen(true);
-      }}
-    >
-      <TiPlus />
-    </IconButton>
-  );
+  const Trigger =
+    variant === 'button' ? (
+      renderButtonVariant()
+    ) : (
+      <IconButton
+        aria-label={t('bookCard.addBook')}
+        size="xs"
+        position="absolute"
+        top={2}
+        right={2}
+        variant="glass"
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen(true);
+        }}
+      >
+        <TiPlus />
+      </IconButton>
+    );
 
   if (isMobile) {
     return (
@@ -158,7 +209,11 @@ const AddBookActions = ({ book }: Props) => {
   }
 
   return (
-    <Popover.Root open={isOpen} positioning={{ placement: 'right-start' }}>
+    <Popover.Root
+      open={isOpen}
+      positioning={{ placement: 'right-start' }}
+      onOpenChange={(e) => setIsOpen(e.open)}
+    >
       <Popover.Trigger asChild>{Trigger}</Popover.Trigger>
       <Portal>
         <Popover.Positioner>

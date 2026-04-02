@@ -14,6 +14,7 @@ interface ImageLinks {
 
 export interface GoogleBook {
   id: string;
+  googleBookId: string;
   title: string;
   authors?: string[];
   publisher?: string;
@@ -40,6 +41,7 @@ const mapVolumeToBook = (volume: Record<string, unknown>): GoogleBook => {
 
   return {
     id: volume.id,
+    googleBookId: volume.id,
     title: info.title,
     authors: info.authors as string[] | undefined,
     publisher: info.publisher as string | undefined,

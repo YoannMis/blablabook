@@ -8,6 +8,7 @@ import {
   Portal,
   useBreakpointValue,
   VStack,
+  Text,
 } from '@chakra-ui/react';
 import { HiDotsHorizontal } from 'react-icons/hi';
 import type { Book } from '../types/book';
@@ -24,9 +25,11 @@ type Status = 'wishlist' | 'read';
 
 interface EditBookActionsProps {
   book: Book;
+  variant?: 'icon' | 'button';
+  onStatusChange?: (status: Status) => void;
 }
 
-const EditBookActions = ({ book }: EditBookActionsProps) => {
+const EditBookActions = ({ book, variant = 'icon', onStatusChange }: EditBookActionsProps) => {
   const { t } = useTranslation(['book', 'common']);
   const isMobile = useBreakpointValue({ base: true, md: false });
   const { updateBookStatus, removeBook } = useLibraryActions();
@@ -53,6 +56,7 @@ const EditBookActions = ({ book }: EditBookActionsProps) => {
 
       setIsEditOpen(false);
       setIsMenuOpen(false);
+      onStatusChange?.(status);
     } catch (err) {
       console.error('Failed to update book status', err);
     }
@@ -147,19 +151,42 @@ const EditBookActions = ({ book }: EditBookActionsProps) => {
     </VStack>
   );
 
-  const Trigger = (
-    <IconButton
-      aria-label={t('bookCard.editBook')}
-      size="xs"
-      variant="glass"
-      onClick={(e) => {
-        e.stopPropagation();
-        setIsMenuOpen(true);
-      }}
-    >
-      <HiDotsHorizontal />
-    </IconButton>
-  );
+  const Trigger =
+    variant === 'button' ? (
+      <VStack align="start">
+        <Text fontSize="sm">
+          {t('book:library.alreadyInCollection', {
+            collection: t(`book:library.collections.${book.status}`),
+          })}
+        </Text>
+        <Button
+          variant="plain"
+          paddingLeft={0}
+          color={{ _light: 'brown.800', _dark: 'light.200' }}
+          bg={{ _light: 'light.100', _dark: 'brown.900' }}
+          _hover={{ textDecoration: 'underline' }}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsEditOpen(true);
+          }}
+        >
+          <HiPencil />
+          {t('book:library.actions.changeCollection')}
+        </Button>
+      </VStack>
+    ) : (
+      <IconButton
+        aria-label={t('bookCard.editBook')}
+        size="xs"
+        variant="glass"
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsMenuOpen(true);
+        }}
+      >
+        <HiDotsHorizontal />
+      </IconButton>
+    );
 
   return (
     <>

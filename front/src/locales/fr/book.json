@@ -31,6 +31,10 @@
       "wishlist": "Envie de lire"
     },
     "addBook": "Ajouter un livre",
+    "addBookToLibrary": "Ajouter ce livre à ma blibliothèque",
+    "addBookCTA": "Ce livre n’est pas encore dans votre bibliothèque",
+    "alreadyInCollection": "Ce livre est dans votre collection « {{collection}} »",
+    "addBookAction": "Ajouter",
     "loginRequired": "Envie de l’ajouter à votre bibliothèque ? Connectez-vous pour continuer !",
     "emptyLibrary": "Vous n'avez pas encore de livres dans votre blibliothèque",
     "emptyCollection": "Vous n'avez pas encore de livres dans cette collection",
@@ -49,6 +53,7 @@
     },
     "actions": {
       "edit": "Modifier",
+      "changeCollection": "Changer de collection",
       "delete": "Supprimer",
       "editCollection": "Déplacer vers la collection",
       "backToCollections": "Retour aux collections"

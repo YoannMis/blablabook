@@ -1,5 +1,6 @@
 export interface Book {
   id: string;
+  googleBookId: string;
   googleId: string;
   title: string;
   description?: string;
