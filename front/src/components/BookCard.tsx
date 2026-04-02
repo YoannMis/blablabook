@@ -18,14 +18,15 @@ const BookCard = ({ book }: BookCardProps) => {
   const { title, authors, averageRating, imageLinks, categories } = book;
 
   const firstCategory = categories?.[0] ?? 'uncategorized';
-  const slugCategory = slugify(firstCategory);
+  const rootCategory = firstCategory.split('/')[0].trim();
+  const slugCategory = slugify(rootCategory);
 
   const isLibraryPage = pathname.startsWith('/library');
   const isMobile = useBreakpointValue({ base: true, md: false });
   const mode = isLibraryPage ? (isMobile ? 'libraryMobile' : 'libraryDesktop') : 'default';
 
   const handleClick = () => {
-    navigate(`/books/${slugCategory}/${book.id}`);
+    navigate(`/books/${slugCategory}/${book.googleBookId}`);
   };
 
   return (
