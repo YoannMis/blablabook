@@ -89,6 +89,7 @@ const AddBookActions = ({ book, variant = 'icon', onStatusChange }: AddBookActio
     if (!isLoggedIn) {
       return (
         <Button
+          alignSelf="start"
           variant="plain"
           paddingLeft={0}
           color={{ _light: 'brown.800', _dark: 'light.200' }}
