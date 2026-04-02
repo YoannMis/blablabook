@@ -37,11 +37,8 @@ COPY --from=builder /app/generated ./generated
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/dist ./dist
 
-# Run database migrations
-RUN pnpm prisma:migrate:deploy
-
 # Expose port
 EXPOSE 3000
 
 # Start the server
-CMD ["node", "./dist/index.js"]
+CMD ["pnpm", "docker:prod"]
