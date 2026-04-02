@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsx --watch --env-file=.env ./src/index.ts",
+    "docker:prod": "pnpm prisma:migrate:deploy && node ./dist/index.js"
     "docker:dev": "pnpm prisma:generate && pnpm prisma:push && pnpm dev",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
