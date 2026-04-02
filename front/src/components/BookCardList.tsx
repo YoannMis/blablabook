@@ -1,4 +1,11 @@
-import { Box, Heading, Separator, SimpleGrid, useBreakpointValue } from '@chakra-ui/react';
+import {
+  Box,
+  Heading,
+  ScrollArea,
+  Separator,
+  SimpleGrid,
+  useBreakpointValue,
+} from '@chakra-ui/react';
 import BookCard from './BookCard';
 import BookCardSkeleton from './BookCardSkeleton';
 import type { Book } from '../types/book';
@@ -77,9 +84,15 @@ const BookCardList = ({
             {content}
           </SimpleGrid>
         ) : (
-          <Box display="flex" gap={6} pb={{ base: 1, md: 4 }} pl={1} scrollBehavior="smooth">
-            {content}
-          </Box>
+          <ScrollArea.Root height="auto" scrollBehavior="smooth" variant="hover" size="xs">
+            <ScrollArea.Viewport>
+              <ScrollArea.Content display="flex" gap={6} pb={{ base: 1, md: 4 }} pl={1}>
+                {content}
+              </ScrollArea.Content>
+            </ScrollArea.Viewport>
+
+            <ScrollArea.Scrollbar orientation="horizontal" />
+          </ScrollArea.Root>
         )}
       </Box>
     </Box>
