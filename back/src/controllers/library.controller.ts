@@ -2,13 +2,27 @@ import { z } from 'zod';
 import type { Response } from 'express';
 
 import type { AuthRequest } from '../middlewares/auth.middleware';
-import { getUserBooksByQuery, getUserLibraryBooks, formatBooks } from '../services/library.service';
 import {
+  getUserBooksByQuery,
+  getUserLibraryBooks,
+  formatBooks,
+  findBookInLibrary,
+  updateUserBook,
+  deleteUserBook,
+  checkIsExistsBook,
+  addBookToLibrary,
+  createBook,
+} from '../services/library.service';
+import {
+  createBookSchema,
   getUserLibraryQuerySchema,
   searchQuerySchema,
+  statusSchema,
   type LibraryQuerySchema,
   type SearchQuerySchema,
 } from '../schema/library.schema';
+import { checkIdFromParams } from '../lib/validators';
+import { getBookById } from '../services/googleBooks.service';
 
 /**
  * Retrieves all books belonging to a connected user with pagination support.
@@ -118,5 +132,130 @@ export const searchInLibrary = async (req: AuthRequest, res: Response): Promise<
       success: false,
       message: 'Internal server error.',
     });
+  }
+};
+
+/**
+ * Updates the status of a book in the user's library.
+ *
+ * @param req - The authenticated request object containing the user's ID, book ID, and new status.
+ * @param res - The response object used to send the updated book data or an error message.
+ * @returns A Promise that resolves when the response is sent.
+ */
+export const updateBookStatus = async (req: AuthRequest, res: Response): Promise<void> => {
+  const userId = req.userId as number;
+  const bookId = await checkIdFromParams(req.params.id as string);
+  const userBookId = { userId, bookId };
+
+  const userBook = await findBookInLibrary(userBookId);
+  if (!userBook) {
+    res.status(404).json({ error: "Book doesn't exist in library" });
+  }
+
+  const parsed = statusSchema.safeParse(req.body);
+
+  if (parsed.error) {
+    res.status(400).json({ success: false, error: z.flattenError(parsed.error).fieldErrors });
+  }
+
+  try {
+    const data = await updateUserBook(userBookId, parsed.data?.status);
+
+    res.status(200).json({
+      success: true,
+      data,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error.',
+    });
+  }
+};
+
+/**
+ * Deletes a book in the user's library.
+ *
+ * @param req - The authenticated request object containing the user's ID and book ID.
+ * @param res - The response object used to send success or an error message.
+ * @returns A Promise that resolves when the response is sent.
+ */
+export const deleteBookFromLibrary = async (req: AuthRequest, res: Response): Promise<void> => {
+  const userId = req.userId as number;
+  const bookId = await checkIdFromParams(req.params.id as string);
+  const userBookId = { userId, bookId };
+
+  const userBook = await findBookInLibrary(userBookId);
+  if (!userBook) {
+    res.status(404).json({ error: "Book doesn't exist in library" });
+  }
+
+  try {
+    await deleteUserBook(userBookId);
+
+    res.status(204).json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error.',
+    });
+  }
+};
+
+/**
+ * Creates a new book or adds an existing book to the user's library.
+ * This function first checks if the book already exists in the database.
+ * If it exists, it adds the book to the user's library if not already present.
+ * If the book does not exist, it creates a new book in the database and adds it to the user's library.
+ *
+ * @param req - The authenticated request object containing the user's ID and book details.
+ * @param res - The response object used to send success or an error message.
+ * @returns A Promise that resolves when the response is sent.
+ */
+export const createAndAddBookToLibrary = async (req: AuthRequest, res: Response): Promise<void> => {
+  const userId = req.userId as number;
+
+  try {
+    const { book, status } = createBookSchema.parse(req.body);
+
+    const foundBook = await checkIsExistsBook(book.id);
+
+    if (foundBook) {
+      const userBookId = {
+        userId: userId,
+        bookId: foundBook.id,
+      };
+
+      const userBook = await findBookInLibrary(userBookId);
+      if (userBook) {
+        res.status(400).json({
+          success: false,
+          error: 'BOOK_ALREADY_IN_LIBRARY',
+        });
+        return;
+      }
+
+      const data = {
+        ...userBookId,
+        status: status,
+      };
+
+      await addBookToLibrary(data);
+    } else {
+      const googleBook = await getBookById(book.id);
+      book.categories = googleBook.categories ? googleBook.categories : [];
+      await createBook(userId, status, book);
+    }
+
+    res.status(201).json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'INTERNAL_SERVER_ERROR',
+    });
+    return;
   }
 };

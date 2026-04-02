@@ -16,33 +16,24 @@ const LibraryCollections = () => {
 
   const navigate = useNavigate();
   const { t } = useTranslation('book');
-  const { getCollection, fetchNextPage } = useLibrary();
+  const { getCollection, fetchFirstPage } = useLibrary();
 
   const collections = [
     {
       key: 'read',
-      collectionKey: 'collections:read',
+      collectionKey: 'read',
       status: 'read',
     },
     {
       key: 'wishlist',
-      collectionKey: 'collections:wishlist',
+      collectionKey: 'wishlist',
       status: 'wishlist',
     },
   ];
 
   useEffect(() => {
-    collections.forEach((c) => {
-      const collectionBooks = getCollection(c.collectionKey);
-
-      if (
-        collectionBooks.items.length === 0 &&
-        collectionBooks.hasNext &&
-        !collectionBooks.loading
-      ) {
-        fetchNextPage(c.collectionKey, c.status);
-      }
-    });
+    fetchFirstPage('read', 'read');
+    fetchFirstPage('wishlist', 'wishlist');
   }, []);
 
   return (

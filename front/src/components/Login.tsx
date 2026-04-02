@@ -17,7 +17,7 @@ import { useState } from 'react';
 import { RiArrowRightLine } from 'react-icons/ri';
 import { IoMailOutline } from 'react-icons/io5';
 import { TbPasswordUser } from 'react-icons/tb';
-import { Toaster, toaster } from './ui/toaster';
+import { toaster } from './ui/toaster';
 import { PageLayout } from './layouts/PageLayout';
 import homeImage from '../assets/homePageImage.jpg';
 import { Link as RouterLink, useNavigate } from 'react-router';
@@ -229,7 +229,6 @@ const Login = () => {
             </VStack>
           </VStack>
         </Box>
-        <Toaster />
       </Flex>
       <MobileMenu />
     </PageLayout>
