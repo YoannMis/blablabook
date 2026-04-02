@@ -647,7 +647,7 @@ export const addBookToLibrary = async (data: UserBook) => await prisma.userBook.
  * @param authors - An array of author names to create.
  * @returns Promise resolving to all author records (existing + newly created).
  */
-const createAndGetAuthors = async (authors: string[]): Promise<Author[]> => {
+export const createAndGetAuthors = async (authors: string[]): Promise<Author[]> => {
   return await prisma
     .$transaction([
       // Step 1: Create new authors (skip duplicates)
@@ -678,7 +678,7 @@ const createAndGetAuthors = async (authors: string[]): Promise<Author[]> => {
  * @param categories - An array of category names to create.
  * @returns Promise resolving to all category records (existing + newly created).
  */
-const createAndGetCategories = async (categories: string[]): Promise<Category[]> => {
+export const createAndGetCategories = async (categories: string[]): Promise<Category[]> => {
   return await prisma
     .$transaction([
       // Step 1: Create new categories (skip duplicates)
@@ -729,7 +729,7 @@ export const createBook = async (
       imageLinks: cleanImageLinks(googleBookData.imageLinks),
       language: googleBookData.language,
       description: googleBookData.description,
-      googleBookId: googleBookData.googleId,
+      googleBookId: googleBookData.id,
       publishedDate: googleBookData.publishedDate,
       isbn10: googleBookData.isbn10,
       isbn13: googleBookData.isbn13,

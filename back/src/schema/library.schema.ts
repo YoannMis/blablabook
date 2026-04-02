@@ -24,7 +24,7 @@ export const statusSchema = z.object({
 });
 
 export const bookSchema = z.object({
-  googleId: z.string().min(1),
+  id: z.string().min(1),
   title: z.string().min(1),
   averageRating: z.number().optional().nullable(),
   ratingCount: z.number().default(0),

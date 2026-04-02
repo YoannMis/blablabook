@@ -220,7 +220,7 @@ export const createAndAddBookToLibrary = async (req: AuthRequest, res: Response)
   try {
     const { book, status } = createBookSchema.parse(req.body);
 
-    const foundBook = await checkIsExistsBook(book.googleId);
+    const foundBook = await checkIsExistsBook(book.id);
 
     if (foundBook) {
       const userBookId = {
@@ -244,7 +244,7 @@ export const createAndAddBookToLibrary = async (req: AuthRequest, res: Response)
 
       await addBookToLibrary(data);
     } else {
-      const googleBook = await getBookById(book.googleId);
+      const googleBook = await getBookById(book.id);
       book.categories = googleBook.categories ? googleBook.categories : [];
       await createBook(userId, status, book);
     }

@@ -8,12 +8,8 @@ const useLibraryActions = () => {
   const { updateBookInCollections, removeBookFromCollections } = useLibrary();
 
   const addBook = async (book: AddBookPayload) => {
-    const { id, ...rest } = book;
     const res = await axiosAuth.post('/api/library', {
-      book: {
-        ...rest,
-        googleId: id,
-      },
+      book,
       status: book.status ?? 'wishlist',
     });
 

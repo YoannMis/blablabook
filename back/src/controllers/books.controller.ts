@@ -2,10 +2,10 @@ import type { Request, Response } from 'express';
 import { z } from 'zod';
 import axios from 'axios';
 
-import { getBookById, searchBooks } from '../services/googleBooks.service';
+import { searchBooks } from '../services/googleBooks.service';
 import { AuthRequest } from '../middlewares/auth.middleware';
-import { prisma } from '../utils/prisma.utils';
-import { findBookInLibrary, formatBook } from '../services/library.service';
+import { formatBook } from '../services/library.service';
+import { ensureBookExists, getUserBookStatus } from '../services/book.service';
 
 const searchQuerySchema = z.object({
   q: z.string().min(1, 'Le paramètre q est requis'),
@@ -32,69 +32,34 @@ export const search = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const getById = async (req: AuthRequest, res: Response): Promise<void> => {
-  const userId = req.userId as number;
   const parsedId = z.string().min(1).safeParse(req.params.id);
-
   if (!parsedId.success) {
-    res.status(400).json({ success: false, error: z.flattenError(parsedId.error).fieldErrors });
+    res.status(400).json({
+      success: false,
+      error: z.flattenError(parsedId.error).fieldErrors,
+    });
+    return;
   }
 
   const googleBookId = parsedId.data as string;
+  const userId = req.userId as number;
 
   try {
-    // TODO: Import this function from a service
-    const existingBook = await prisma.book.findUnique({
-      where: {
-        googleBookId,
-      },
-      include: {
-        publisher: {
-          select: {
-            name: true,
-          },
-        },
-        authors: {
-          include: {
-            author: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
-        categories: {
-          include: {
-            category: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
-      },
-    });
+    // GUARANTEE: we always get a DB book (either existing or created from Google Books)
+    const book = await ensureBookExists(googleBookId);
 
-    if (existingBook) {
-      const formattedBook = formatBook(existingBook);
-      if (userId) {
-        const isUserBook = await findBookInLibrary({ userId, bookId: existingBook.id });
-        const bookStatus = isUserBook && isUserBook.status;
+    const baseBook = formatBook(book);
 
-        res.status(200).json({
-          userId,
-          book: {
-            ...formattedBook,
-            status: bookStatus,
-          },
-        });
-      } else {
-        res.status(200).json(formattedBook);
-      }
-      return;
+    let status: string | null = null;
+
+    if (userId) {
+      status = await getUserBookStatus(userId, book.id);
     }
 
-    const book = await getBookById(googleBookId);
-    res.status(200).json(book);
+    res.status(200).json({
+      ...baseBook,
+      status,
+    });
   } catch (err) {
     if (axios.isAxiosError(err) && err.response?.status === 404) {
       res.status(404).json({ error: 'Livre introuvable' });
