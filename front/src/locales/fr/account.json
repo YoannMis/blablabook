@@ -21,7 +21,7 @@
     "description": "Vous etes bien deconnecté."
   },
   "generale": {
-    "logout": "Se deconnecter",
+    "logout": "Se déconnecter",
     "deleteAccount": " Supprimer le compte",
     "modification": " Modifier vos informations",
     "deleteConfirme": " Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.",
