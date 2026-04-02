@@ -16,7 +16,9 @@ const ChangeLanguages = () => {
       rounded={'full'}
       onClick={() => (i18n.language === 'en' ? changeLanguage('fr') : changeLanguage('en'))}
     >
-      {i18n.language === 'en' ? 'FR' : 'EN'}
+      {i18n.language === 'en'
+        ? 'Choisissez votre langue : Français'
+        : 'Choose your language : English'}
     </Button>
   );
 };

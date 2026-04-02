@@ -96,10 +96,9 @@ const Register = () => {
         console.error('User creation failed', response.data.message);
       }
     } catch (error) {
-      console.log('error', error);
+      console.error('error', error);
       // Traitement des erreurs
       if (axios.isAxiosError<RegisterErrorResponse>(error)) {
-        // const registerError = error.response?.data.message || error.message;
         const backEndMessage = error.response?.data.message || 'GENERIC';
         const messageKey =
           {
@@ -109,7 +108,6 @@ const Register = () => {
 
         const translatedMessage = t(messageKey);
 
-        // if (registerError) {
         toaster.create({
           title: t('register.errorTitle'),
           description: translatedMessage,
@@ -181,15 +179,15 @@ const Register = () => {
   };
 
   return (
-    <PageLayout imageSrc={homeImage} imagePosition="left" imageSize={20}>
-      <Flex justify="center" align="center" mt={{ md: '15%' }}>
+    <PageLayout imageSrc={homeImage} imagePosition="left">
+      <Flex justify="center" align="center" height="100%" pt={{ md: 4 }} pb={{ base: 16, md: 2 }}>
         <Box
           as="form"
           onSubmit={handleSubmit}
           borderWidth={{ base: 0, md: 4 }}
           borderRadius={{ base: 0, md: 4 }}
           width={{ base: '40vh', md: '50vh' }}
-          height={{ base: '100vh', md: 'auto' }}
+          height={{ base: '100%', md: 'auto' }}
         >
           <VStack p={{ base: 4, md: 8 }} align="start" width="100%">
             <Heading
@@ -296,6 +294,7 @@ const Register = () => {
                       termsLink: (
                         <RouterLink
                           to="/terms"
+                          target="_blank"
                           style={{ color: ' #00BCD4', textDecoration: 'underline' }}
                         ></RouterLink>
                       ),
