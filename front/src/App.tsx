@@ -10,6 +10,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Account from './components/Account';
 import PublicRoute from './components/PublicRoute';
 import Terms from './components/Terms';
+import { useTranslation } from 'react-i18next';
 import LibraryPage from './components/LibraryPage';
 import LibraryAllBooks from './components/LibraryAllBooks';
 import LibraryCollections from './components/LibraryCollections';
@@ -17,6 +18,7 @@ import LibraryCollectionDetails from './components/LibraryCollectionDetails';
 import { Toaster } from './components/ui/toaster';
 
 const App = () => {
+  const { i18n } = useTranslation();
   return (
     <UserProvider>
       <LibraryProvider>

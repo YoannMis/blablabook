@@ -41,7 +41,7 @@ const Header = () => {
             <NavLink to="/" icon={LiaCompass}>
               {t('nav.discover')}
             </NavLink>
-           <NavSeparator />
+            <NavSeparator />
             <NavLink to="/library" icon={TbBookFilled}>
               {t('nav.library')}
             </NavLink>
@@ -61,7 +61,7 @@ const Header = () => {
       <Box textAlign="center" mt={10}>
         <Show when={pathname === '/library'}>
           <Heading fontSize={{ base: '2xl', md: '3xl', lg: '4xl' }} color="white">
-            Ma bibliothèque
+            {t('common:myLibrary')}
           </Heading>
         </Show>
       </Box>

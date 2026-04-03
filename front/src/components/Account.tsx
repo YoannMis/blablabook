@@ -1,3 +1,4 @@
+import ChangeLanguages from './ChangeLanguages';
 import {
   Box,
   Button,
@@ -403,6 +404,7 @@ const AccountPage = () => {
           <Flex p={{ base: 4, md: 8 }} flexDirection={'column'} gap={4}>
             {!isEditing ? (
               <>
+                <ChangeLanguages />
                 <Button variant={'solid'} width={'100%'} onClick={handleLogoutClick}>
                   {t('generale.logout')}
                 </Button>
