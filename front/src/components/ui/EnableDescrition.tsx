@@ -17,6 +17,8 @@ const ExpandableDescription = ({ html }: { html?: string }) => {
         size="sm"
         pl={0}
         onClick={() => setExpanded((prev) => !prev)}
+        color={{ _light: 'brown.500', _dark: 'light.300' }}
+        textDecoration="underline"
       >
         {expanded ? t('categories.showLess') : t('categories.showAll')}
       </Button>
