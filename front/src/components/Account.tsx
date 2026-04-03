@@ -409,13 +409,11 @@ const AccountPage = () => {
               <>
                 <ChangeLanguages />
                 <Button
-                  variant={{ _light: 'solid', _dark: 'category' }}
-                  width="100%"
-                  onClick={handleLogoutClick}
+                  variant={'solid'}
+                  width={'100%'}
+                  borderRadius="xl"
+                  onClick={handleEditClick}
                 >
-                  {t('generale.logout')}
-                </Button>
-                <Button variant={'solid'} width={'100%'} onClick={handleEditClick}>
                   {t('generale.modification')}
                 </Button>
                 <Button
