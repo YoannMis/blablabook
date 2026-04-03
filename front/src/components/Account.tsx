@@ -291,19 +291,22 @@ const AccountPage = () => {
 
   return (
     <PageLayout imageSrc={homeImage} imagePosition="left">
-      <Flex justify="center" align="center" mt={{ md: '20%' }}>
+      <Flex justify="center" align="center" height="100%">
         <Box
           as="form"
           borderWidth={{ base: 0, md: 4 }}
           borderRadius={{ base: 0, md: 4 }}
-          width={{ base: '40vh', md: '50vh' }}
-          height={{ base: '100vh', md: 'auto' }}
+          width={{ base: '100%', md: '50%' }}
+          height={{ base: '100%', md: 'auto' }}
+          p={{ base: 4, md: 8 }}
         >
-          <VStack p={{ base: 4, md: 8 }} align="start" width="100%">
+          <VStack align="start" width="100%" mb={isEditing ? 4 : 8} gap={isEditing ? 0 : 4}>
             <Heading
-              size={{ base: 'xl', md: '3xl' }}
-              fontWeight={{ base: 'sm', md: 'md' }}
+              size={{ base: '2xl', md: '3xl' }}
+              mb={4}
+              fontWeight="bold"
               alignSelf="center"
+              fontSize={{ base: 'xl', md: '2xl' }}
             >
               {t('generale.account')}
             </Heading>
@@ -401,19 +404,33 @@ const AccountPage = () => {
               </Field.Root>
             )}
           </VStack>
-          <Flex p={{ base: 4, md: 8 }} flexDirection={'column'} gap={4}>
+          <Flex flexDirection="column" gap={4}>
             {!isEditing ? (
               <>
                 <ChangeLanguages />
-                <Button variant={'solid'} width={'100%'} onClick={handleLogoutClick}>
-                  {t('generale.logout')}
-                </Button>
-                <Button variant={'solid'} width={'100%'} onClick={handleEditClick}>
+                <Button
+                  variant={'solid'}
+                  width={'100%'}
+                  borderRadius="xl"
+                  onClick={handleEditClick}
+                >
                   {t('generale.modification')}
                 </Button>
+                <Button
+                  variant={{ _light: 'solid', _dark: 'category' }}
+                  width="100%"
+                  onClick={handleLogoutClick}
+                >
+                  {t('generale.logout')}
+                </Button>
+
                 <Dialog.Root>
                   <Dialog.Trigger asChild>
-                    <Button variant={'solid'} width={'100%'} colorScheme="red">
+                    <Button
+                      variant={{ _light: 'outline', _dark: 'category' }}
+                      width="100%"
+                      color="red.400"
+                    >
                       {t('generale.deleteAccount')}
                     </Button>
                   </Dialog.Trigger>
@@ -446,15 +463,19 @@ const AccountPage = () => {
             ) : (
               <>
                 <Button
-                  variant={'solid'}
-                  width={'100%'}
+                  variant={{ _light: 'solid', _dark: 'category' }}
+                  width="100%"
                   onClick={handleSaveClick}
                   disabled={!isFormValid()}
                 >
                   {t('generale.modificationConfirme')}
                 </Button>
 
-                <Button variant={'solid'} width={'100%'} onClick={handleCancelClick}>
+                <Button
+                  variant={{ _light: 'solid', _dark: 'category' }}
+                  width="100%"
+                  onClick={handleCancelClick}
+                >
                   {t('generale.modificationCancel')}
                 </Button>
               </>

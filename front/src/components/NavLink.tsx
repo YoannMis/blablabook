@@ -8,14 +8,16 @@ interface NavLinkProps {
   icon?: React.ElementType;
   vertical?: boolean;
   children: React.ReactNode;
+  iconColor?: string;
 }
 
-const NavLink: React.FC<NavLinkProps> = ({ to, icon, vertical = false, children }) => {
+const NavLink: React.FC<NavLinkProps> = ({ to, icon, vertical = false, children, iconColor }) => {
   const location = useLocation();
   const isActive = location.pathname === to || location.pathname.startsWith(`${to}/`);
-  const activeColor = useColorModeValue('light.50', 'brown.100');
-  const defaultColor = useColorModeValue('light.200', 'brown.400');
-  const color = isActive ? activeColor : defaultColor;
+  const baseActive = useColorModeValue('light.50', 'brown.100');
+  const baseDefault = useColorModeValue('light.200', 'brown.400');
+
+  const color = iconColor ?? (isActive ? baseActive : baseDefault);
 
   return (
     <RouterLink to={to}>
@@ -33,7 +35,11 @@ const NavLink: React.FC<NavLinkProps> = ({ to, icon, vertical = false, children 
           transform: 'translateY(-1px)',
         }}
       >
-        {icon && React.createElement(icon, { size: 20 })}
+        {icon &&
+          React.createElement(icon, {
+            size: 20,
+            color: iconColor,
+          })}
         <Heading>{children}</Heading>
       </Box>
     </RouterLink>

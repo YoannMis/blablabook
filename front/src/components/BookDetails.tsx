@@ -19,7 +19,6 @@ import MobileMenu from './MobileMenu';
 import bookDetail from '../assets/bookDetail.webp';
 import AppBreadcrumb from './AppBreadcrumb';
 import { IoChevronDown, IoChevronUp } from 'react-icons/io5';
-import { renderDescription } from '../utils/htmlParser';
 import { getBookImageByScreen } from '../utils/bookUtils';
 import { useTruncatedTitle } from '../utils/stringUtils';
 import { useTranslation } from 'react-i18next';
@@ -29,6 +28,7 @@ import { axiosAuth } from '../utils/axiosAuth';
 import AddBookActions from './AddBookActions';
 import EditBookActions from './EditBookActions';
 import { useCurrentUser } from '../context/UserContext';
+import ExpandableDescription from './ui/EnableDescrition';
 
 const BookDetails = () => {
   const { id } = useParams();
@@ -36,12 +36,15 @@ const BookDetails = () => {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [bookLoading, setBookLoading] = useState(true);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const { t } = useTranslation('book');
+  const [showAllCategories, setShowAllCategories] = useState(false);
+
+  const { t } = useTranslation(['book', 'common']);
   const { isLoggedIn } = useCurrentUser();
 
   const imageSrc = book ? getBookImageByScreen(book.imageLinks) : null;
   const hasRealImage = !!imageSrc;
   const showSkeleton = bookLoading || (hasRealImage && !imageLoaded);
+  const visibleCategories = showAllCategories ? book?.categories : book?.categories?.slice(0, 3);
 
   useEffect(() => {
     if (!id) return;
@@ -74,7 +77,7 @@ const BookDetails = () => {
         transform={{ base: 'translateY(0)', md: `translateX(-${25 * 0.5}vw)` }}
         pb={{ base: 20, md: 2 }}
       >
-        <Box flexShrink={0} width={{ sm: 'calc(10vw * 0.5)', md: 'calc(50vw * 0.4)' }}>
+        <Box flexShrink={0} width={{ sm: 'calc(10vw * 0.5)', md: 'calc(55vw * 0.4)' }}>
           {showSkeleton && (
             <Skeleton
               width={{ base: '180px', sm: '200px', md: '100%' }}
@@ -144,16 +147,57 @@ const BookDetails = () => {
               />
             )}
 
-            <HStack mt={2} flexWrap="wrap">
-              {book?.categories?.map((category) => (
-                <Tag.Root key={category} variant="solid" rounded="full" px={3} py={1}>
+            <HStack mt={2} flexWrap="wrap" fontWeight="semibold">
+              {visibleCategories?.map((category) => (
+                <Tag.Root
+                  key={category}
+                  px={3}
+                  py={1}
+                  variant="subtle"
+                  borderRadius="xl"
+                  color={{ _light: 'light.50', _dark: 'light.100' }}
+                  bg={{ _light: 'light.600', _dark: 'gray.850' }}
+                  backgroundImage={{
+                    _light: 'linear-gradient(135deg, rgba(255,255,255,0.18), rgba(0,0,0,0.03))',
+                    _dark: 'linear-gradient(135deg, rgba(255,255,255,0.06), rgba(0,0,0,0.18))',
+                  }}
+                  border="1px solid"
+                  borderColor={{
+                    _light: 'white',
+                    _dark: 'rgba(255,255,255,0.08)',
+                  }}
+                >
                   <Tag.Label>{category}</Tag.Label>
                 </Tag.Root>
               ))}
+
+              {book?.categories && book.categories.length > 3 && (
+                <Tag.Root
+                  variant="solid"
+                  bg={{ _light: 'light.600', _dark: 'gray.850' }}
+                  color={{ _light: 'light.50', _dark: 'light.100' }}
+                  borderRadius="xl"
+                  cursor="pointer"
+                  backgroundImage={{
+                    _light: 'linear-gradient(135deg, rgba(255,255,255,0.18), rgba(0,0,0,0.03))',
+                    _dark: 'linear-gradient(135deg, rgba(255,255,255,0.06), rgba(0,0,0,0.18))',
+                  }}
+                  px={3}
+                  py={1}
+                  onClick={() => setShowAllCategories((prev) => !prev)}
+                >
+                  <Tag.Label>
+                    {' '}
+                    {showAllCategories
+                      ? t('common:categories.showLess')
+                      : t('common:categories.showAll')}
+                  </Tag.Label>
+                </Tag.Root>
+              )}
             </HStack>
             <Stack mt={4}>
               <Text fontWeight="bold">{t('details.description')}</Text>
-              <Text>{renderDescription(book?.description)}</Text>
+              <ExpandableDescription html={book?.description} />
 
               <Collapsible.Root
                 open={isDetailsOpen}
