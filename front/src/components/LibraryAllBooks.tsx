@@ -8,7 +8,7 @@ import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 
 const LibraryAllBooks = () => {
   const { t } = useTranslation('book');
-  const { getCollection, fetchNextPage } = useLibrary();
+  const { getCollection, fetchFirstPage, fetchNextPage } = useLibrary();
   const collectionBooks = getCollection('all');
 
   const sentinelRef = useInfiniteScroll({
@@ -20,13 +20,13 @@ const LibraryAllBooks = () => {
   const books = collectionBooks.items.map((collectionBooks) => collectionBooks.book);
 
   useEffect(() => {
-    fetchNextPage('all');
+    fetchFirstPage('all');
   }, []);
 
   return (
     <Box w="100%">
       {collectionBooks.items.length === 0 && !collectionBooks.loading ? (
-        <p>{t('library.empty')}</p>
+        <p>{t('library.emptyLibrary')}</p>
       ) : (
         <>
           <BookCardList
