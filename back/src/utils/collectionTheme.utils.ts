@@ -102,7 +102,7 @@ export const dystopianWorldsTheme = {
     },
 
     {
-      title: { en: 'Ready Player One', fr: 'Ready Player One' },
+      title: { en: 'Ready Player One', fr: 'Ready player one - Tome 1' },
       author: 'Ernest Cline',
     },
     {

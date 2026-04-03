@@ -1,5 +1,7 @@
-import { prisma, type ReadingStatus } from '../utils/prisma.utils';
-import { UserBookWithDetails } from '../types/userBook.types';
+import { Author, Category, prisma, type ReadingStatus, type UserBook } from '../utils/prisma.utils';
+import type { UserBookWithDetails, UserBookPk, BookWithRelations } from '../types/userBook.types';
+import { BookSchema } from '../schema/library.schema';
+import { cleanImageLinks, cleanOtherBookData } from '../utils/cleanSanitizedData.utils';
 
 /**
  * Formats an array of user books by extracting and transforming book details.
@@ -27,6 +29,7 @@ export const formatBooks = (userBooks: UserBookWithDetails[]) => {
       ...userBook,
       book: {
         ...bookData,
+        status: userBook.status,
         imageLinks,
         // Extract author names from the nested author relationship
         authors: bookData.authors?.map((author) => author.author.name) || [],
@@ -37,6 +40,30 @@ export const formatBooks = (userBooks: UserBookWithDetails[]) => {
       },
     };
   });
+};
+
+export const formatBook = (book: BookWithRelations) => {
+  // Normalize image links structure, handling potential undefined or non-object values
+  let imageLinks = null;
+  if (book.imageLinks && typeof book.imageLinks === 'object') {
+    imageLinks = {
+      thumbnail: (book.imageLinks as any).thumbnail || '',
+      small: (book.imageLinks as any).small,
+      medium: (book.imageLinks as any).medium,
+      large: (book.imageLinks as any).large,
+    };
+  }
+
+  return {
+    ...book,
+    imageLinks,
+    // Extract author names from the nested author relationship
+    authors: book.authors?.map((author) => author.author.name) || [],
+    // Extract publisher name from the nested publisher relationship
+    publisher: book.publisher?.name || null,
+    // Extract category names from the nested category relationship
+    categories: book.categories?.map((category) => category.category.name) || [],
+  };
 };
 
 /**
@@ -581,4 +608,201 @@ export const getUserLibraryBooks = async (
   }
 
   return { userBooks, total };
+};
+
+/**
+ * Finds a specific book in a user's library.
+ * This function checks if a book exists in the user's library based on userId and bookId.
+ *
+ * @param userIdBookId - An object containing userId and bookId to identify the book in the library.
+ * @returns Promise resolving to the user book record if found, or null if not found.
+ */
+export const findBookInLibrary = async (userIdBookId: UserBookPk) =>
+  await prisma.userBook.findUnique({ where: { userId_bookId: userIdBookId } });
+
+/**
+ * Checks if a book exists in the database by its Google Book ID.
+ * This function is used to determine if a book needs to be created or already exists.
+ *
+ * @param gooleBookId - The Google Book ID to search for.
+ * @returns Promise resolving to the book record if found, or null if not found.
+ */
+export const checkIsExistsBook = async (gooleBookId: string) =>
+  await prisma.book.findUnique({ where: { googleBookId: gooleBookId } });
+
+/**
+ * Adds a book to a user's library.
+ * This function creates a new entry in the user's library with the specified book and status.
+ *
+ * @param data - An object containing userId, bookId, and status to add to the library.
+ * @returns Promise resolving to the created user book record.
+ */
+export const addBookToLibrary = async (data: UserBook) => await prisma.userBook.create({ data });
+
+/**
+ * Creates authors in the database if they don't already exist and returns all authors (existing + newly created).
+ * This function ensures that authors are created with unique names and avoids duplicates.
+ * All operations are executed in a single transaction for atomicity.
+ *
+ * @param authors - An array of author names to create.
+ * @returns Promise resolving to all author records (existing + newly created).
+ */
+export const createAndGetAuthors = async (authors: string[]): Promise<Author[]> => {
+  return await prisma
+    .$transaction([
+      // Step 1: Create new authors (skip duplicates)
+      prisma.author.createMany({
+        data: authors.map((author) => ({
+          name: author,
+        })),
+        skipDuplicates: true,
+      }),
+
+      // Step 2: Retrieve all authors (existing + newly created)
+      prisma.author.findMany({
+        where: {
+          name: {
+            in: authors,
+          },
+        },
+      }),
+    ])
+    .then((results) => results[1]); // Return only the findMany result
+};
+
+/**
+ * Creates categories in the database if they don't already exist and returns all categories (existing + newly created).
+ * This function ensures that categories are created with unique names and avoids duplicates.
+ * All operations are executed in a single transaction for atomicity.
+ *
+ * @param categories - An array of category names to create.
+ * @returns Promise resolving to all category records (existing + newly created).
+ */
+export const createAndGetCategories = async (categories: string[]): Promise<Category[]> => {
+  return await prisma
+    .$transaction([
+      // Step 1: Create new categories (skip duplicates)
+      prisma.category.createMany({
+        data: categories.map((category) => ({
+          name: category,
+        })),
+        skipDuplicates: true,
+      }),
+
+      // Step 2: Retrieve all categories (existing + newly created)
+      prisma.category.findMany({
+        where: {
+          name: {
+            in: categories,
+          },
+        },
+      }),
+    ])
+    .then((results) => results[1]); // Return only the findMany result
+};
+
+/**
+ * Creates a new book in the database and adds it to the user's library.
+ * This function handles the creation of the book, its associated authors, categories, and publisher.
+ * It also adds the book to the user's library with the specified reading status.
+ *
+ * @param userId - The ID of the user to whom the book will be added.
+ * @param status - The reading status of the book in the user's library.
+ * @param googleBookData - The book data from Google Books API.
+ * @returns Promise that resolves when the book is created and added to the user's library.
+ */
+export const createBook = async (
+  userId: number,
+  status: ReadingStatus,
+  googleBookData: BookSchema
+) => {
+  const createdBook = await prisma.book.create({
+    include: {
+      publisher: true,
+      authors: true,
+      categories: true,
+    },
+    data: {
+      title: googleBookData.title,
+      averageRating: googleBookData.averageRating,
+      ratingCount: googleBookData.ratingCount,
+      imageLinks: cleanImageLinks(googleBookData.imageLinks),
+      language: googleBookData.language,
+      description: googleBookData.description,
+      googleBookId: googleBookData.id,
+      publishedDate: googleBookData.publishedDate,
+      isbn10: googleBookData.isbn10,
+      isbn13: googleBookData.isbn13,
+      pageCount: googleBookData.pageCount,
+      publisher: {
+        connectOrCreate: {
+          create: {
+            name: cleanOtherBookData(googleBookData.publisher),
+          },
+          where: {
+            name: cleanOtherBookData(googleBookData.publisher),
+          },
+        },
+      },
+    },
+  });
+
+  if (googleBookData.authors) {
+    const authors = await createAndGetAuthors(cleanOtherBookData(googleBookData.authors));
+    await prisma.bookAuthor.createMany({
+      data: authors.map((author) => ({
+        bookId: createdBook.id,
+        authorId: author.id,
+      })),
+    });
+  }
+
+  if (googleBookData.categories) {
+    const categories = await createAndGetCategories(cleanOtherBookData(googleBookData.categories));
+    await prisma.bookCategory.createMany({
+      data: categories.map((category) => ({
+        bookId: createdBook.id,
+        categoryId: category.id,
+      })),
+    });
+  }
+
+  await addBookToLibrary({ userId, bookId: createdBook.id, status });
+};
+
+/**
+ * Updates the reading status of a book in the user's library.
+ * This function updates the status of a specific book identified by userId and bookId.
+ *
+ * @param userIdBookId - An object containing userId and bookId to identify the book in the library.
+ * @param status - The new reading status to set ('read', 'wishlist').
+ * @returns Promise resolving to the updated user book record.
+ */
+export const updateUserBook = async (
+  userIdBookId: UserBookPk,
+  status: ReadingStatus | undefined
+): Promise<UserBook> => {
+  return await prisma.userBook.update({
+    where: {
+      userId_bookId: userIdBookId,
+    },
+    data: {
+      status,
+    },
+  });
+};
+
+/**
+ * Deletes a book in the user's library.
+ * This function deletes a specific book identified by userId and bookId.
+ *
+ * @param userIdBookId - An object containing userId and bookId to identify the book in the library.
+ * @returns Promise resolving to the deleted user book record.
+ */
+export const deleteUserBook = async (userIdBookId: UserBookPk): Promise<void> => {
+  await prisma.userBook.delete({
+    where: {
+      userId_bookId: userIdBookId,
+    },
+  });
 };

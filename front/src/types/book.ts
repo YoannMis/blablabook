@@ -1,9 +1,12 @@
 export interface Book {
   id: string;
+  googleBookId: string;
+  googleId: string;
   title: string;
   description?: string;
   authors: string[];
   averageRating?: number;
+  status: Status;
   imageLinks?: {
     smallThumbnail?: string;
     thumbnail?: string;
@@ -23,6 +26,17 @@ export interface Book {
 export interface UserBook {
   userId: number;
   bookId: number;
-  status: string;
+  status: Status;
   book: Book;
 }
+
+export interface AddBookPayload {
+  id: string;
+  title: string;
+  authors?: string[];
+  thumbnail?: string;
+  categories?: string[];
+  status: Status;
+}
+
+export type Status = 'wishlist' | 'read';

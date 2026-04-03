@@ -1,4 +1,5 @@
 import { Show, Box, Flex, HStack, Text, Heading, Separator } from '@chakra-ui/react';
+import { useBreakpointValue } from '@chakra-ui/react';
 import { LiaCompass } from 'react-icons/lia';
 import { TbBookFilled } from 'react-icons/tb';
 import { BsPersonCircle } from 'react-icons/bs';
@@ -8,15 +9,30 @@ import { useLocation } from 'react-router';
 
 import NavLink from './NavLink';
 import ThemeToggle from './ThemeToggle';
+import { useColorMode } from './ui/color-mode';
 
-const NavSeparator = () => (
-  <Separator orientation="vertical" height="5" borderColor="light.200" borderWidth="1.5px" />
-);
+interface HeaderProps {
+  imagePosition?: 'top' | 'left';
+}
 
-const Header = () => {
+const Header = ({ imagePosition }: HeaderProps) => {
   const { t } = useTranslation('common');
   const { user, isLoggedIn } = useCurrentUser();
   const { pathname } = useLocation();
+  const { colorMode } = useColorMode();
+  const isDesktop = useBreakpointValue({ base: false, md: true });
+
+  const isDarkTextMode = imagePosition === 'left' && colorMode === 'light' && isDesktop;
+  const darkHeaderColor = isDarkTextMode ? '#26231F' : 'white';
+
+  const NavSeparator = () => (
+    <Separator
+      orientation="vertical"
+      height="5"
+      borderColor={darkHeaderColor}
+      borderWidth="1.5px"
+    />
+  );
 
   return (
     <>
@@ -27,7 +43,7 @@ const Header = () => {
           <Heading
             fontFamily="Marcellus SC"
             fontSize={{ base: '3xl', md: '4xl', lg: '5xl' }}
-            color="white"
+            color={darkHeaderColor}
             letterSpacing={2}
           >
             BlablaBook
@@ -38,21 +54,29 @@ const Header = () => {
           <ThemeToggle />
 
           <HStack gap={6} display={{ base: 'none', md: 'flex' }}>
-            <NavLink to="/" icon={LiaCompass}>
-              {t('nav.discover')}
+            <NavLink to="/" icon={LiaCompass} iconColor={darkHeaderColor}>
+              <Text color={darkHeaderColor} whiteSpace="nowrap">
+                {t('nav.discover')}
+              </Text>
             </NavLink>
-           <NavSeparator />
-            <NavLink to="/library" icon={TbBookFilled}>
-              {t('nav.library')}
+            <NavSeparator />
+            <NavLink to="/library" icon={TbBookFilled} iconColor={darkHeaderColor}>
+              <Text whiteSpace="nowrap" color={darkHeaderColor}>
+                {t('nav.library')}
+              </Text>
             </NavLink>
             <NavSeparator />
             {isLoggedIn ? (
-              <NavLink to="/account" icon={BsPersonCircle}>
-                <Text whiteSpace="nowrap">{user?.username}</Text>
+              <NavLink to="/account" icon={BsPersonCircle} iconColor={darkHeaderColor}>
+                <Text whiteSpace="nowrap" color={darkHeaderColor}>
+                  {user?.username}
+                </Text>
               </NavLink>
             ) : (
-              <NavLink to="/login" icon={BsPersonCircle}>
-                <Text whiteSpace="nowrap">{t('nav.login')}</Text>
+              <NavLink to="/login" icon={BsPersonCircle} iconColor={darkHeaderColor}>
+                <Text whiteSpace="nowrap" color={darkHeaderColor}>
+                  {t('nav.login')}
+                </Text>
               </NavLink>
             )}
           </HStack>
@@ -60,8 +84,8 @@ const Header = () => {
       </Flex>
       <Box textAlign="center" mt={10}>
         <Show when={pathname === '/library'}>
-          <Heading fontSize={{ base: '2xl', md: '3xl', lg: '4xl' }} color="white">
-            Ma bibliothèque
+          <Heading fontSize={{ base: '2xl', md: '3xl', lg: '4xl' }} color={darkHeaderColor}>
+            {t('common:myLibrary')}
           </Heading>
         </Show>
       </Box>

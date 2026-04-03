@@ -1,15 +1,17 @@
 import { useEffect } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useLibrary } from '../context/LibraryContext';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 
-import { Box } from '@chakra-ui/react';
+import { Box, Text, HStack } from '@chakra-ui/react';
 import BookCardList from './BookCardList';
 import { slugify } from '../utils/stringUtils';
+import type { Status } from '@/types/book';
+import { MdOutlineArrowBackIosNew } from 'react-icons/md';
 
-const getStatusFromSlug = (slug: string, t: any) => {
-  const map: Record<string, string> = {
+const getStatusFromSlug = (slug: string, t: any): Status | undefined => {
+  const map: Record<string, Status> = {
     [slugify(t('library.collections.read'))]: 'read',
     [slugify(t('library.collections.wishlist'))]: 'wishlist',
   };
@@ -21,9 +23,10 @@ const LibraryCollectionDetails = () => {
   const { t, i18n } = useTranslation('book');
   const { collection: slug } = useParams<{ collection: string }>();
   const { getCollection, fetchNextPage } = useLibrary();
+  const navigate = useNavigate();
 
   const status = slug ? getStatusFromSlug(slug, t) : undefined;
-  const collectionKey = status ? `collections:${status}` : null;
+  const collectionKey = status;
   const collectionBooks = collectionKey ? getCollection(collectionKey) : null;
 
   useEffect(() => {
@@ -44,7 +47,7 @@ const LibraryCollectionDetails = () => {
   });
 
   if (!collectionBooks) {
-    return <p>{t('library.empty')}</p>;
+    return <p>{t('library.emptyCollection')}</p>;
   }
 
   const isEmpty = collectionBooks.items.length === 0;
@@ -52,16 +55,36 @@ const LibraryCollectionDetails = () => {
 
   const books = collectionBooks.items.map((item) => item.book);
 
+  const BackToCollections = () => (
+    <HStack
+      mt={6}
+      cursor="pointer"
+      onClick={() => navigate('/library/collections')}
+      gap={2}
+      opacity={0.85}
+      _hover={{ opacity: 1 }}
+    >
+      <MdOutlineArrowBackIosNew />
+      <Text>{t('library.actions.backToCollections')}</Text>
+    </HStack>
+  );
+
   if (isInitialLoading) {
     return <BookCardList books={[]} singleColumnMobile isLoading />;
   }
 
   if (isEmpty) {
-    return <p>{t('library.empty')}</p>;
+    return (
+      <Box>
+        <BackToCollections />
+        <Text>{t('library.emptyCollection')}</Text>
+      </Box>
+    );
   }
 
   return (
     <Box w="100%">
+      <BackToCollections />
       <BookCardList books={books} singleColumnMobile isLoading={false} />
       <div ref={sentinelRef} />
     </Box>

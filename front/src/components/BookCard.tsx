@@ -1,22 +1,11 @@
-import {
-  Box,
-  Text,
-  Image,
-  IconButton,
-  Heading,
-  Flex,
-  Show,
-  useBreakpointValue,
-} from '@chakra-ui/react';
-import { TiPlus } from 'react-icons/ti';
+import { Box, Text, Image, Heading, Flex, Show, useBreakpointValue } from '@chakra-ui/react';
 import { useNavigate, useLocation } from 'react-router';
 import { slugify } from '../utils/stringUtils';
 import noBookCover from '../assets/noBookCover.jpg';
-import { useTranslation } from 'react-i18next';
 import type { Book } from '../types/book';
 
-import BookDotsMenu from './BookDotsMenu';
 import BookCardActions from './BookCardActions';
+import EditBookActions from './EditBookActions';
 
 interface BookCardProps {
   book: Book;
@@ -25,19 +14,19 @@ interface BookCardProps {
 const BookCard = ({ book }: BookCardProps) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { t } = useTranslation('common');
 
   const { title, authors, averageRating, imageLinks, categories } = book;
 
   const firstCategory = categories?.[0] ?? 'uncategorized';
-  const slugCategory = slugify(firstCategory);
+  const rootCategory = firstCategory.split('/')[0].trim();
+  const slugCategory = slugify(rootCategory);
 
   const isLibraryPage = pathname.startsWith('/library');
   const isMobile = useBreakpointValue({ base: true, md: false });
   const mode = isLibraryPage ? (isMobile ? 'libraryMobile' : 'libraryDesktop') : 'default';
 
   const handleClick = () => {
-    navigate(`/books/${slugCategory}/${book.id}`);
+    navigate(`/books/${slugCategory}/${book.googleBookId}`);
   };
 
   return (
@@ -56,6 +45,7 @@ const BookCard = ({ book }: BookCardProps) => {
       <Box
         position="relative"
         h={{ base: '220px', md: '260px' }}
+        width={isMobile ? '140px' : '170px'}
         borderRadius="xl"
         overflow="hidden"
         borderWidth="1px"
@@ -75,7 +65,7 @@ const BookCard = ({ book }: BookCardProps) => {
         <Image
           src={imageLinks?.thumbnail || noBookCover}
           alt={title}
-          objectFit="cover"
+          objectFit="fill"
           w="100%"
           h="100%"
           onClick={handleClick}
@@ -94,7 +84,7 @@ const BookCard = ({ book }: BookCardProps) => {
           }}
         />
 
-        {averageRating !== undefined && (
+        {averageRating && (
           <Box
             position="absolute"
             top={2}
@@ -114,20 +104,7 @@ const BookCard = ({ book }: BookCardProps) => {
           </Box>
         )}
 
-        <BookCardActions mode={mode} />
-
-        {!isLibraryPage && (
-          <IconButton
-            aria-label={t('bookCard.addBook')}
-            size="xs"
-            position="absolute"
-            top={2}
-            right={2}
-            variant="glass"
-          >
-            <TiPlus />
-          </IconButton>
-        )}
+        <BookCardActions mode={mode} book={book} />
       </Box>
 
       <Box textAlign="left" position="relative" flex="1">
@@ -143,7 +120,7 @@ const BookCard = ({ book }: BookCardProps) => {
       </Box>
       {isLibraryPage && isMobile && (
         <Box position="absolute" top={0} right={0}>
-          <BookDotsMenu />
+          <EditBookActions book={book} />
         </Box>
       )}
     </Flex>

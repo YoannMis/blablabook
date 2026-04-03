@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react';
-import type { UserBook } from '../types/book';
+import type { Status, UserBook } from '../types/book';
 import { axiosAuth } from '../utils/axiosAuth';
 
 type PaginatedResponse = {
@@ -21,7 +21,15 @@ type LibraryCollectionState = {
 
 type LibraryContextType = {
   getCollection: (key: string) => LibraryCollectionState;
+  fetchFirstPage: (key: string, status?: string) => Promise<void>;
   fetchNextPage: (key: string, status?: string) => Promise<void>;
+  updateBookInCollections: (
+    bookId: string,
+    fromKey: string,
+    toKey: string,
+    newStatus: Status
+  ) => void;
+  removeBookFromCollections: (bookId: string, fromKey: string) => void;
 };
 
 const LibraryContext = createContext<LibraryContextType | undefined>(undefined);
@@ -41,6 +49,36 @@ export const LibraryProvider = ({ children }: { children: React.ReactNode }) => 
 
   const getCollection = (key: string) => {
     return collections[key] ?? { ...DEFAULT_COLLECTION_STATE };
+  };
+
+  const fetchFirstPage = async (key: string, status?: string) => {
+    setCollections((prev) => ({
+      ...prev,
+      [key]: { ...DEFAULT_COLLECTION_STATE, loading: true },
+    }));
+
+    try {
+      const { data } = await axiosAuth.get<PaginatedResponse>('/api/library', {
+        params: { page: 1, status },
+      });
+
+      setCollections((prev) => ({
+        ...prev,
+        [key]: {
+          items: data.data,
+          page: 1,
+          hasNext: data.pagination.hasNext,
+          total: data.pagination.total,
+          loading: false,
+        },
+      }));
+    } catch (error) {
+      console.error(error);
+      setCollections((prev) => ({
+        ...prev,
+        [key]: { ...DEFAULT_COLLECTION_STATE, loading: false },
+      }));
+    }
   };
 
   const fetchNextPage = async (key: string, status?: string) => {
@@ -87,8 +125,88 @@ export const LibraryProvider = ({ children }: { children: React.ReactNode }) => 
     }
   };
 
+  const updateBookInCollections = (
+    bookId: string,
+    fromKey: string,
+    toKey: string,
+    newStatus: Status
+  ) => {
+    setCollections((prev) => {
+      const from = prev[fromKey] ?? DEFAULT_COLLECTION_STATE;
+      const to = prev[toKey] ?? DEFAULT_COLLECTION_STATE;
+      const all = prev['all'] ?? DEFAULT_COLLECTION_STATE;
+
+      const bookEntryToMove = from.items.find(
+        (collectionEntry) => collectionEntry.book.id === bookId
+      );
+
+      if (!bookEntryToMove) return prev;
+
+      const updatedBookEntry: UserBook = {
+        ...bookEntryToMove,
+        status: newStatus,
+        book: {
+          ...bookEntryToMove.book,
+          status: newStatus,
+        },
+      };
+
+      return {
+        ...prev,
+
+        [fromKey]: {
+          ...from,
+          items: from.items.filter((collectionEntry) => collectionEntry.book.id !== bookId),
+        },
+
+        [toKey]: {
+          ...to,
+          items: [updatedBookEntry, ...to.items],
+        },
+
+        all: {
+          ...all,
+          items: all.items.map((collectionEntry) =>
+            collectionEntry.book.id === bookId ? updatedBookEntry : collectionEntry
+          ),
+        },
+      };
+    });
+  };
+
+  const removeBookFromCollections = (bookId: string, fromKey: string) => {
+    setCollections((prev) => {
+      const from = prev[fromKey] ?? DEFAULT_COLLECTION_STATE;
+      const all = prev.all ?? DEFAULT_COLLECTION_STATE;
+
+      return {
+        ...prev,
+
+        [fromKey]: {
+          ...from,
+          items: from.items.filter((collectionEntry) => collectionEntry.book.id !== bookId),
+          total: Math.max(0, from.total - 1),
+        },
+
+        all: {
+          ...all,
+          items: all.items.filter((collectionEntry) => collectionEntry.book.id !== bookId),
+          total: Math.max(0, all.total - 1),
+        },
+      };
+    });
+  };
+
   return (
-    <LibraryContext.Provider value={{ getCollection, fetchNextPage }}>
+    <LibraryContext.Provider
+      value={{
+        getCollection,
+        fetchFirstPage,
+        fetchNextPage,
+        updateBookInCollections,
+        removeBookFromCollections,
+      }}
+    >
       {children}
     </LibraryContext.Provider>
   );
