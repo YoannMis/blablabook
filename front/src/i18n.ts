@@ -36,6 +36,7 @@ i18n
         account: accountEn,
       },
     },
+    lng: localStorage.getItem('userLanguage') || 'fr',
     fallbackLng: 'fr',
     defaultNS: 'common',
     ns: ['common', 'auth', 'book'],

@@ -85,7 +85,7 @@ const Header = ({ imagePosition }: HeaderProps) => {
       <Box textAlign="center" mt={10}>
         <Show when={pathname === '/library'}>
           <Heading fontSize={{ base: '2xl', md: '3xl', lg: '4xl' }} color={darkHeaderColor}>
-            Ma bibliothèque
+            {t('common:myLibrary')}
           </Heading>
         </Show>
       </Box>
