@@ -20,10 +20,9 @@ FROM nginx:alpine
 RUN rm -rf /usr/share/nginx/html/* 
 
 COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 ENV PORT=10000
-
-RUN sed -i "s/listen 80;/listen ${PORT};/g" /etc/nginx/conf.d/default.conf
 
 EXPOSE ${PORT}
 
