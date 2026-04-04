@@ -51,7 +51,7 @@ async function seed() {
     ];
 
     users.forEach(async (user) => {
-      await registerUser(user);
+      await registerUser(user.username, user.email, user.password);
     });
 
     console.log('Utilisateurs créés');
