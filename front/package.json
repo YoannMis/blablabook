@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "typegen": "chakra typegen src/theme/theme.ts",
+    "typecheck": "npm run typegen && tsc --noEmit",
+    "build": "npm run typegen && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },

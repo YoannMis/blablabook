@@ -1,4 +1,4 @@
-import bookCover from '../assets/bookCover.webp';
+// import bookCover from '../assets/bookCover.webp';
 
 export const genresMock = [
   { id: 1, name: 'Fantasy' },
