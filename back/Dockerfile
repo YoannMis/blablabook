@@ -16,6 +16,9 @@ RUN pnpm install --frozen-lockfile --dangerously-allow-all-builds
 # Copy source files
 COPY . .
 
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
+
 # Generate Prisma client
 RUN pnpm exec prisma generate --schema=./prisma/schema.prisma
 RUN pnpm prisma:migrate:init
