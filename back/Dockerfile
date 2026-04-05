@@ -18,6 +18,7 @@ COPY . .
 
 # Generate Prisma client
 RUN pnpm exec prisma generate --schema=./prisma/schema.prisma
+RUN pnpm prisma:migrate:init
 
 # Build TypeScript
 RUN pnpm build

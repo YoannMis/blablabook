@@ -11,6 +11,7 @@
     "docker:dev": "pnpm prisma:generate && pnpm prisma:push && pnpm dev",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
+    "prisma:migrate:init": "prisma migrate dev --name init-db --create-only",
     "prisma:migrate:dev": "prisma migrate dev",
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:migrate:reset": "prisma migrate reset --force",
