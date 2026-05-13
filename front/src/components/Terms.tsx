@@ -3,7 +3,6 @@ import { FaBook } from 'react-icons/fa';
 import { PageLayout } from './layouts/PageLayout';
 import homeImage from '../assets/homePageImage.jpg';
 import MobileMenu from './MobileMenu';
-import { Link as RouterLink } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
 const Terms = () => {
