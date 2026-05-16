@@ -12,12 +12,10 @@ COPY package.json pnpm-lock.yaml ./
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile --dangerously-allow-all-builds
+RUN pnpm audit --fix
 
 # Copy source files
 COPY . .
-
-ARG DATABASE_URL
-ENV DATABASE_URL=$DATABASE_URL
 
 # Generate Prisma client
 RUN pnpm exec prisma generate --schema=./prisma/schema.prisma
@@ -41,7 +39,7 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/dist ./dist
 
 # Expose port
-EXPOSE 3000
+EXPOSE 3003
 
 # Start the server
 CMD ["pnpm", "docker:prod"]

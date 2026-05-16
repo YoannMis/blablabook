@@ -7,11 +7,9 @@ RUN npm install -g pnpm
 COPY package.json pnpm-lock.yaml ./
 
 RUN pnpm install --frozen-lockfile --dangerously-allow-all-builds
+RUN pnpm audit --fix
 
 COPY . .
-
-ARG VITE_API_URL
-ENV VITE_API_URL=$VITE_API_URL
 
 RUN pnpm build
 
