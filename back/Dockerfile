@@ -1,4 +1,3 @@
-# Production Dockerfile for Render deployment
 # Stage 1: Build stage
 FROM node:24-alpine AS builder
 
@@ -17,9 +16,6 @@ RUN pnpm audit --fix
 # Copy source files
 COPY . .
 
-# Generate Prisma client
-RUN pnpm exec prisma generate --schema=./prisma/schema.prisma
-
 # Build TypeScript
 RUN pnpm build
 
@@ -27,6 +23,9 @@ RUN pnpm build
 FROM node:24-alpine
 
 WORKDIR /app
+
+# Install netcat-openbsd
+RUN apk add --no-cache netcat-openbsd
 
 # Install pnpm globally
 RUN npm install -g pnpm
@@ -37,9 +36,12 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/generated ./generated
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/dist ./dist
+# Copy entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 # Expose port
 EXPOSE 3003
 
-# Start the server
-CMD ["pnpm", "docker:prod"]
+# Use entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
