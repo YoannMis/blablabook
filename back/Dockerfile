@@ -3,6 +3,13 @@ FROM node:24-alpine AS builder
 
 WORKDIR /app
 
+ARG FRONTEND_LOCAL_PORT
+ARG CORS_ORIGIN
+ARG DATABASE_URL
+ENV FRONTEND_LOCAL_PORT=$FRONTEND_LOCAL_PORT
+ENV CORS_ORIGIN=$CORS_ORIGIN
+ENV DATABASE_URL=$DATABASE_URL
+
 # Install pnpm globally
 RUN npm install -g pnpm
 
@@ -11,7 +18,7 @@ COPY package.json pnpm-lock.yaml ./
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile --dangerously-allow-all-builds
-RUN pnpm audit --fix
+RUN pnpm audit --fix=override
 
 # Copy source files
 COPY . .

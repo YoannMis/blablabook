@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # Wait for Postgres to be ready (open port)
 echo "Waiting for PostgreSQL to be ready..."
 while ! nc -z blablabook-db 5432; do
