@@ -58,7 +58,7 @@ export const LibraryProvider = ({ children }: { children: React.ReactNode }) => 
     }));
 
     try {
-      const { data } = await axiosAuth.get<PaginatedResponse>('/api/library', {
+      const { data } = await axiosAuth.get<PaginatedResponse>('/library', {
         params: { page: 1, status },
       });
 
