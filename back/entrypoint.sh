@@ -13,7 +13,7 @@ pnpm exec prisma generate --schema=./prisma/schema.prisma
 # Verify if any migrations exist
 if [ ! -d "/app/prisma/migrations" ] || [ -z "$(ls -A /app/prisma/migrations)" ]; then
   echo "No migrations found. Creating initial migration..."
-  pnpm prisma:push
+  pnpm prisma:migrate:init
 fi
 
 # Apply migrations and start the app
