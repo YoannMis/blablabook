@@ -33,7 +33,7 @@ services:
     environment:
       PORT: ${BACKEND_LOCAL_PORT}
       DATABASE_URL: 'postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@blablabook-db:5432/${POSTGRES_DB}'
-      CORS_ORIGIN: 'http://blablabook-front:${FRONTEND_LOCAL_PORT}'
+      CORS_ORIGIN: ${CORS_ORIGIN}
       NODE_ENV: ${NODE_ENV}
       GOOGLE_BOOKS_API_KEY: ${GOOGLE_BOOKS_API_KEY}
       JWT_SECRET: ${JWT_SECRET}
