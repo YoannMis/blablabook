@@ -56,7 +56,7 @@ const LibraryPage = () => {
   const handleSubmit = async () => {
     // En attende de l'API Back
     // try {
-    // const response = await axios.get('/library', {
+    // const response = await axios.get('/api/library', {
     //   params: { query: searchValue },
     // });
     // setSearchResults(response.data);

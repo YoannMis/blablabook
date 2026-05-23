@@ -23,7 +23,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   // --- Try to fetch the current user via /auth/me ---
   const tryFetchUser = async (): Promise<User | null> => {
     try {
-      const response = await axiosAuth.get('/auth/me');
+      const response = await axiosAuth.get('/api/auth/me');
       return response.data?.data ?? null;
     } catch {
       return null;
@@ -33,7 +33,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   // --- Try to refresh the token via /auth/refresh ---
   const tryRefreshSession = async (): Promise<User | null> => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/refresh`, {
         withCredentials: true,
       });
       return response.data?.data ?? null;

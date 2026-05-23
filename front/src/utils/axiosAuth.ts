@@ -19,7 +19,7 @@ axiosAuth.interceptors.response.use(
 
       try {
         // Call the refresh endpoint to get a new token
-        await axios.post(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/refresh`, {
           withCredentials: true,
         });
 
