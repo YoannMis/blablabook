@@ -17,5 +17,5 @@ if [ ! -d "/app/prisma/migrations" ] || [ -z "$(ls -A /app/prisma/migrations)" ]
 fi
 
 # Apply migrations and start the app
-echo "Applying migrations... And starting the application..."
+echo "Starting the application..."
 pnpm docker:prod
