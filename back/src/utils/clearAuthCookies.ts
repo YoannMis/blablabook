@@ -3,14 +3,14 @@ import { Response } from 'express';
 type CookieOptions = {
   httpOnly: boolean;
   secure: boolean;
-  sameSite: 'strict';
+  sameSite: boolean | 'strict' | 'lax' | 'none' | undefined;
   path: string;
 };
 
 const cookieOptions: CookieOptions = {
   httpOnly: true,
-  secure: true,
-  sameSite: 'strict',
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
   path: '/api',
 };
 
