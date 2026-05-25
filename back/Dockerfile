@@ -16,6 +16,12 @@ RUN pnpm audit --fix=override
 # Copy source files
 COPY . .
 
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
+
+# Generate Prisma client
+RUN pnpm exec prisma generate --schema=./prisma/schema.prisma
+
 # Build TypeScript
 RUN pnpm build
 
