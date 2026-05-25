@@ -41,7 +41,7 @@ services:
       blablabook-db:
         condition: service_healthy
     volumes:
-      - ./back/prisma/migrations:/app/prisma/migrations:ro
+      - ./back/prisma/migrations:/app/prisma/migrations
 
   blablabook-front:
     build:
