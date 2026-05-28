@@ -1,112 +1,179 @@
 # BlablaBook – Frontend
 
-BlablaBook est une application web permettant aux utilisateurs de gérer leur bibliothèque personnelle et de découvrir des nouveaux livres.
-L’objectif est de créer un espace simple et intuitif pour suivre ses lectures, rechercher des ouvrages et consulter leurs informations.
-Cette application inclut également une dimension communautaire, permettant aux utilisateurs de partager leurs lectures et recommandations avec leurs amis.
+> **A Personal Library Management & Book Discovery Platform**
+
+BlablaBook is a modern web application designed to help users manage their personal book collections and discover new reads. It provides a simple, intuitive interface for tracking reading progress, searching for books, and accessing detailed information about literary works.
+
+The platform also features a **community dimension**, enabling users to share their reading lists, recommendations, and book reviews with friends and fellow bibliophiles.
 
 ---
 
-## Lancer le projet en local
+## Table of Contents
 
-Pour le frontend :
+- [Features](#features)
+- [Technologies](#technologies)
+- [Installation](#installation)
+- [Development](#development)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Features
+
+- **Personal Library Management**: Organize, track, and catalog your book collection
+- **Reading Progress Tracking**: Monitor your reading history and current reads
+- **Book Search & Discovery**: Find new books with powerful search capabilities
+- **Detailed Book Information**: Access comprehensive metadata, synopses, and reviews
+
+---
+
+## Technologies
+
+| Area                 | Technologies               |
+| -------------------- | -------------------------- |
+| **Frontend**         | React, TypeScript, Vite    |
+| **State Management** | React (Context API, Hooks) |
+| **Styling**          | Chakra UI,                 |
+| **Backend**          | Express.js, Node.js        |
+| **Database**         | PostgreSQL, Prisma ORM     |
+| **Package Manager**  | [pnpm](https://pnpm.io/)   |
+| **Containerization** | Docker, Docker Compose     |
+
+---
+
+## Installation
+
+> **Note**: While Docker is recommended for a clean and consistent development environment (see [INSTALL.md](./INSTALL.md)), you can also set up the project manually as described below.
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v18 or later)
+- [pnpm](https://pnpm.io/installation) (required package manager)
+- [PostgreSQL](https://www.postgresql.org/) (v18 or later) – for local database
+
+### Setup
+
+#### 1. Install Dependencies
+
+Install dependencies for both frontend and backend:
 
 ```bash
-cd front
-pnpm install
+# Frontend
+pnpm --dir ./front install
+
+# Backend
+pnpm --dir ./back install
+```
+
+#### 2. Configure Environment Variables
+
+Copy the example environment files and update them with your local settings:
+
+```bash
+# Frontend
+cp ./front/.env.example ./front/.env
+# Edit .env with your configuration
+
+# Backend
+cp ./back/.env.example ./back/.env
+# Edit .env with your database connection and API settings
+```
+
+#### 3. Database Setup (Prisma)
+
+From the backend directory, generate the Prisma client and apply the database schema:
+
+```bash
+cd back
+
+# Generate Prisma client
+pnpm prisma:generate
+
+# Push schema to database (for development)
+pnpm prisma:push
+```
+
+> **Note**: For production or team environments, use `pnpm prisma:migrate:dev` to create and apply migrations.
+
+#### 4. Optional: Seed the Database
+
+To populate your database with sample data:
+
+```bash
+pnpm prisma:seed
+```
+
+### Run Development Servers
+
+Open two separate terminal windows:
+
+**Terminal 1 – Backend:**
+
+```bash
+cd back
 pnpm dev
 ```
 
-## Running the Project with Docker
+Server runs at `http://localhost:3000`
 
-To launch the development environment using Docker, follow these steps:
-
-1. Copy the `.env.docker.dev.example` file and rename it to `.env.docker.dev`.
-2. Update the `.env.docker.dev` file with the appropriate environment variables.
-3. Copy the `/back/.env.example` file and rename it to `.env`.
-4. Update the `/back/.env` file with the appropriate environment variables.
-5. Start the Docker containers with the following command:
-
-   ```bash
-   docker compose --env-file .env.docker.dev up
-   ```
-
-This will start the following services:
-
-- PostgreSQL database
-- Adminer for database management
-- Express backend server
-- Generate Prisma client and push the state from Prisma schema to the database
-- Vite frontend server
-
-To stop the containers, run the following `docker` command:
+**Terminal 2 – Frontend:**
 
 ```bash
-docker compose --env-file .env.docker.dev down
+cd front
+pnpm dev
 ```
 
-If changes occur in the files and it is necessary to rebuild the docker-compose, run the following command:
+Server runs at `http://localhost:5173`
 
-```bash
-   docker compose --env-file .env.docker.dev up --build
+The frontend will automatically connect to the backend API.
+
+---
+
+## Development
+
+### Full Environment Setup
+
+For complete development environment setup including backend, database, and Docker configuration, refer to the detailed installation guide:
+
+> [📖 **INSTALL.md**](./INSTALL.md)
+
+This document covers:
+
+- Docker-based development environment
+- Database configuration with PostgreSQL
+- Prisma migrations and schema management
+- Database seeding with sample data
+- Default development user accounts
+
+---
+
+## Project Structure
+
+```
+blabla-book/
+├── front/                  # Frontend application
+│   ├── src/
+│   │   ├── components/     # React components
+│   │   ├── pages/          # Application pages
+│   │   ├── hooks/          # Custom React hooks
+│   │   ├── services/       # API services
+│   │   ├── styles/         # CSS and Tailwind configurations
+│   │   └── utils/          # Utility functions
+│   ├── public/             # Static assets
+│   └── package.json        # Frontend dependencies
+├── back/                   # Backend application
+├── docker-compose.yml      # Docker configuration
+└── INSTALL.md              # Installation guide
 ```
 
-Command to clean the docker cache if needed:
+---
 
-```bash
-   docker system prune
+## License
 
-   # Valid command with 'y' and press enter
-```
+This project is private and proprietary. All rights reserved.
 
-## Database Seeding with dataset
+---
 
-To start with a clean database, follow these steps:
-
-- Delete the folder containing the Prisma client: `generated/`
-- Delete the Prisma migrations by removing the `migrations/` folder located in the `prisma/` directory
-- Clear the Docker cache with the command `docker system prune -f`.
-- Delete all Docker volumes (be careful, this deletes all unused volumes, check that the volumes you want to delete do not contain important data). To do this, run the command:
-
-  ```bash
-  docker volume prune -f
-  ```
-
-- Delete the Blablabook database volume: `docker volume rm blabla-book_blablabook-db-volume`
-- Start the docker-compose: `docker compose --env-file .env.docker.dev up`
-- In the backend service container, reset the migrations with the command: `pnpm prisma:migrate:reset`
-- In the backend service container, run the development migration with the command: `pnpm prisma:migrate:dev`.  
-  Prisma will ask you to give a name to the migration. Enter a name (for example `init-db`) and press enter.
-- To seed the database with a dataset for the library, in the backend service container run the command: `pnpm prisma:seed`
-- To clear the database and reset the library dataset to its initial state, run the following command in the backend service container: `pnpm prisma:reset`
-
-Users created in the database for development after seeding:
-
-```json
-[
-  {
-    "username": "Yoko",
-    "email": "yoko@mail.com",
-    "password": "Password12345!",
-  },
-  {
-    "username": "John",
-    "email": "john@mail.com",
-    "password": "Password12345!",
-  },
-  {
-    "username": "Paul",
-    "email": "paul@mail.com",
-    "password": "Password12345!",
-  },
-  {
-    "username": "Ringo",
-    "email": "ringo@mail.com",
-    "password": "Password12345!",
-  },
-  {
-    "username": "Georges",
-    "email": "georges@mail.com",
-    "password": "Password12345!",
-  },
-];
-```
+_Built with passion for book lovers everywhere_
