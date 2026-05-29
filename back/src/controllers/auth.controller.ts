@@ -82,14 +82,14 @@ export const loginUserController = async (req: Request, res: Response) => {
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       maxAge: convertInMs(process.env.JWT_EXPIRES_IN as string),
       path: '/api',
     });
     res.cookie('refreshtoken', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       maxAge: convertInMs(process.env.REFRESH_TOKEN_EXPIRES_IN as string),
       path: '/api',
     });
@@ -144,7 +144,7 @@ export const refreshTokenController = async (req: Request, res: Response) => {
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       maxAge: convertInMs(process.env.JWT_EXPIRES_IN as string),
     });
 

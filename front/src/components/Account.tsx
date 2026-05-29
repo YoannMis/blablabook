@@ -160,7 +160,7 @@ const AccountPage = () => {
           USERNAME_TAKEN: 'account:errors.errorUsername',
           GENERIC: 'account:errors.errorEmail',
         };
-        backEndMessage.forEach((error: BackendError) => {
+        backEndMessage?.forEach((error: BackendError) => {
           const translatedMessagekey = errorMessageMap[error.message];
           toaster.create({
             title: t(`errors.title`), // Ex: "Erreur d'email"

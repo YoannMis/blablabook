@@ -19,10 +19,10 @@
     "verbatimModuleSyntax": true,
     "noUncheckedSideEffectImports": true,
     "paths": {
-      "@/*": ["front/src/*"]
+      "@/*": ["./src/*"]
     },
     "noUnusedLocals": true
   },
-  "include": ["front/src", "front/vite.config.ts", "back"],
+  "include": ["./src", "./vite.config.ts"],
   "exclude": ["node_modules", "dist"]
 }
