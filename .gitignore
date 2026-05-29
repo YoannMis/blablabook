@@ -1,0 +1,9 @@
+node_modules/
+yarn.lock
+package-lock.json
+
+dist/
+build/
+.env.docker.dev
+.env.docker.prod
+.env
