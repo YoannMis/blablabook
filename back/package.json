@@ -19,7 +19,9 @@
     "prisma:reset": "pnpm prisma:migrate:reset && pnpm prisma:seed",
     "start": "tsx index.ts",
     "seed": "tsx prisma/seed.ts",
-    "test": "vitest"
+    "test": "vitest --config vitest.config.ts",
+    "test:run": "vitest --config vitest.config.ts run",
+    "test:coverage": "vitest --config vitest.config.ts run --coverage"
   },
   "keywords": [],
   "author": "",
@@ -47,9 +49,10 @@
     "@types/express-xss-sanitizer": "^2.0.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.5.0",
+    "@vitest/coverage-v8": "4.1.7",
     "prisma": "^6.19.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.0"
+    "vitest": "^4.1.7"
   }
 }
