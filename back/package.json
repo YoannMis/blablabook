@@ -26,7 +26,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.30.1",
   "dependencies": {
     "@prisma/client": "^6.19.2",
     "@types/ms": "^2.1.0",
