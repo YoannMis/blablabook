@@ -21,8 +21,6 @@ const HomePage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
 
-  const isInitialRender = useRef(true);
-
   const {
     searchValue,
     searchResults,
@@ -40,11 +38,6 @@ const HomePage = () => {
   const hasFeaturedBooks = Object.keys(featuredBooks).length > 0;
 
   useEffect(() => {
-    if (isInitialRender.current) {
-      isInitialRender.current = false;
-      return;
-    }
-
     if (!activeQuery) {
       const fetchFeatured = async () => {
         try {
