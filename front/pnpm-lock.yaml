@@ -30,8 +30,8 @@ importers:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       pnpm:
-        specifier: ^10.32.1
-        version: 10.34.1
+        specifier: ^10.34.4
+        version: 10.34.4
       react:
         specifier: ^19.2.4
         version: 19.2.7
@@ -1896,8 +1896,8 @@ packages:
     resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
     engines: {node: '>=12'}
 
-  pnpm@10.34.1:
-    resolution: {integrity: sha512-tY+95tymapKVOAIVgfZItFcLbKGbGOfL1/LAenskRUFVOI2s3wjyrzZ46IptH+BPnWCd8kv1FzWgYOoEGzdKtw==}
+  pnpm@10.34.4:
+    resolution: {integrity: sha512-h2i+VSAK4/Iia2Un/Momh+FLxOXxLXchoPJdo99HkVF3BYZI20F3uvNIEg+guidS2NjZP2vq8f5krhjajelhrw==}
     engines: {node: '>=18.12'}
     hasBin: true
 
@@ -2125,6 +2125,7 @@ packages:
   tsconfck@3.1.6:
     resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
     engines: {node: ^18 || >=20}
+    deprecated: unmaintained
     hasBin: true
     peerDependencies:
       typescript: ^5.0.0
@@ -4468,7 +4469,7 @@ snapshots:
 
   picomatch@4.0.4: {}
 
-  pnpm@10.34.1: {}
+  pnpm@10.34.4: {}
 
   postcss@8.5.15:
     dependencies:
